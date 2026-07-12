@@ -17,7 +17,9 @@ import {
   SlidersHorizontal,
   ZoomIn,
   ZoomOut,
-  RotateCcw
+  RotateCcw,
+  Maximize2,
+  Minimize2
 } from "lucide-react";
 
 export default function PunchlinesPage() {
@@ -61,6 +63,29 @@ export default function PunchlinesPage() {
   // Reading Mode States
   const [readingPunchline, setReadingPunchline] = useState<Punchline | null>(null);
   const [readingFontSize, setReadingFontSize] = useState(32);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.error("Error toggling fullscreen:", err);
+    }
+  };
 
   // Close reading mode on Escape
   useEffect(() => {
@@ -181,6 +206,109 @@ export default function PunchlinesPage() {
 
   const isFormTextEmpty = !punchlineText || punchlineText.replace(/<[^>]*>/g, "").trim() === "";
 
+  const renderPunchlinesContent = () => {
+    if (loadingPunchlines) {
+      return <div className="py-16 text-center text-text-muted">Loading...</div>;
+    }
+
+    if (punchlines.length === 0) {
+      return (
+        <div className="bg-bg-card/20 border border-dashed border-border-ui rounded-2xl py-16 px-4 text-center">
+          <p className="text-text-muted text-sm">
+            {intl.formatMessage({ id: "punchline.no_results" })}
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {punchlines.map((item) => (
+          <div
+            key={item.id}
+            onClick={() => {
+              setReadingPunchline(item);
+              setReadingFontSize(24);
+            }}
+            className="bg-bg-card border border-border-ui rounded-2xl p-6 flex flex-col justify-between hover:border-accent-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md shadow-sm group cursor-pointer"
+          >
+            <div>
+              {/* Card Header Status & Actions */}
+              <div className="flex items-center justify-between mb-4">
+                {item.status ? (
+                  <span
+                    className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm"
+                    style={{
+                      backgroundColor: `${item.status.color}15`,
+                      color: item.status.color,
+                      borderColor: `${item.status.color}30`,
+                    }}
+                  >
+                    {item.status.name}
+                  </span>
+                ) : (
+                  <span />
+                )}
+                <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenPunchlineModal(item);
+                    }}
+                    className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
+                    title={intl.formatMessage({ id: "button.edit" })}
+                  >
+                    <Edit2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeletePunchline(item.id);
+                    }}
+                    className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                    title={intl.formatMessage({ id: "button.delete" })}
+                  >
+                    <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Text (HTML Rendered) */}
+              <div
+                className="text-text-primary text-base mb-4 leading-relaxed rich-text-content"
+                dangerouslySetInnerHTML={{ __html: item.text }}
+              />
+
+              {/* Notes if any */}
+              {item.notes && (
+                <div className="mb-4 bg-bg-input/40 rounded-r-xl p-3 border-l-2 border-accent-primary border-y border-r border-border-ui transition-colors duration-200">
+                  <span className="text-text-muted-light font-bold text-[9px] uppercase block mb-1 tracking-wider">
+                    {intl.formatMessage({ id: "punchline.notes" })}:
+                  </span>
+                  <p className="text-xs text-text-muted italic">{item.notes}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Category Tags */}
+            {item.punchline_categories && item.punchline_categories.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 pt-2.5 border-t border-border-ui transition-colors duration-200">
+                {item.punchline_categories.map((pc) => (
+                  <span
+                    key={pc.id}
+                    className="bg-bg-input text-text-muted px-2.5 py-0.5 rounded-lg text-[10px] font-semibold border border-border-ui"
+                  >
+                    {pc.category?.name || "..."}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 pb-22 transition-colors duration-200">
       <div className="space-y-6">
@@ -275,100 +403,7 @@ export default function PunchlinesPage() {
         </div>
 
         {/* List of punchlines */}
-        {loadingPunchlines ? (
-          <div className="py-16 text-center text-text-muted">Loading...</div>
-        ) : punchlines.length === 0 ? (
-          <div className="bg-bg-card/20 border border-dashed border-border-ui rounded-2xl py-16 px-4 text-center">
-            <p className="text-text-muted text-sm">
-              {intl.formatMessage({ id: "punchline.no_results" })}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {punchlines.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => {
-                  setReadingPunchline(item);
-                  setReadingFontSize(24);
-                }}
-                className="bg-bg-card border border-border-ui rounded-2xl p-6 flex flex-col justify-between hover:border-accent-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md shadow-sm group cursor-pointer"
-              >
-                <div>
-                  {/* Card Header Status & Actions */}
-                  <div className="flex items-center justify-between mb-4">
-                    {item.status ? (
-                      <span
-                        className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm"
-                        style={{
-                          backgroundColor: `${item.status.color}15`,
-                          color: item.status.color,
-                          borderColor: `${item.status.color}30`,
-                        }}
-                      >
-                        {item.status.name}
-                      </span>
-                    ) : (
-                      <span />
-                    )}
-                    <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenPunchlineModal(item);
-                        }}
-                        className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
-                        title={intl.formatMessage({ id: "button.edit" })}
-                      >
-                        <Edit2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeletePunchline(item.id);
-                        }}
-                        className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
-                        title={intl.formatMessage({ id: "button.delete" })}
-                      >
-                        <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Text (HTML Rendered) */}
-                  <div
-                    className="text-text-primary text-base mb-4 leading-relaxed rich-text-content"
-                    dangerouslySetInnerHTML={{ __html: item.text }}
-                  />
-
-                  {/* Notes if any */}
-                  {item.notes && (
-                    <div className="mb-4 bg-bg-input/40 rounded-r-xl p-3 border-l-2 border-accent-primary border-y border-r border-border-ui transition-colors duration-200">
-                      <span className="text-text-muted-light font-bold text-[9px] uppercase block mb-1 tracking-wider">
-                        {intl.formatMessage({ id: "punchline.notes" })}:
-                      </span>
-                      <p className="text-xs text-text-muted italic">{item.notes}</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Category Tags */}
-                {item.punchline_categories && item.punchline_categories.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-2.5 border-t border-border-ui transition-colors duration-200">
-                    {item.punchline_categories.map((pc) => (
-                      <span
-                        key={pc.id}
-                        className="bg-bg-input text-text-muted px-2.5 py-0.5 rounded-lg text-[10px] font-semibold border border-border-ui"
-                      >
-                        {pc.category?.name || "..."}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+        {renderPunchlinesContent()}
       </div>
 
       {/* Floating Action Button (Mobile Only) */}
@@ -523,72 +558,67 @@ export default function PunchlinesPage() {
       )}
       {/* Reading Mode Fullscreen Modal */}
       {readingPunchline && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-bg-primary/95 backdrop-blur-md animate-fade-in p-6 md:p-12 justify-between">
+        <div className="fixed inset-0 z-50 flex flex-col bg-bg-primary/95 backdrop-blur-md animate-fade-in p-0 justify-between">
           {/* Top toolbar */}
-          <div className="flex items-center justify-between w-full max-w-5xl mx-auto border-b border-border-ui/60 pb-4">
-            {/* Left side: status / info */}
-            <div className="flex items-center gap-3">
-              {readingPunchline.status && (
-                <span
-                  className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm"
-                  style={{
-                    backgroundColor: `${readingPunchline.status.color}15`,
-                    color: readingPunchline.status.color,
-                    borderColor: `${readingPunchline.status.color}30`,
-                  }}
-                >
-                  {readingPunchline.status.name}
-                </span>
+          <div className="flex items-center gap-2 md:gap-3 absolute top-2 right-2 md:top-4 md:right-4">
+            {/* Fullscreen Toggle */}
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center"
+              title={isFullscreen ? "Disattiva schermo intero" : "Schermo intero"}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-4 h-4 md:w-5 h-5" />
+              ) : (
+                <Maximize2 className="w-4 h-4 md:w-5 h-5" />
               )}
-            </div>
+            </button>
 
-            {/* Right side: Controls & Close */}
-            <div className="flex items-center gap-2 md:gap-3">
-              {/* Font controls */}
-              <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
-                <button
-                  type="button"
-                  onClick={() => setReadingFontSize((prev) => Math.max(16, prev - 4))}
-                  className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
-                  title={intl.formatMessage({ id: "reading.zoom_out", defaultMessage: "Rimpicciolisci testo" })}
-                >
-                  <ZoomOut className="w-4 h-4 md:w-5 h-5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setReadingFontSize(24)}
-                  className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer"
-                  title={intl.formatMessage({ id: "reading.reset", defaultMessage: "Ripristina" })}
-                >
-                  <RotateCcw className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setReadingFontSize((prev) => Math.min(80, prev + 4))}
-                  className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
-                  title={intl.formatMessage({ id: "reading.zoom_in", defaultMessage: "Ingrandisci testo" })}
-                >
-                  <ZoomIn className="w-4 h-4 md:w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Close Button */}
+            {/* Font controls */}
+            <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
               <button
                 type="button"
-                onClick={() => setReadingPunchline(null)}
-                className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm"
-                title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
+                onClick={() => setReadingFontSize((prev) => Math.max(16, prev - 4))}
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                title={intl.formatMessage({ id: "reading.zoom_out", defaultMessage: "Rimpicciolisci testo" })}
               >
-                <X className="w-5 h-5" />
+                <ZoomOut className="w-4 h-4 md:w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setReadingFontSize(24)}
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer"
+                title={intl.formatMessage({ id: "reading.reset", defaultMessage: "Ripristina" })}
+              >
+                <RotateCcw className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setReadingFontSize((prev) => Math.min(80, prev + 4))}
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                title={intl.formatMessage({ id: "reading.zoom_in", defaultMessage: "Ingrandisci testo" })}
+              >
+                <ZoomIn className="w-4 h-4 md:w-5 h-5" />
               </button>
             </div>
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setReadingPunchline(null)}
+              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm"
+              title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto w-full py-8 px-4">
+          <div className="flex-1 overflow-y-auto w-full px-4">
             <div className="flex flex-col min-h-full max-w-5xl mx-auto justify-center items-center">
               <div
-                className="text-text-primary leading-relaxed rich-text-content break-words w-full selection:bg-accent-primary/20 my-auto"
+                className="text-text-primary leading-relaxed rich-text-content break-words w-full selection:bg-accent-primary/20 my-auto pt-12"
                 style={{ fontSize: `${readingFontSize}px` }}
                 dangerouslySetInnerHTML={{ __html: readingPunchline.text }}
               />
@@ -596,7 +626,7 @@ export default function PunchlinesPage() {
           </div>
 
           {/* Optional Footer/Metadata (minimal) */}
-          <div className="flex items-center justify-between w-full max-w-5xl mx-auto border-t border-border-ui/60 pt-4 text-xs text-text-muted">
+          {/* <div className="flex items-center justify-between w-full max-w-5xl mx-auto border-t border-border-ui/60 pt-4 text-xs text-text-muted">
             <div>
               {readingPunchline.punchline_categories && readingPunchline.punchline_categories.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
@@ -616,7 +646,7 @@ export default function PunchlinesPage() {
                 {intl.formatMessage({ id: "punchline.notes" })}: {readingPunchline.notes}
               </span>
             )}
-          </div>
+          </div> */}
         </div>
       )}
     </main>

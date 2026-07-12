@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useIntl } from "react-intl";
 import { useLanguage } from "@/components/IntlProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon } from "lucide-react";
+import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe } from "lucide-react";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -15,12 +15,43 @@ export default function Navigation() {
   const { isAdmin, user, signOut } = useAuth();
 
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const isDark = document.documentElement.classList.contains("dark");
     setTheme(isDark ? "dark" : "light");
     document.documentElement.style.colorScheme = isDark ? "dark" : "light";
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
 
   const toggleTheme = () => {
     const nextTheme = theme === "light" ? "dark" : "light";
@@ -104,50 +135,104 @@ export default function Navigation() {
               })}
             </nav>
 
-            {/* Language Switcher */}
-            <div className="flex items-center gap-1 bg-bg-input/60 p-1 rounded-lg border border-border-ui transition-colors duration-200">
-              <button
-                onClick={() => setLocale("it")}
-                className={`px-2.5 py-1 rounded-md text-[10px] md:text-xs font-semibold transition-all cursor-pointer ${locale === "it"
-                  ? "bg-accent-primary text-white shadow shadow-accent-primary/35"
-                  : "text-text-muted hover:text-text-primary"
-                  }`}
-              >
-                🇮🇹 IT
-              </button>
-              <button
-                onClick={() => setLocale("en")}
-                className={`px-2.5 py-1 rounded-md text-[10px] md:text-xs font-semibold transition-all cursor-pointer ${locale === "en"
-                  ? "bg-accent-primary text-white shadow shadow-accent-primary/35"
-                  : "text-text-muted hover:text-text-primary"
-                  }`}
-              >
-                🇬🇧 EN
-              </button>
-            </div>
-
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              className="bg-bg-input/60 hover:bg-bg-input/80 text-text-muted hover:text-text-primary p-2 rounded-lg border border-border-ui transition-all cursor-pointer flex items-center justify-center"
-              title={theme === "light" ? "Attiva Dark Mode" : "Attiva Light Mode"}
-            >
-              {theme === "light" ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
-            </button>
-
-            {/* User Profile & Logout */}
+            {/* User Profile Dropdown Menu */}
             {user && (
-              <div className="flex items-center gap-2 border-l border-border-ui pl-3 transition-colors duration-200">
-                <span className="text-xs text-text-muted hidden sm:block font-medium truncate max-w-[150px]" title={user.email}>
-                  {user.email}
-                </span>
+              <div className="relative" ref={dropdownRef}>
                 <button
-                  onClick={signOut}
-                  className="bg-bg-input hover:bg-red-500/10 hover:text-red-500 text-text-muted p-2 rounded-lg border border-border-ui transition-all cursor-pointer"
-                  title={intl.formatMessage({ id: "auth.sign_out" })}
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 bg-bg-input/60 hover:bg-bg-input/80 text-text-muted hover:text-text-primary px-3 py-1.5 rounded-xl border border-border-ui transition-all cursor-pointer select-none"
+                  title="Profile Menu"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xs uppercase shadow-sm">
+                    {user.email ? user.email.charAt(0) : <User className="w-3 h-3" />}
+                  </div>
+                  <span className="text-xs font-semibold hidden sm:inline-block">
+                    {user.email ? user.email : "User"}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`} />
                 </button>
+
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-bg-card border border-border-ui rounded-2xl shadow-xl z-50 py-3 flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-150">
+                    {/* User Info Header */}
+                    <div className="px-4 pb-2 border-b border-border-ui/60 flex flex-col">
+                      <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold">
+                        {intl.formatMessage({ id: "profile.logged_in_as", defaultMessage: "Logged in as" })}
+                      </span>
+                      <span className="text-sm font-semibold text-text-primary truncate" title={user.email}>
+                        {user.email}
+                      </span>
+                    </div>
+
+                    {/* Options list */}
+                    <div className="flex flex-col gap-1 px-2">
+                      {/* Fullscreen Toggle */}
+                      <button
+                        onClick={toggleFullscreen}
+                        className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer"
+                      >
+                        <span className="flex items-center gap-2">
+                          {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+                          {isFullscreen
+                            ? intl.formatMessage({ id: "fullscreen.exit", defaultMessage: "Esci da Schermo Intero" })
+                            : intl.formatMessage({ id: "fullscreen.enter", defaultMessage: "Schermo Intero" })}
+                        </span>
+                      </button>
+
+                      {/* Theme Selector */}
+                      <button
+                        onClick={toggleTheme}
+                        className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer"
+                      >
+                        <span className="flex items-center gap-2">
+                          {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                          {theme === "light"
+                            ? intl.formatMessage({ id: "theme.dark", defaultMessage: "Tema Scuro" })
+                            : intl.formatMessage({ id: "theme.light", defaultMessage: "Tema Chiaro" })}
+                        </span>
+                      </button>
+
+                      {/* Language Selection */}
+                      <div className="flex items-center justify-between w-full px-3 py-1.5 text-xs font-medium text-text-muted">
+                        <span className="flex items-center gap-2">
+                          <Globe className="w-4 h-4" />
+                          {intl.formatMessage({ id: "language.title", defaultMessage: "Lingua" })}
+                        </span>
+                        <div className="flex items-center gap-0.5 bg-bg-input/60 p-0.5 rounded-lg border border-border-ui">
+                          <button
+                            onClick={() => setLocale("it")}
+                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${locale === "it"
+                              ? "bg-accent-primary text-white shadow"
+                              : "text-text-muted hover:text-text-primary"
+                              }`}
+                          >
+                            IT
+                          </button>
+                          <button
+                            onClick={() => setLocale("en")}
+                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${locale === "en"
+                              ? "bg-accent-primary text-white shadow"
+                              : "text-text-muted hover:text-text-primary"
+                              }`}
+                          >
+                            EN
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Sign Out Button */}
+                    <div className="px-2 pt-2 border-t border-border-ui/60">
+                      <button
+                        onClick={signOut}
+                        className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 rounded-xl transition-all cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        {intl.formatMessage({ id: "auth.sign_out" })}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
