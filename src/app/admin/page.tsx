@@ -152,10 +152,10 @@ export default function AdminPage() {
     return (
       <div className="max-w-6xl mx-auto px-4 py-8 md:py-12 flex flex-col items-center justify-center min-h-[50vh]">
         <ShieldAlert className="w-12 h-12 text-red-500 mb-4 animate-bounce" />
-        <h2 className="text-xl font-bold text-white mb-2">
+        <h2 className="text-xl font-bold text-text-primary mb-2">
           {intl.formatMessage({ id: "auth.unauthorized_title" })}
         </h2>
-        <p className="text-slate-400 text-sm text-center max-w-md">
+        <p className="text-text-muted text-sm text-center max-w-md">
           {intl.formatMessage({ id: "auth.unauthorized_message" }, { email: user?.email })}
         </p>
       </div>
@@ -167,44 +167,44 @@ export default function AdminPage() {
       {/* Title & Description */}
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <div className="bg-violet-600/10 p-2 rounded-lg text-violet-400 border border-violet-500/25">
-            <Shield className="w-6 h-6" />
+          <div className="bg-gradient-to-tr from-violet-600 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-violet-500/20">
+            <Shield className="w-5 h-5" />
           </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-text-primary tracking-tight">
             {intl.formatMessage({ id: "admin.title" })}
           </h2>
         </div>
-        <p className="text-slate-400 text-sm md:text-base max-w-2xl">
+        <p className="text-text-muted text-sm md:text-base max-w-2xl">
           {intl.formatMessage({ id: "admin.subtitle" })}
         </p>
       </div>
 
       {/* Notifications */}
       {errorMsg && (
-        <div className="flex items-center gap-3 bg-red-950/40 border border-red-500/20 text-red-300 p-4 rounded-xl text-sm shadow-md animate-fadeIn">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+        <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 text-red-650 dark:text-red-300 p-4 rounded-xl text-sm shadow-sm animate-fadeIn">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
           <p>{errorMsg}</p>
         </div>
       )}
 
       {successMsg && (
-        <div className="flex items-center gap-3 bg-emerald-950/40 border border-emerald-500/20 text-emerald-300 p-4 rounded-xl text-sm shadow-md animate-fadeIn">
-          <UserCheck className="w-5 h-5 flex-shrink-0" />
+        <div className="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-650 dark:text-emerald-300 p-4 rounded-xl text-sm shadow-sm animate-fadeIn">
+          <UserCheck className="w-5 h-5 flex-shrink-0 text-emerald-500" />
           <p>{successMsg}</p>
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Add User Form */}
-        <div className="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 shadow-lg backdrop-blur-md">
-          <h3 className="text-lg font-bold text-white mb-5 flex items-center gap-2">
-            <UserPlus className="w-4 h-4 text-violet-400" />
+        <div className="bg-bg-card border border-border-ui rounded-2xl p-6 shadow-sm">
+          <h3 className="text-lg font-bold text-text-primary mb-5 flex items-center gap-2">
+            <UserPlus className="w-4 h-4 text-accent-primary" />
             {intl.formatMessage({ id: "admin.add_user" })}
           </h3>
 
           <form onSubmit={handleAddUser} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+              <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-text-muted mb-2">
                 {intl.formatMessage({ id: "admin.col_email" })}
               </label>
               <div className="relative">
@@ -215,21 +215,21 @@ export default function AdminPage() {
                   placeholder={intl.formatMessage({ id: "admin.email_placeholder" })}
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-850 focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/20 rounded-xl px-4 py-3 pl-10 text-sm text-white placeholder-slate-500 outline-none transition-all"
+                  className="w-full bg-bg-input border border-border-input focus:border-accent-primary focus:ring-1 focus:ring-accent-primary/20 rounded-xl px-4 py-3 pl-10 text-sm text-text-primary placeholder-text-muted-light outline-none transition-all"
                 />
-                <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-text-muted-light absolute left-3.5 top-1/2 -translate-y-1/2" />
               </div>
             </div>
 
-            <div className="flex items-center gap-3 bg-slate-950/60 p-3 rounded-xl border border-slate-850">
+            <div className="flex items-center gap-3 bg-bg-input/50 p-3 rounded-xl border border-border-input">
               <input
                 type="checkbox"
                 id="isAdmin"
                 checked={newIsAdmin}
                 onChange={(e) => setNewIsAdmin(e.target.checked)}
-                className="w-4 h-4 rounded border-slate-850 text-violet-600 focus:ring-violet-500/20 bg-slate-950 cursor-pointer"
+                className="w-4 h-4 rounded border-border-input text-accent-primary focus:ring-accent-primary/20 bg-bg-input cursor-pointer"
               />
-              <label htmlFor="isAdmin" className="text-sm text-slate-350 select-none cursor-pointer">
+              <label htmlFor="isAdmin" className="text-sm text-text-primary select-none cursor-pointer">
                 {intl.formatMessage({ id: "admin.is_admin" })}
               </label>
             </div>
@@ -237,7 +237,7 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold px-4 py-3 rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 bg-accent-primary hover:bg-accent-hover text-white font-semibold px-4 py-3 rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
             >
               {submitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -250,49 +250,49 @@ export default function AdminPage() {
         </div>
 
         {/* Authorized Users List */}
-        <div className="lg:col-span-2 bg-slate-900/40 border border-slate-800/80 rounded-2xl shadow-lg backdrop-blur-md overflow-hidden">
+        <div className="lg:col-span-2 bg-bg-card border border-border-ui rounded-2xl shadow-sm overflow-hidden animate-fadeIn">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="w-8 h-8 text-violet-500 animate-spin mb-2" />
-              <span className="text-slate-400 text-xs">Loading...</span>
+              <Loader2 className="w-8 h-8 text-accent-primary animate-spin mb-2" />
+              <span className="text-text-muted text-xs">Loading...</span>
             </div>
           ) : users.length === 0 ? (
-            <div className="text-center py-16 text-slate-400 text-sm">
+            <div className="text-center py-16 text-text-muted text-sm">
               {intl.formatMessage({ id: "admin.no_users" })}
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-slate-800/80 text-xs uppercase font-semibold text-slate-400 bg-slate-950/30">
+                  <tr className="border-b border-border-ui text-xs uppercase font-semibold text-text-muted bg-bg-input/30">
                     <th className="px-6 py-4">{intl.formatMessage({ id: "admin.col_email" })}</th>
                     <th className="px-6 py-4">{intl.formatMessage({ id: "admin.col_role" })}</th>
                     <th className="px-6 py-4 text-right">{intl.formatMessage({ id: "admin.col_actions" })}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-850">
+                <tbody className="divide-y divide-border-ui">
                   {users.map((u) => {
                     const isSelf = u.email === user?.email;
                     return (
-                      <tr key={u.email} className="hover:bg-slate-950/20 transition-colors">
+                      <tr key={u.email} className="hover:bg-bg-input/20 transition-colors">
                         <td className="px-6 py-4.5 flex flex-col gap-0.5">
-                          <span className="text-sm font-semibold text-white break-all">
+                          <span className="text-sm font-semibold text-text-primary break-all">
                             {u.email}
                           </span>
                           {isSelf && (
-                            <span className="text-[10px] text-violet-400 font-medium self-start bg-violet-500/10 px-1.5 py-0.5 rounded">
+                            <span className="text-[10px] text-accent-primary font-medium self-start bg-accent-primary/10 px-1.5 py-0.5 rounded">
                               Tu (You)
                             </span>
                           )}
                         </td>
                         <td className="px-6 py-4.5">
                           {u.is_admin ? (
-                            <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-violet-400 bg-violet-600/15 border border-violet-500/25 px-2.5 py-1 rounded-full shadow-sm">
+                            <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-accent-primary bg-accent-primary/10 border border-accent-primary/20 px-2.5 py-1 rounded-full shadow-sm">
                               <Shield className="w-3 h-3" />
                               {intl.formatMessage({ id: "admin.role_admin" })}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center text-[10px] md:text-xs font-medium text-slate-450 bg-slate-800 px-2.5 py-1 rounded-full">
+                            <span className="inline-flex items-center text-[10px] md:text-xs font-medium text-text-muted bg-bg-input border border-border-ui px-2.5 py-1 rounded-full">
                               {intl.formatMessage({ id: "admin.role_user" })}
                             </span>
                           )}
@@ -304,10 +304,10 @@ export default function AdminPage() {
                               disabled={isSelf}
                               className={`p-2 rounded-lg border transition-all cursor-pointer ${
                                 isSelf
-                                  ? "opacity-40 cursor-not-allowed border-transparent text-slate-600"
+                                  ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                   : u.is_admin
-                                  ? "bg-slate-900 border-slate-850 hover:bg-slate-800 text-slate-400 hover:text-white"
-                                  : "bg-violet-600/10 border-violet-500/20 hover:bg-violet-600/20 text-violet-400"
+                                  ? "bg-bg-input border-border-input hover:bg-bg-card text-text-muted hover:text-text-primary"
+                                  : "bg-accent-primary/10 border-accent-primary/20 hover:bg-accent-primary/20 text-accent-primary"
                               }`}
                               title={
                                 u.is_admin
@@ -322,8 +322,8 @@ export default function AdminPage() {
                               disabled={isSelf}
                               className={`p-2 rounded-lg border transition-all cursor-pointer ${
                                 isSelf
-                                  ? "opacity-40 cursor-not-allowed border-transparent text-slate-600"
-                                  : "bg-slate-900 border-slate-850 hover:bg-red-500/15 hover:border-red-500/25 hover:text-red-400 text-slate-400"
+                                  ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
+                                  : "bg-bg-input border-border-input hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-650 text-text-muted"
                               }`}
                               title={intl.formatMessage({ id: "admin.delete" })}
                             >
