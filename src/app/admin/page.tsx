@@ -261,81 +261,161 @@ export default function AdminPage() {
               {intl.formatMessage({ id: "admin.no_users" })}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left">
-                <thead>
-                  <tr className="border-b border-border-ui text-xs uppercase font-semibold text-text-muted bg-bg-input/30">
-                    <th className="px-6 py-4">{intl.formatMessage({ id: "admin.col_email" })}</th>
-                    <th className="px-6 py-4">{intl.formatMessage({ id: "admin.col_role" })}</th>
-                    <th className="px-6 py-4 text-right">{intl.formatMessage({ id: "admin.col_actions" })}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border-ui">
-                  {users.map((u) => {
-                    const isSelf = u.email === user?.email;
-                    return (
-                      <tr key={u.email} className="hover:bg-bg-input/20 transition-colors">
-                        <td className="px-6 py-4.5 flex flex-col gap-0.5">
+            <div className="divide-y divide-border-ui">
+              {/* Desktop view */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full border-collapse text-left">
+                  <thead>
+                    <tr className="border-b border-border-ui text-xs uppercase font-semibold text-text-muted bg-bg-input/30">
+                      <th className="px-6 py-4">{intl.formatMessage({ id: "admin.col_email" })}</th>
+                      <th className="px-6 py-4">{intl.formatMessage({ id: "admin.col_role" })}</th>
+                      <th className="px-6 py-4 text-right">{intl.formatMessage({ id: "admin.col_actions" })}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border-ui">
+                    {users.map((u) => {
+                      const isSelf = u.email === user?.email;
+                      return (
+                        <tr key={u.email} className="hover:bg-bg-input/20 transition-colors">
+                          <td className="px-6 py-4.5 flex flex-col gap-0.5">
+                            <span className="text-sm font-semibold text-text-primary break-all">
+                              {u.email}
+                            </span>
+                            {isSelf && (
+                              <span className="text-[10px] text-accent-primary font-medium self-start bg-accent-primary/10 px-1.5 py-0.5 rounded">
+                                Tu (You)
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4.5">
+                            {u.is_admin ? (
+                              <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-accent-primary bg-accent-primary/10 border border-accent-primary/20 px-2.5 py-1 rounded-full shadow-sm">
+                                <Shield className="w-3 h-3" />
+                                {intl.formatMessage({ id: "admin.role_admin" })}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center text-[10px] md:text-xs font-medium text-text-muted bg-bg-input border border-border-ui px-2.5 py-1 rounded-full">
+                                {intl.formatMessage({ id: "admin.role_user" })}
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4.5 text-right">
+                            <div className="inline-flex items-center gap-2">
+                              <button
+                                onClick={() => handleToggleAdmin(u)}
+                                disabled={isSelf}
+                                className={`p-2 rounded-lg border transition-all cursor-pointer ${
+                                  isSelf
+                                    ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
+                                    : u.is_admin
+                                    ? "bg-bg-input border-border-input hover:bg-bg-card text-text-muted hover:text-text-primary"
+                                    : "bg-accent-primary/10 border-accent-primary/20 hover:bg-accent-primary/20 text-accent-primary"
+                                }`}
+                                title={
+                                  u.is_admin
+                                    ? intl.formatMessage({ id: "admin.remove_admin" })
+                                    : intl.formatMessage({ id: "admin.make_admin" })
+                                }
+                              >
+                                <Shield className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteUser(u)}
+                                disabled={isSelf}
+                                className={`p-2 rounded-lg border transition-all cursor-pointer ${
+                                  isSelf
+                                    ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
+                                    : "bg-bg-input border-border-input hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-650 text-text-muted"
+                                }`}
+                                title={intl.formatMessage({ id: "admin.delete" })}
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Card view */}
+              <div className="block md:hidden divide-y divide-border-ui">
+                {users.map((u) => {
+                  const isSelf = u.email === user?.email;
+                  return (
+                    <div key={u.email} className="p-5 flex flex-col gap-4 hover:bg-bg-input/10 transition-colors">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                          {intl.formatMessage({ id: "admin.col_email" })}
+                        </span>
+                        <div className="flex flex-wrap items-center gap-2">
                           <span className="text-sm font-semibold text-text-primary break-all">
                             {u.email}
                           </span>
                           {isSelf && (
-                            <span className="text-[10px] text-accent-primary font-medium self-start bg-accent-primary/10 px-1.5 py-0.5 rounded">
+                            <span className="text-[10px] text-accent-primary font-medium bg-accent-primary/10 px-1.5 py-0.5 rounded">
                               Tu (You)
                             </span>
                           )}
-                        </td>
-                        <td className="px-6 py-4.5">
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between items-center pt-3 border-t border-border-ui/50">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                            {intl.formatMessage({ id: "admin.col_role" })}
+                          </span>
                           {u.is_admin ? (
-                            <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-accent-primary bg-accent-primary/10 border border-accent-primary/20 px-2.5 py-1 rounded-full shadow-sm">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-accent-primary bg-accent-primary/10 border border-accent-primary/20 px-2.5 py-1 rounded-full shadow-sm w-fit">
                               <Shield className="w-3 h-3" />
                               {intl.formatMessage({ id: "admin.role_admin" })}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center text-[10px] md:text-xs font-medium text-text-muted bg-bg-input border border-border-ui px-2.5 py-1 rounded-full">
+                            <span className="inline-flex items-center text-[10px] font-medium text-text-muted bg-bg-input border border-border-ui px-2.5 py-1 rounded-full w-fit">
                               {intl.formatMessage({ id: "admin.role_user" })}
                             </span>
                           )}
-                        </td>
-                        <td className="px-6 py-4.5 text-right">
-                          <div className="inline-flex items-center gap-2">
-                            <button
-                              onClick={() => handleToggleAdmin(u)}
-                              disabled={isSelf}
-                              className={`p-2 rounded-lg border transition-all cursor-pointer ${
-                                isSelf
-                                  ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
-                                  : u.is_admin
-                                  ? "bg-bg-input border-border-input hover:bg-bg-card text-text-muted hover:text-text-primary"
-                                  : "bg-accent-primary/10 border-accent-primary/20 hover:bg-accent-primary/20 text-accent-primary"
-                              }`}
-                              title={
-                                u.is_admin
-                                  ? intl.formatMessage({ id: "admin.remove_admin" })
-                                  : intl.formatMessage({ id: "admin.make_admin" })
-                              }
-                            >
-                              <Shield className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteUser(u)}
-                              disabled={isSelf}
-                              className={`p-2 rounded-lg border transition-all cursor-pointer ${
-                                isSelf
-                                  ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
-                                  : "bg-bg-input border-border-input hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-650 text-text-muted"
-                              }`}
-                              title={intl.formatMessage({ id: "admin.delete" })}
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                        </div>
+
+                        <div className="flex items-center gap-2.5">
+                          <button
+                            onClick={() => handleToggleAdmin(u)}
+                            disabled={isSelf}
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                              isSelf
+                                ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
+                                : u.is_admin
+                                ? "bg-bg-input border-border-input hover:bg-bg-card text-text-muted hover:text-text-primary"
+                                : "bg-accent-primary/10 border-accent-primary/20 hover:bg-accent-primary/20 text-accent-primary"
+                            }`}
+                            title={
+                              u.is_admin
+                                ? intl.formatMessage({ id: "admin.remove_admin" })
+                                : intl.formatMessage({ id: "admin.make_admin" })
+                            }
+                          >
+                            <Shield className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteUser(u)}
+                            disabled={isSelf}
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                              isSelf
+                                ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
+                                : "bg-bg-input border-border-input hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-650 text-text-muted"
+                            }`}
+                            title={intl.formatMessage({ id: "admin.delete" })}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

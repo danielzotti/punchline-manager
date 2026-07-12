@@ -16,6 +16,7 @@ export default function StatusesPage() {
   const [editStatusColor, setEditStatusColor] = useState("");
 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [touchTargetIndex, setTouchTargetIndex] = useState<number | null>(null);
 
   const {
     statuses,
@@ -67,21 +68,11 @@ export default function StatusesPage() {
     }
   };
 
-  // Drag and Drop Handlers
-  const handleDragStart = (index: number) => {
-    setDraggedIndex(index);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = async (targetIndex: number) => {
-    if (draggedIndex === null || draggedIndex === targetIndex) return;
-
+  // Reorder Handler
+  const performReorder = async (draggedIdx: number, targetIdx: number) => {
     const reordered = [...statuses];
-    const [draggedItem] = reordered.splice(draggedIndex, 1);
-    reordered.splice(targetIndex, 0, draggedItem);
+    const [draggedItem] = reordered.splice(draggedIdx, 1);
+    reordered.splice(targetIdx, 0, draggedItem);
 
     // Map new positions (1 to N)
     const updates = reordered.map((item, idx) => ({
@@ -93,9 +84,53 @@ export default function StatusesPage() {
       await updateStatuses(updates);
     } catch (err) {
       console.error("Failed to update status positions:", err);
-    } finally {
-      setDraggedIndex(null);
     }
+  };
+
+  // Drag and Drop Handlers
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = async (targetIndex: number) => {
+    if (draggedIndex === null || draggedIndex === targetIndex) return;
+    await performReorder(draggedIndex, targetIndex);
+    setDraggedIndex(null);
+  };
+
+  // Touch Handlers for Mobile Reorder
+  const handleTouchStart = (index: number) => {
+    setDraggedIndex(index);
+    setTouchTargetIndex(index);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (draggedIndex === null) return;
+    const touch = e.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!element) return;
+    const container = element.closest("[data-index]");
+    if (container) {
+      const idxAttr = container.getAttribute("data-index");
+      if (idxAttr !== null) {
+        const targetIdx = parseInt(idxAttr, 10);
+        if (targetIdx !== draggedIndex) {
+          setTouchTargetIndex(targetIdx);
+        }
+      }
+    }
+  };
+
+  const handleTouchEnd = async () => {
+    if (draggedIndex !== null && touchTargetIndex !== null && draggedIndex !== touchTargetIndex) {
+      await performReorder(draggedIndex, touchTargetIndex);
+    }
+    setDraggedIndex(null);
+    setTouchTargetIndex(null);
   };
 
   return (
@@ -156,12 +191,18 @@ export default function StatusesPage() {
             {statuses.map((stat, index) => (
               <div
                 key={stat.id}
+                data-index={index}
                 draggable="true"
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(index)}
-                className={`p-4 flex items-center justify-between transition-colors duration-200 group ${draggedIndex === index ? "opacity-30 bg-bg-input/60" : "hover:bg-bg-input/30"
-                  }`}
+                className={`p-4 flex items-center justify-between transition-colors duration-200 group ${
+                  draggedIndex === index 
+                    ? "opacity-35 bg-bg-input/80 border-t border-b border-accent-primary/20 scale-[0.99] shadow-inner" 
+                    : touchTargetIndex === index
+                    ? "bg-accent-primary/10 border-t border-b border-dashed border-accent-primary/40"
+                    : "hover:bg-bg-input/30"
+                }`}
               >
                 {editingStatus?.id === stat.id ? (
                   <div className="flex-1 flex flex-col sm:flex-row gap-3 items-center">
@@ -199,8 +240,14 @@ export default function StatusesPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center gap-3.5">
-                      <div className="cursor-grab text-text-muted-light hover:text-text-muted py-2 pr-1 active:cursor-grabbing">
+                    <div className="flex items-center gap-3.5 select-none">
+                      <div
+                        onTouchStart={() => handleTouchStart(index)}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                        className="cursor-grab text-text-muted-light hover:text-text-muted py-2 pr-1 active:cursor-grabbing"
+                        style={{ touchAction: "none" }}
+                      >
                         <GripVertical className="w-4 h-4" />
                       </div>
                       <span className="text-[10px] text-text-muted-light font-mono w-5">
