@@ -69,19 +69,58 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
           const el = node as HTMLElement;
           const tagName = el.tagName.toLowerCase();
 
+          // Extract styling info to preserve formatting from styled spans/divs
+          const fontWeight = el.style.fontWeight;
+          const fontStyle = el.style.fontStyle;
+          const textDecoration = el.style.textDecoration || el.style.textDecorationLine;
+
+          const isBoldStyle = fontWeight === "bold" || parseInt(fontWeight) >= 600;
+          const isNormalWeightStyle = fontWeight === "normal" || (parseInt(fontWeight) > 0 && parseInt(fontWeight) <= 400);
+          const isItalicStyle = fontStyle === "italic";
+          const isUnderlineStyle = textDecoration?.includes("underline");
+
           let childrenHtml = "";
           for (let i = 0; i < el.childNodes.length; i++) {
             childrenHtml += clean(el.childNodes[i]);
+          }
+
+          // Wrap children in corresponding tags if styling is present
+          let wrappedHtml = childrenHtml;
+          if (isBoldStyle) {
+            wrappedHtml = `<b>${wrappedHtml}</b>`;
+          }
+          if (isItalicStyle) {
+            wrappedHtml = `<i>${wrappedHtml}</i>`;
+          }
+          if (isUnderlineStyle) {
+            wrappedHtml = `<u>${wrappedHtml}</u>`;
           }
 
           if (allowedTags.has(tagName)) {
             if (tagName === "br") {
               return "<br>";
             }
-            return `<${tagName}>${childrenHtml}</${tagName}>`;
+
+            // If the element is a bold container, check if it's explicitly styled as normal weight (e.g., Google Docs wrapper)
+            if (tagName === "b" || tagName === "strong") {
+              if (isNormalWeightStyle) {
+                return wrappedHtml;
+              }
+              return `<b>${wrappedHtml}</b>`;
+            }
+
+            if (tagName === "i" || tagName === "em") {
+              return `<i>${wrappedHtml}</i>`;
+            }
+
+            if (tagName === "u") {
+              return `<u>${wrappedHtml}</u>`;
+            }
+
+            return `<${tagName}>${wrappedHtml}</${tagName}>`;
           }
 
-          return childrenHtml;
+          return wrappedHtml;
         }
 
         return "";

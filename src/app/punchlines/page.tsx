@@ -48,7 +48,7 @@ export default function PunchlinesPage() {
     statusId: selectedStatusId,
   });
 
-  const { categories } = useCategories();
+  const { categories, createCategory } = useCategories();
   const { statuses } = useStatuses();
 
   // Modal States
@@ -60,6 +60,8 @@ export default function PunchlinesPage() {
   const [punchlineNotes, setPunchlineNotes] = useState("");
   const [punchlineStatusId, setPunchlineStatusId] = useState("");
   const [punchlineCategoryIds, setPunchlineCategoryIds] = useState<string[]>([]);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
 
   const clearFilters = () => {
     setSearchInput("");
@@ -126,13 +128,31 @@ export default function PunchlinesPage() {
     );
   };
 
+  const handleCreateCategory = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!newCategoryName.trim()) return;
+
+    try {
+      setIsCreatingCategory(true);
+      const newCat = await createCategory(newCategoryName.trim());
+      if (newCat && newCat.id) {
+        setPunchlineCategoryIds((prev) => [...prev, newCat.id]);
+      }
+      setNewCategoryName("");
+    } catch (err) {
+      console.error("Error creating category:", err);
+    } finally {
+      setIsCreatingCategory(false);
+    }
+  };
+
   const isFormTextEmpty = !punchlineText || punchlineText.replace(/<[^>]*>/g, "").trim() === "";
 
   return (
-    <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+    <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 pb-22">
       <div className="space-y-6">
         {/* Filters panel */}
-        <div className="relative z-30 bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-4 md:p-6 space-y-4 shadow-lg shadow-slate-950/20">
+        <div className="relative z-30 bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-4 md:p-6 space-y-4 shadow-lg shadow-slate-950/20 md:sticky md:top-20">
           <div className="flex flex-row gap-2.5 items-center justify-between">
             {/* Search Bar */}
             <div className="relative flex-1 md:max-w-md">
@@ -151,8 +171,8 @@ export default function PunchlinesPage() {
               <button
                 onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
                 className={`md:hidden p-2.5 border rounded-xl flex items-center justify-center transition-all cursor-pointer ${selectedStatusId || selectedCategoryIds.length > 0
-                    ? "bg-violet-600/10 border-violet-500 text-violet-400"
-                    : "bg-slate-950 border-slate-800 text-slate-400 active:bg-slate-900"
+                  ? "bg-violet-600/10 border-violet-500 text-violet-400"
+                  : "bg-slate-950 border-slate-800 text-slate-400 active:bg-slate-900"
                   }`}
                 title="Filtri"
               >
@@ -311,7 +331,7 @@ export default function PunchlinesPage() {
       {/* Floating Action Button (Mobile Only) */}
       <button
         onClick={() => handleOpenPunchlineModal()}
-        className="md:hidden fixed bottom-20 right-6 z-40 bg-gradient-to-tr from-violet-600 to-indigo-600 text-white p-4 rounded-full shadow-2xl shadow-violet-500/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all border border-violet-500/30 cursor-pointer"
+        className="md:hidden fixed bottom-24 right-6 z-40 bg-gradient-to-tr from-violet-600 to-indigo-600 text-white p-4 rounded-full shadow-2xl shadow-violet-500/30 flex items-center justify-center hover:scale-105 active:scale-95 transition-all border border-violet-500/30 cursor-pointer"
         title={intl.formatMessage({ id: "button.add_punchline" })}
       >
         <Plus className="w-6 h-6" />
@@ -383,11 +403,12 @@ export default function PunchlinesPage() {
               </div>
 
               {/* Categories Checklist */}
-              {categories.length > 0 && (
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-400 uppercase block tracking-wider">
-                    {intl.formatMessage({ id: "punchline.categories" })}
-                  </label>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-400 uppercase block tracking-wider">
+                  {intl.formatMessage({ id: "punchline.categories" })}
+                </label>
+
+                {categories.length > 0 && (
                   <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 border border-slate-800 bg-slate-950 rounded-xl">
                     {categories.map((cat) => {
                       const isSelected = punchlineCategoryIds.includes(cat.id);
@@ -397,8 +418,8 @@ export default function PunchlinesPage() {
                           key={cat.id}
                           onClick={() => toggleFormCategory(cat.id)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${isSelected
-                              ? "bg-violet-600/20 border-violet-500 text-violet-300 shadow-sm"
-                              : "bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
+                            ? "bg-violet-600/20 border-violet-500 text-violet-300 shadow-sm"
+                            : "bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
                             }`}
                         >
                           {isSelected && <Check className="w-3 h-3" />}
@@ -407,8 +428,34 @@ export default function PunchlinesPage() {
                       );
                     })}
                   </div>
+                )}
+
+                {/* Inline Category Creation */}
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleCreateCategory();
+                      }
+                    }}
+                    placeholder={intl.formatMessage({ id: "category.name" })}
+                    className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-violet-500 placeholder-slate-650"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleCreateCategory()}
+                    disabled={isCreatingCategory || !newCategoryName.trim()}
+                    className="bg-violet-600/20 border border-violet-500/30 hover:border-violet-500 text-violet-300 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden md:inline">{intl.formatMessage({ id: "category.add" })}</span>
+                  </button>
                 </div>
-              )}
+              </div>
 
               {/* Buttons */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-850">

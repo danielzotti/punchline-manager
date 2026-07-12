@@ -117,8 +117,8 @@ export default function StatusesPage() {
         </div>
 
         {/* Quick Add Form */}
-        <form onSubmit={handleAddStatus} className="flex flex-col sm:flex-row gap-3 bg-slate-900/40 backdrop-blur-md p-4 border border-slate-800/80 rounded-2xl items-center shadow-lg shadow-slate-950/10">
-          <div className="flex-1 w-full">
+        <form onSubmit={handleAddStatus} className="flex flex-row gap-3 bg-slate-900/40 backdrop-blur-md p-4 border border-slate-800/80 rounded-2xl items-center shadow-lg shadow-slate-950/10">
+          <div className="w-full">
             <input
               type="text"
               value={newStatusName}
@@ -127,9 +127,8 @@ export default function StatusesPage() {
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
             />
           </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+          <div className="flex w-auto justify-end gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Colore:</span>
               <div className="relative w-8 h-8 rounded-full overflow-hidden border border-slate-800 bg-slate-950 flex items-center justify-center cursor-pointer shadow-inner">
                 <input
                   type="color"
@@ -141,10 +140,10 @@ export default function StatusesPage() {
             </div>
             <button
               type="submit"
-              className="bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-700 hover:to-indigo-750 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-lg shadow-violet-600/15 transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer"
+              className="bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-700 hover:to-indigo-750 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-lg shadow-violet-600/15 transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[140px]"
             >
               <Plus className="w-4 h-4" />
-              {intl.formatMessage({ id: "status.add" })}
+              <span className="hidden md:inline">{intl.formatMessage({ id: "status.add" })}</span>
             </button>
           </div>
         </form>
@@ -161,9 +160,8 @@ export default function StatusesPage() {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(index)}
-                className={`p-4 flex items-center justify-between transition-colors group ${
-                  draggedIndex === index ? "opacity-30 bg-slate-800/25" : "hover:bg-slate-900/10"
-                }`}
+                className={`p-4 flex items-center justify-between transition-colors group ${draggedIndex === index ? "opacity-30 bg-slate-800/25" : "hover:bg-slate-900/10"
+                  }`}
               >
                 {editingStatus?.id === stat.id ? (
                   <div className="flex-1 flex flex-col sm:flex-row gap-3 items-center">

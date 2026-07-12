@@ -84,7 +84,7 @@ export default function CategoriesPage() {
             className="bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-700 hover:to-indigo-750 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-lg shadow-violet-600/15 transition-all active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            {intl.formatMessage({ id: "category.add" })}
+            <span className="hidden md:inline">{intl.formatMessage({ id: "category.add" })}</span>
           </button>
         </form>
 
