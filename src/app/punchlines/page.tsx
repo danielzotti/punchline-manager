@@ -294,7 +294,7 @@ export default function PunchlinesPage() {
 
                   {/* Text (HTML Rendered) */}
                   <div
-                    className="text-text-primary font-medium text-base mb-4 leading-relaxed rich-text-content"
+                    className="text-text-primary text-base mb-4 leading-relaxed rich-text-content"
                     dangerouslySetInnerHTML={{ __html: item.text }}
                   />
 
