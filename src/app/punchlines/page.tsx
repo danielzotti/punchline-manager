@@ -7,12 +7,12 @@ import { useCategories } from "@/hooks/useCategories";
 import { useStatuses } from "@/hooks/useStatuses";
 import RichTextEditor from "@/components/RichTextEditor";
 import CategoryAutocomplete from "@/components/CategoryAutocomplete";
-import { 
-  Search, 
-  Plus, 
-  Edit2, 
-  Trash2, 
-  Check, 
+import {
+  Search,
+  Plus,
+  Edit2,
+  Trash2,
+  Check,
   X,
   SlidersHorizontal
 } from "lucide-react";
@@ -36,12 +36,12 @@ export default function PunchlinesPage() {
   }, [searchInput]);
 
   // Fetch Data using Hooks
-  const { 
-    punchlines, 
-    isLoading: loadingPunchlines, 
-    createPunchline, 
-    updatePunchline, 
-    deletePunchline 
+  const {
+    punchlines,
+    isLoading: loadingPunchlines,
+    createPunchline,
+    updatePunchline,
+    deletePunchline
   } = usePunchlines({
     searchText: debouncedSearch,
     categoryIds: selectedCategoryIds,
@@ -132,7 +132,7 @@ export default function PunchlinesPage() {
     <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
       <div className="space-y-6">
         {/* Filters panel */}
-        <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-4 md:p-6 space-y-4 shadow-lg shadow-slate-950/20">
+        <div className="relative z-30 bg-slate-900/40 backdrop-blur-md border border-slate-800/80 rounded-2xl p-4 md:p-6 space-y-4 shadow-lg shadow-slate-950/20">
           <div className="flex flex-row gap-2.5 items-center justify-between">
             {/* Search Bar */}
             <div className="relative flex-1 md:max-w-md">
@@ -150,11 +150,10 @@ export default function PunchlinesPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
-                className={`md:hidden p-2.5 border rounded-xl flex items-center justify-center transition-all cursor-pointer ${
-                  selectedStatusId || selectedCategoryIds.length > 0
+                className={`md:hidden p-2.5 border rounded-xl flex items-center justify-center transition-all cursor-pointer ${selectedStatusId || selectedCategoryIds.length > 0
                     ? "bg-violet-600/10 border-violet-500 text-violet-400"
                     : "bg-slate-950 border-slate-800 text-slate-400 active:bg-slate-900"
-                }`}
+                  }`}
                 title="Filtri"
               >
                 <SlidersHorizontal className="w-5 h-5" />
@@ -162,7 +161,7 @@ export default function PunchlinesPage() {
                   <span className="ml-1 w-2 h-2 rounded-full bg-violet-505 animate-pulse" />
                 )}
               </button>
-              
+
               {/* Desktop Create Button */}
               <button
                 onClick={() => handleOpenPunchlineModal()}
@@ -175,7 +174,7 @@ export default function PunchlinesPage() {
           </div>
 
           {/* Collapsible / Advanced Filters */}
-          <div className={`${isFiltersExpanded ? "flex" : "hidden md:flex"} flex-col md:flex-row gap-4 pt-3 border-t border-slate-800/85 md:items-center justify-between transition-all animate-fade-in`}>
+          <div className={`${isFiltersExpanded ? "flex" : "hidden md:flex"} flex-col md:flex-row gap-4 pt-3 border-t border-slate-800/85 md:items-start justify-between transition-all animate-fade-in`}>
             {/* Status Dropdown */}
             <div className="flex-1 max-w-xs">
               <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1.5 tracking-wider">
@@ -242,7 +241,7 @@ export default function PunchlinesPage() {
                   {/* Card Header Status & Actions */}
                   <div className="flex items-center justify-between mb-4">
                     {item.status ? (
-                      <span 
+                      <span
                         className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm"
                         style={{
                           backgroundColor: `${item.status.color}15`,
@@ -274,7 +273,7 @@ export default function PunchlinesPage() {
                   </div>
 
                   {/* Text (HTML Rendered) */}
-                  <div 
+                  <div
                     className="text-slate-100 font-medium text-base mb-4 leading-relaxed rich-text-content"
                     dangerouslySetInnerHTML={{ __html: item.text }}
                   />
@@ -324,12 +323,12 @@ export default function PunchlinesPage() {
           <div className="bg-slate-900 border-t md:border border-slate-800/80 rounded-t-3xl md:rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[92vh] md:max-h-none animate-slide-up md:animate-fade-in">
             {/* Modal Drag Handle for mobile */}
             <div className="w-12 h-1 bg-slate-800 rounded-full mx-auto my-3 md:hidden flex-shrink-0" />
-            
+
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-slate-850 flex items-center justify-between flex-shrink-0">
               <h3 className="text-lg font-bold text-white">
-                {editingPunchline 
-                  ? intl.formatMessage({ id: "punchline.edit_title" }) 
+                {editingPunchline
+                  ? intl.formatMessage({ id: "punchline.edit_title" })
                   : intl.formatMessage({ id: "punchline.create_title" })}
               </h3>
               <button
@@ -397,11 +396,10 @@ export default function PunchlinesPage() {
                           type="button"
                           key={cat.id}
                           onClick={() => toggleFormCategory(cat.id)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${
-                            isSelected
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${isSelected
                               ? "bg-violet-600/20 border-violet-500 text-violet-300 shadow-sm"
                               : "bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200"
-                          }`}
+                            }`}
                         >
                           {isSelected && <Check className="w-3 h-3" />}
                           {cat.name}
