@@ -145,13 +145,13 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
   };
 
   return (
-    <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950 focus-within:border-violet-500 transition-all flex flex-col">
+    <div className="border border-border-ui rounded-xl overflow-hidden bg-bg-input focus-within:border-accent-primary transition-all flex flex-col">
       {/* Editor Toolbar */}
-      <div className="flex gap-1.5 p-2 bg-slate-900 border-b border-slate-850 flex-wrap">
+      <div className="flex gap-1.5 p-2 bg-bg-card border-b border-border-ui flex-wrap transition-colors duration-200">
         <button
           type="button"
           onClick={() => executeCommand("bold")}
-          className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
           title="Bold"
         >
           <Bold className="w-4 h-4" />
@@ -159,7 +159,7 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
         <button
           type="button"
           onClick={() => executeCommand("italic")}
-          className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
           title="Italic"
         >
           <Italic className="w-4 h-4" />
@@ -167,16 +167,16 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
         <button
           type="button"
           onClick={() => executeCommand("underline")}
-          className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
           title="Underline"
         >
           <Underline className="w-4 h-4" />
         </button>
-        <div className="w-px h-6 bg-slate-800 self-center mx-1" />
+        <div className="w-px h-6 bg-border-ui self-center mx-1 transition-colors duration-200" />
         <button
           type="button"
           onClick={() => executeCommand("insertUnorderedList")}
-          className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
           title="Unordered List"
         >
           <List className="w-4 h-4" />
@@ -184,7 +184,7 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
         <button
           type="button"
           onClick={() => executeCommand("insertOrderedList")}
-          className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
           title="Ordered List"
         >
           <ListOrdered className="w-4 h-4" />
@@ -198,7 +198,7 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
         onInput={handleInput}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
-        className="min-h-[140px] max-h-[300px] overflow-y-auto p-4 text-sm text-slate-100 focus:outline-none prose prose-invert max-w-none prose-sm whitespace-pre-wrap style-editor-content"
+        className="min-h-[140px] max-h-[300px] overflow-y-auto p-4 text-sm text-text-primary focus:outline-none max-w-none whitespace-pre-wrap style-editor-content transition-colors duration-200"
         style={{ tabSize: 4 }}
       />
     </div>

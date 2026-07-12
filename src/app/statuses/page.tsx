@@ -99,7 +99,7 @@ export default function StatusesPage() {
   };
 
   return (
-    <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+    <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 transition-colors duration-200">
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Title Section */}
         <div className="flex items-center gap-3">
@@ -107,29 +107,29 @@ export default function StatusesPage() {
             <Activity className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white leading-tight">
+            <h2 className="text-lg font-bold text-text-primary leading-tight">
               {intl.formatMessage({ id: "status.manage" })}
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-text-muted">
               Gestisci gli stati del flusso di lavoro e trascinali per ordinarli.
             </p>
           </div>
         </div>
 
         {/* Quick Add Form */}
-        <form onSubmit={handleAddStatus} className="flex flex-row gap-3 bg-slate-900/40 backdrop-blur-md p-4 border border-slate-800/80 rounded-2xl items-center shadow-lg shadow-slate-950/10">
+        <form onSubmit={handleAddStatus} className="flex flex-row gap-3 bg-bg-card p-4 border border-border-ui rounded-2xl items-center shadow-sm transition-all duration-200">
           <div className="w-full">
             <input
               type="text"
               value={newStatusName}
               onChange={(e) => setNewStatusName(e.target.value)}
               placeholder={intl.formatMessage({ id: "status.name" })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+              className="w-full bg-bg-input border border-border-ui rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder-text-muted-light focus:outline-none focus:border-accent-primary transition-all duration-200"
             />
           </div>
           <div className="flex w-auto justify-end gap-3">
             <div className="flex items-center gap-2">
-              <div className="relative w-8 h-8 rounded-full overflow-hidden border border-slate-800 bg-slate-950 flex items-center justify-center cursor-pointer shadow-inner">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden border border-border-ui bg-bg-input flex items-center justify-center cursor-pointer shadow-inner">
                 <input
                   type="color"
                   value={newStatusColor}
@@ -140,7 +140,7 @@ export default function StatusesPage() {
             </div>
             <button
               type="submit"
-              className="bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-700 hover:to-indigo-750 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-lg shadow-violet-600/15 transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[140px]"
+              className="bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[140px]"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden md:inline">{intl.formatMessage({ id: "status.add" })}</span>
@@ -150,9 +150,9 @@ export default function StatusesPage() {
 
         {/* List */}
         {loadingStatuses ? (
-          <div className="text-center text-slate-400 py-12">Loading...</div>
+          <div className="text-center text-text-muted py-12">Loading...</div>
         ) : (
-          <div className="bg-slate-900/30 backdrop-blur-sm border border-slate-800/80 rounded-2xl divide-y divide-slate-800/70 overflow-hidden shadow-lg shadow-slate-950/15">
+          <div className="bg-bg-card border border-border-ui rounded-2xl divide-y divide-border-ui overflow-hidden shadow-sm transition-all duration-200">
             {statuses.map((stat, index) => (
               <div
                 key={stat.id}
@@ -160,7 +160,7 @@ export default function StatusesPage() {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(index)}
-                className={`p-4 flex items-center justify-between transition-colors group ${draggedIndex === index ? "opacity-30 bg-slate-800/25" : "hover:bg-slate-900/10"
+                className={`p-4 flex items-center justify-between transition-colors duration-200 group ${draggedIndex === index ? "opacity-30 bg-bg-input/60" : "hover:bg-bg-input/30"
                   }`}
               >
                 {editingStatus?.id === stat.id ? (
@@ -169,12 +169,12 @@ export default function StatusesPage() {
                       type="text"
                       value={editStatusName}
                       onChange={(e) => setEditStatusName(e.target.value)}
-                      className="w-full sm:flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-105 focus:outline-none focus:border-violet-500"
+                      className="w-full sm:flex-1 bg-bg-input border border-border-ui rounded-xl px-4 py-2 text-sm text-text-primary focus:outline-none focus:border-accent-primary transition-all duration-200"
                     />
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-slate-500 font-bold uppercase">Colore:</span>
-                        <div className="relative w-7 h-7 rounded-full overflow-hidden border border-slate-800 bg-slate-950 flex items-center justify-center cursor-pointer shadow-inner">
+                        <span className="text-[10px] text-text-muted-light font-bold uppercase">Colore:</span>
+                        <div className="relative w-7 h-7 rounded-full overflow-hidden border border-border-ui bg-bg-input flex items-center justify-center cursor-pointer shadow-inner">
                           <input
                             type="color"
                             value={editStatusColor}
@@ -185,13 +185,13 @@ export default function StatusesPage() {
                       </div>
                       <button
                         onClick={() => handleUpdateStatus(stat.id)}
-                        className="bg-violet-600 hover:bg-violet-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow shadow-violet-600/15 transition-colors cursor-pointer"
+                        className="bg-accent-primary hover:bg-accent-hover text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
                       >
                         {intl.formatMessage({ id: "button.save" })}
                       </button>
                       <button
                         onClick={() => setEditingStatus(null)}
-                        className="bg-slate-850 hover:bg-slate-800 text-slate-350 px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-800 transition-colors cursor-pointer"
+                        className="bg-bg-input hover:bg-bg-card border border-border-ui text-text-muted hover:text-text-primary px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
                       >
                         {intl.formatMessage({ id: "button.cancel" })}
                       </button>
@@ -200,35 +200,35 @@ export default function StatusesPage() {
                 ) : (
                   <>
                     <div className="flex items-center gap-3.5">
-                      <div className="cursor-grab text-slate-500 hover:text-slate-350 py-2 pr-1 active:cursor-grabbing">
+                      <div className="cursor-grab text-text-muted-light hover:text-text-muted py-2 pr-1 active:cursor-grabbing">
                         <GripVertical className="w-4 h-4" />
                       </div>
-                      <span className="text-[10px] text-slate-550 font-mono w-5">
+                      <span className="text-[10px] text-text-muted-light font-mono w-5">
                         {index + 1}.
                       </span>
                       <span
-                        className="w-3 h-3 rounded-full border border-slate-750/30 shadow-inner"
-                        style={{ backgroundColor: stat.color, boxShadow: `0 0 8px ${stat.color}50` }}
+                        className="w-3 h-3 rounded-full border border-border-ui/50 shadow-inner"
+                        style={{ backgroundColor: stat.color, boxShadow: `0 0 8px ${stat.color}30` }}
                       />
-                      <span className="text-slate-205 font-medium text-sm">
+                      <span className="text-text-primary font-medium text-sm">
                         {stat.name}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                       <button
                         onClick={() => {
                           setEditingStatus(stat);
                           setEditStatusName(stat.name);
                           setEditStatusColor(stat.color);
                         }}
-                        className="p-2 md:p-1.5 bg-slate-800/40 md:bg-transparent hover:bg-slate-800 text-slate-300 md:text-slate-400 hover:text-slate-100 rounded-lg transition-colors cursor-pointer"
+                        className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
                         title={intl.formatMessage({ id: "button.edit" })}
                       >
                         <Edit2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteStatus(stat.id)}
-                        className="p-2 md:p-1.5 bg-slate-800/40 md:bg-transparent hover:bg-red-950/45 text-slate-350 md:text-slate-400 hover:text-red-400 rounded-lg transition-colors cursor-pointer"
+                        className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
                         title={intl.formatMessage({ id: "button.delete" })}
                       >
                         <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />

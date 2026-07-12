@@ -31,8 +31,23 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full bg-slate-950 text-slate-100 flex flex-col font-sans">
+      <head>
+        <script id="theme-init">
+          {`
+            (function() {
+              try {
+                const theme = localStorage.getItem('theme');
+                const isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', isDark);
+                document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+              } catch (_) {}
+            })();
+          `}
+        </script>
+      </head>
+      <body className="min-h-full bg-bg-primary text-text-primary flex flex-col font-sans transition-colors duration-200">
         <QueryProvider>
           <LanguageProvider>
             <AuthProvider>
