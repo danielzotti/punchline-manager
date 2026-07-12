@@ -65,13 +65,13 @@ export default function CategoriesPage() {
               {intl.formatMessage({ id: "category.manage" })}
             </h2>
             <p className="text-xs text-text-muted">
-              Crea e organizza le etichette per catalogare le tue battute.
+              {intl.formatMessage({ id: "category.subtitle", defaultMessage: "Create and organize labels to catalog your jokes." })}
             </p>
           </div>
         </div>
 
         {/* Quick Add Form */}
-        <form onSubmit={handleAddCategory} className="flex gap-2.5 bg-bg-card p-4 border border-border-ui rounded-2xl shadow-sm transition-all duration-200">
+        <form onSubmit={handleAddCategory} className="flex gap-2.5 items-center bg-bg-card p-4 border border-border-ui rounded-2xl shadow-sm transition-all duration-200">
           <input
             type="text"
             value={newCategoryName}
@@ -81,7 +81,7 @@ export default function CategoriesPage() {
           />
           <button
             type="submit"
-            className="bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer"
+            className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden md:inline">{intl.formatMessage({ id: "category.add" })}</span>
@@ -90,7 +90,7 @@ export default function CategoriesPage() {
 
         {/* List */}
         {loadingCategories ? (
-          <div className="text-center text-text-muted py-12">Loading...</div>
+          <div className="text-center text-text-muted py-12">{intl.formatMessage({ id: "common.loading", defaultMessage: "Loading..." })}</div>
         ) : (
           <div className="bg-bg-card border border-border-ui rounded-2xl divide-y divide-border-ui overflow-hidden shadow-sm transition-all duration-200">
             {categories.map((cat) => (

@@ -19,8 +19,59 @@ import {
   ZoomOut,
   RotateCcw,
   Maximize2,
-  Minimize2
+  Minimize2,
+  ChevronDown
 } from "lucide-react";
+
+interface ClampedPunchlineTextProps {
+  text: string;
+}
+
+function ClampedPunchlineText({ text }: ClampedPunchlineTextProps) {
+  const intl = useIntl();
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [isClamped, setIsClamped] = useState(false);
+
+  useEffect(() => {
+    const checkClamp = () => {
+      const el = containerRef.current;
+      if (el) {
+        setIsClamped(el.scrollHeight > el.clientHeight);
+      }
+    };
+
+    checkClamp();
+
+    // Use ResizeObserver to respond to layout size changes dynamically
+    const resizeObserver = new ResizeObserver(() => {
+      checkClamp();
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [text]);
+
+  return (
+    <div className="relative">
+      <div
+        ref={containerRef}
+        className="text-text-primary text-base mb-2 leading-relaxed rich-text-content line-clamp-6"
+        dangerouslySetInnerHTML={{ __html: text }}
+      />
+      {isClamped && (
+        <div className="inline-flex items-center gap-1 text-accent-primary text-xs font-semibold hover:text-accent-primary/80 transition-colors mb-3 bg-accent-primary/5 hover:bg-accent-primary/10 px-2.5 py-1 rounded-full border border-accent-primary/10">
+          <span>{intl.formatMessage({ id: "punchline.read_more", defaultMessage: "Read more" })}</span>
+          <ChevronDown className="w-3 h-3" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function PunchlinesPage() {
   const intl = useIntl();
@@ -208,7 +259,7 @@ export default function PunchlinesPage() {
 
   const renderPunchlinesContent = () => {
     if (loadingPunchlines) {
-      return <div className="py-16 text-center text-text-muted">Loading...</div>;
+      return <div className="py-16 text-center text-text-muted">{intl.formatMessage({ id: "common.loading", defaultMessage: "Loading..." })}</div>;
     }
 
     if (punchlines.length === 0) {
@@ -274,10 +325,7 @@ export default function PunchlinesPage() {
               </div>
 
               {/* Text (HTML Rendered) */}
-              <div
-                className="text-text-primary text-base mb-4 leading-relaxed rich-text-content"
-                dangerouslySetInnerHTML={{ __html: item.text }}
-              />
+              <ClampedPunchlineText text={item.text} />
 
               {/* Notes if any */}
               {item.notes && (
@@ -335,7 +383,7 @@ export default function PunchlinesPage() {
                   ? "bg-accent-primary/10 border-accent-primary text-accent-primary"
                   : "bg-bg-input border-border-ui text-text-muted active:bg-bg-card"
                   }`}
-                title="Filtri"
+                title={intl.formatMessage({ id: "filter.title", defaultMessage: "Filters" })}
               >
                 <SlidersHorizontal className="w-5 h-5" />
                 {(selectedStatusId || selectedCategoryIds.length > 0) && (
@@ -346,7 +394,7 @@ export default function PunchlinesPage() {
               {/* Desktop Create Button */}
               <button
                 onClick={() => handleOpenPunchlineModal()}
-                className="hidden md:flex bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-sm px-4 py-2.5 rounded-xl items-center gap-2 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                className="hidden md:flex bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-sm px-4 py-2.5 rounded-xl items-center gap-2 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 {intl.formatMessage({ id: "button.add_punchline" })}
@@ -384,7 +432,7 @@ export default function PunchlinesPage() {
                 categories={categories}
                 selectedCategoryIds={selectedCategoryIds}
                 onChange={setSelectedCategoryIds}
-                placeholder={intl.formatMessage({ id: "filter.search" }) + " categorie..."}
+                placeholder={intl.formatMessage({ id: "category.search_placeholder", defaultMessage: "Search categories..." })}
               />
             </div>
 
@@ -409,7 +457,7 @@ export default function PunchlinesPage() {
       {/* Floating Action Button (Mobile Only) */}
       <button
         onClick={() => handleOpenPunchlineModal()}
-        className="md:hidden fixed bottom-24 right-6 z-45 bg-gradient-to-tr from-violet-600 to-indigo-650 text-white p-4 rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border border-accent-primary/20 cursor-pointer"
+        className="md:hidden fixed bottom-24 right-6 z-45 bg-gradient-to-tr from-violet-600 to-indigo-400 text-white p-4 rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border border-accent-primary/20 cursor-pointer"
         title={intl.formatMessage({ id: "button.add_punchline" })}
       >
         <Plus className="w-6 h-6" />
@@ -547,7 +595,7 @@ export default function PunchlinesPage() {
                 <button
                   type="submit"
                   disabled={isFormTextEmpty}
-                  className="bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-750 hover:to-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all cursor-pointer"
+                  className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all cursor-pointer"
                 >
                   {intl.formatMessage({ id: "button.save" })}
                 </button>

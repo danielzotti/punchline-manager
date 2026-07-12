@@ -48,7 +48,7 @@ export default function AdminPage() {
       setUsers(data || []);
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || "Failed to load authorized users");
+      setErrorMsg(err.message || intl.formatMessage({ id: "admin.failed_load_users", defaultMessage: "Failed to load authorized users" }));
     } finally {
       setLoading(false);
     }
@@ -84,7 +84,7 @@ export default function AdminPage() {
       fetchUsers();
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || "Error adding user");
+      setErrorMsg(err.message || intl.formatMessage({ id: "admin.error_add_user", defaultMessage: "Error adding user" }));
     } finally {
       setSubmitting(false);
     }
@@ -113,7 +113,7 @@ export default function AdminPage() {
       fetchUsers();
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || "Error updating user role");
+      setErrorMsg(err.message || intl.formatMessage({ id: "admin.error_update_role", defaultMessage: "Error updating user role" }));
     }
   };
 
@@ -143,7 +143,7 @@ export default function AdminPage() {
       fetchUsers();
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || "Error deleting user");
+      setErrorMsg(err.message || intl.formatMessage({ id: "admin.error_delete_user", defaultMessage: "Error deleting user" }));
     }
   };
 
@@ -254,7 +254,9 @@ export default function AdminPage() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20">
               <Loader2 className="w-8 h-8 text-accent-primary animate-spin mb-2" />
-              <span className="text-text-muted text-xs">Loading...</span>
+              <span className="text-text-muted text-xs">
+                {intl.formatMessage({ id: "common.loading", defaultMessage: "Loading..." })}
+              </span>
             </div>
           ) : users.length === 0 ? (
             <div className="text-center py-16 text-text-muted text-sm">
@@ -283,7 +285,7 @@ export default function AdminPage() {
                             </span>
                             {isSelf && (
                               <span className="text-[10px] text-accent-primary font-medium self-start bg-accent-primary/10 px-1.5 py-0.5 rounded">
-                                Tu (You)
+                              {intl.formatMessage({ id: "admin.you", defaultMessage: "You" })}
                               </span>
                             )}
                           </td>
@@ -356,7 +358,7 @@ export default function AdminPage() {
                           </span>
                           {isSelf && (
                             <span className="text-[10px] text-accent-primary font-medium bg-accent-primary/10 px-1.5 py-0.5 rounded">
-                              Tu (You)
+                              {intl.formatMessage({ id: "admin.you", defaultMessage: "You" })}
                             </span>
                           )}
                         </div>

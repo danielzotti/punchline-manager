@@ -4,9 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:db": "npm run supabase:start && npm run dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "supabase:start": "npx supabase start",
+    "supabase:stop": "npx supabase stop",
+    "supabase:restart": "npm run supabase:stop && npm run supabase:start"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",

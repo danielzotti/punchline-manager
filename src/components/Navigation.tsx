@@ -141,7 +141,7 @@ export default function Navigation() {
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center gap-2 bg-bg-input/60 hover:bg-bg-input/80 text-text-muted hover:text-text-primary px-3 py-1.5 rounded-xl border border-border-ui transition-all cursor-pointer select-none"
-                  title="Profile Menu"
+                  title={intl.formatMessage({ id: "profile.menu", defaultMessage: "Profile Menu" })}
                 >
                   <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xs uppercase shadow-sm">
                     {user.email ? user.email.charAt(0) : <User className="w-3 h-3" />}
@@ -151,7 +151,7 @@ export default function Navigation() {
                   </span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`} />
                 </button>
-
+ 
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-bg-card border border-border-ui rounded-2xl shadow-xl z-50 py-3 flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-150">
                     {/* User Info Header */}
@@ -163,7 +163,7 @@ export default function Navigation() {
                         {user.email}
                       </span>
                     </div>
-
+ 
                     {/* Options list */}
                     <div className="flex flex-col gap-1 px-2">
                       {/* Fullscreen Toggle */}
@@ -174,11 +174,11 @@ export default function Navigation() {
                         <span className="flex items-center gap-2">
                           {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                           {isFullscreen
-                            ? intl.formatMessage({ id: "fullscreen.exit", defaultMessage: "Esci da Schermo Intero" })
-                            : intl.formatMessage({ id: "fullscreen.enter", defaultMessage: "Schermo Intero" })}
+                            ? intl.formatMessage({ id: "fullscreen.exit", defaultMessage: "Exit Fullscreen" })
+                            : intl.formatMessage({ id: "fullscreen.enter", defaultMessage: "Fullscreen" })}
                         </span>
                       </button>
-
+ 
                       {/* Theme Selector */}
                       <button
                         onClick={toggleTheme}
@@ -187,16 +187,16 @@ export default function Navigation() {
                         <span className="flex items-center gap-2">
                           {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                           {theme === "light"
-                            ? intl.formatMessage({ id: "theme.dark", defaultMessage: "Tema Scuro" })
-                            : intl.formatMessage({ id: "theme.light", defaultMessage: "Tema Chiaro" })}
+                            ? intl.formatMessage({ id: "theme.dark", defaultMessage: "Dark Theme" })
+                            : intl.formatMessage({ id: "theme.light", defaultMessage: "Light Theme" })}
                         </span>
                       </button>
-
+ 
                       {/* Language Selection */}
                       <div className="flex items-center justify-between w-full px-3 py-1.5 text-xs font-medium text-text-muted">
                         <span className="flex items-center gap-2">
                           <Globe className="w-4 h-4" />
-                          {intl.formatMessage({ id: "language.title", defaultMessage: "Lingua" })}
+                          {intl.formatMessage({ id: "language.title", defaultMessage: "Language" })}
                         </span>
                         <div className="flex items-center gap-0.5 bg-bg-input/60 p-0.5 rounded-lg border border-border-ui">
                           <button

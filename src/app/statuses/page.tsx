@@ -146,7 +146,7 @@ export default function StatusesPage() {
               {intl.formatMessage({ id: "status.manage" })}
             </h2>
             <p className="text-xs text-text-muted">
-              Gestisci gli stati del flusso di lavoro e trascinali per ordinarli.
+              {intl.formatMessage({ id: "status.subtitle", defaultMessage: "Manage workflow statuses and drag to reorder them." })}
             </p>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function StatusesPage() {
             </div>
             <button
               type="submit"
-              className="bg-gradient-to-r from-violet-600 to-indigo-650 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[140px]"
+              className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[150px]"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden md:inline">{intl.formatMessage({ id: "status.add" })}</span>
@@ -185,7 +185,7 @@ export default function StatusesPage() {
 
         {/* List */}
         {loadingStatuses ? (
-          <div className="text-center text-text-muted py-12">Loading...</div>
+          <div className="text-center text-text-muted py-12">{intl.formatMessage({ id: "common.loading", defaultMessage: "Loading..." })}</div>
         ) : (
           <div className="bg-bg-card border border-border-ui rounded-2xl divide-y divide-border-ui overflow-hidden shadow-sm transition-all duration-200">
             {statuses.map((stat, index) => (
@@ -196,13 +196,12 @@ export default function StatusesPage() {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(index)}
-                className={`p-4 flex items-center justify-between transition-colors duration-200 group ${
-                  draggedIndex === index 
-                    ? "opacity-35 bg-bg-input/80 border-t border-b border-accent-primary/20 scale-[0.99] shadow-inner" 
-                    : touchTargetIndex === index
+                className={`p-4 flex items-center justify-between transition-colors duration-200 group ${draggedIndex === index
+                  ? "opacity-35 bg-bg-input/80 border-t border-b border-accent-primary/20 scale-[0.99] shadow-inner"
+                  : touchTargetIndex === index
                     ? "bg-accent-primary/10 border-t border-b border-dashed border-accent-primary/40"
                     : "hover:bg-bg-input/30"
-                }`}
+                  }`}
               >
                 {editingStatus?.id === stat.id ? (
                   <div className="flex-1 flex flex-col sm:flex-row gap-3 items-center">
@@ -214,7 +213,9 @@ export default function StatusesPage() {
                     />
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-text-muted-light font-bold uppercase">Colore:</span>
+                        <span className="text-[10px] text-text-muted-light font-bold uppercase">
+                          {intl.formatMessage({ id: "status.color_label", defaultMessage: "Color:" })}
+                        </span>
                         <div className="relative w-7 h-7 rounded-full overflow-hidden border border-border-ui bg-bg-input flex items-center justify-center cursor-pointer shadow-inner">
                           <input
                             type="color"
