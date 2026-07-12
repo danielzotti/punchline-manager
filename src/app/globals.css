@@ -41,6 +41,11 @@ body {
 }
 
 /* Rich Text Styles */
+.rich-text-content {
+  white-space: pre-wrap !important;
+  tab-size: 4;
+}
+
 .rich-text-content ul, .style-editor-content ul {
   list-style-type: disc !important;
   padding-left: 1.5rem !important;

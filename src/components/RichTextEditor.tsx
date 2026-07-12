@@ -41,6 +41,70 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
     }
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const html = e.clipboardData.getData("text/html");
+    const text = e.clipboardData.getData("text/plain");
+
+    const escapeHtml = (str: string): string => {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    const sanitizeHtmlForPunchline = (htmlStr: string): string => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlStr, "text/html");
+      const allowedTags = new Set(["ul", "ol", "li", "b", "strong", "i", "em", "u", "br", "p", "div"]);
+
+      const clean = (node: Node): string => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return escapeHtml(node.textContent || "");
+        }
+
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const el = node as HTMLElement;
+          const tagName = el.tagName.toLowerCase();
+
+          let childrenHtml = "";
+          for (let i = 0; i < el.childNodes.length; i++) {
+            childrenHtml += clean(el.childNodes[i]);
+          }
+
+          if (allowedTags.has(tagName)) {
+            if (tagName === "br") {
+              return "<br>";
+            }
+            return `<${tagName}>${childrenHtml}</${tagName}>`;
+          }
+
+          return childrenHtml;
+        }
+
+        return "";
+      };
+
+      let result = "";
+      for (let i = 0; i < doc.body.childNodes.length; i++) {
+        result += clean(doc.body.childNodes[i]);
+      }
+      return result;
+    };
+
+    let cleanHtml = "";
+    if (html) {
+      cleanHtml = sanitizeHtmlForPunchline(html);
+    } else if (text) {
+      cleanHtml = escapeHtml(text).replace(/\r?\n/g, "<br>");
+    }
+
+    document.execCommand("insertHTML", false, cleanHtml);
+    handleInput();
+  };
+
   return (
     <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950 focus-within:border-violet-500 transition-all flex flex-col">
       {/* Editor Toolbar */}
@@ -94,6 +158,7 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
         contentEditable
         onInput={handleInput}
         onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
         className="min-h-[140px] max-h-[300px] overflow-y-auto p-4 text-sm text-slate-100 focus:outline-none prose prose-invert max-w-none prose-sm whitespace-pre-wrap style-editor-content"
         style={{ tabSize: 4 }}
       />
