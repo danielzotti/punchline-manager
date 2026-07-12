@@ -466,10 +466,7 @@ export default function PunchlinesPage() {
       {/* Punchline Creation/Editing Modal & Mobile Bottom Sheet */}
       {isPunchlineModalOpen && (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm p-0 md:p-4 animate-fade-in">
-          <div className="bg-bg-card border-t md:border border-border-ui rounded-t-3xl md:rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[92vh] md:max-h-none animate-slide-up md:animate-fade-in transition-all duration-200">
-            {/* Modal Drag Handle for mobile */}
-            <div className="w-12 h-1 bg-border-ui rounded-full mx-auto my-3 md:hidden flex-shrink-0" />
-
+          <div className="bg-bg-card border-t md:border border-border-ui rounded-t-3xl md:rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[100vh] animate-slide-up md:animate-fade-in transition-all duration-200">
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-border-ui flex items-center justify-between flex-shrink-0 transition-colors duration-200">
               <h3 className="text-lg font-bold text-text-primary">
