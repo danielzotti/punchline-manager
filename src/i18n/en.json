@@ -57,6 +57,9 @@
   "admin.success_updated": "User role updated.",
   "admin.success_deleted": "User removed.",
   "admin.error_self_demote": "You cannot remove your own administrator privileges.",
-  "admin.error_self_delete": "You cannot remove yourself."
+  "admin.error_self_delete": "You cannot remove yourself.",
+  "reading.zoom_in": "Zoom In",
+  "reading.zoom_out": "Zoom Out",
+  "reading.reset": "Reset"
 }
 

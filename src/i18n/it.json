@@ -57,6 +57,9 @@
   "admin.success_updated": "Ruolo utente aggiornato.",
   "admin.success_deleted": "Utente rimosso.",
   "admin.error_self_demote": "Non puoi rimuovere i tuoi privilegi da amministratore.",
-  "admin.error_self_delete": "Non puoi eliminare te stesso."
+  "admin.error_self_delete": "Non puoi eliminare te stesso.",
+  "reading.zoom_in": "Ingrandisci testo",
+  "reading.zoom_out": "Rimpicciolisci testo",
+  "reading.reset": "Ripristina"
 }
 

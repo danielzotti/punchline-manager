@@ -14,7 +14,10 @@ import {
   Trash2,
   Check,
   X,
-  SlidersHorizontal
+  SlidersHorizontal,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw
 } from "lucide-react";
 
 export default function PunchlinesPage() {
@@ -54,6 +57,36 @@ export default function PunchlinesPage() {
   // Modal States
   const [isPunchlineModalOpen, setIsPunchlineModalOpen] = useState(false);
   const [editingPunchline, setEditingPunchline] = useState<Punchline | null>(null);
+
+  // Reading Mode States
+  const [readingPunchline, setReadingPunchline] = useState<Punchline | null>(null);
+  const [readingFontSize, setReadingFontSize] = useState(32);
+
+  // Close reading mode on Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setReadingPunchline(null);
+      }
+    };
+    if (readingPunchline) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [readingPunchline]);
+
+  // Lock body scroll when modals are open
+  useEffect(() => {
+    const isAnyModalOpen = isPunchlineModalOpen || !!readingPunchline;
+    if (isAnyModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isPunchlineModalOpen, readingPunchline]);
 
   // Form States
   const [punchlineText, setPunchlineText] = useState("");
@@ -255,7 +288,11 @@ export default function PunchlinesPage() {
             {punchlines.map((item) => (
               <div
                 key={item.id}
-                className="bg-bg-card border border-border-ui rounded-2xl p-6 flex flex-col justify-between hover:border-accent-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md shadow-sm group"
+                onClick={() => {
+                  setReadingPunchline(item);
+                  setReadingFontSize(24);
+                }}
+                className="bg-bg-card border border-border-ui rounded-2xl p-6 flex flex-col justify-between hover:border-accent-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md shadow-sm group cursor-pointer"
               >
                 <div>
                   {/* Card Header Status & Actions */}
@@ -276,14 +313,20 @@ export default function PunchlinesPage() {
                     )}
                     <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                       <button
-                        onClick={() => handleOpenPunchlineModal(item)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenPunchlineModal(item);
+                        }}
                         className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
                         title={intl.formatMessage({ id: "button.edit" })}
                       >
                         <Edit2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
                       </button>
                       <button
-                        onClick={() => handleDeletePunchline(item.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeletePunchline(item.id);
+                        }}
                         className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
                         title={intl.formatMessage({ id: "button.delete" })}
                       >
@@ -475,6 +518,104 @@ export default function PunchlinesPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Reading Mode Fullscreen Modal */}
+      {readingPunchline && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-bg-primary/95 backdrop-blur-md animate-fade-in p-6 md:p-12 justify-between">
+          {/* Top toolbar */}
+          <div className="flex items-center justify-between w-full max-w-5xl mx-auto border-b border-border-ui/60 pb-4">
+            {/* Left side: status / info */}
+            <div className="flex items-center gap-3">
+              {readingPunchline.status && (
+                <span
+                  className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm"
+                  style={{
+                    backgroundColor: `${readingPunchline.status.color}15`,
+                    color: readingPunchline.status.color,
+                    borderColor: `${readingPunchline.status.color}30`,
+                  }}
+                >
+                  {readingPunchline.status.name}
+                </span>
+              )}
+            </div>
+
+            {/* Right side: Controls & Close */}
+            <div className="flex items-center gap-2 md:gap-3">
+              {/* Font controls */}
+              <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setReadingFontSize((prev) => Math.max(16, prev - 4))}
+                  className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                  title={intl.formatMessage({ id: "reading.zoom_out", defaultMessage: "Rimpicciolisci testo" })}
+                >
+                  <ZoomOut className="w-4 h-4 md:w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setReadingFontSize(24)}
+                  className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer"
+                  title={intl.formatMessage({ id: "reading.reset", defaultMessage: "Ripristina" })}
+                >
+                  <RotateCcw className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setReadingFontSize((prev) => Math.min(80, prev + 4))}
+                  className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                  title={intl.formatMessage({ id: "reading.zoom_in", defaultMessage: "Ingrandisci testo" })}
+                >
+                  <ZoomIn className="w-4 h-4 md:w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setReadingPunchline(null)}
+                className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm"
+                title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 overflow-y-auto w-full py-8 px-4">
+            <div className="flex flex-col min-h-full max-w-5xl mx-auto justify-center items-center">
+              <div
+                className="text-text-primary leading-relaxed rich-text-content break-words w-full selection:bg-accent-primary/20 my-auto"
+                style={{ fontSize: `${readingFontSize}px` }}
+                dangerouslySetInnerHTML={{ __html: readingPunchline.text }}
+              />
+            </div>
+          </div>
+
+          {/* Optional Footer/Metadata (minimal) */}
+          <div className="flex items-center justify-between w-full max-w-5xl mx-auto border-t border-border-ui/60 pt-4 text-xs text-text-muted">
+            <div>
+              {readingPunchline.punchline_categories && readingPunchline.punchline_categories.length > 0 && (
+                <div className="flex flex-wrap gap-1.5">
+                  {readingPunchline.punchline_categories.map((pc) => (
+                    <span
+                      key={pc.id}
+                      className="bg-bg-input text-text-muted px-2 py-0.5 rounded text-[10px] font-semibold border border-border-ui"
+                    >
+                      {pc.category?.name || "..."}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+            {readingPunchline.notes && (
+              <span className="italic max-w-md truncate" title={readingPunchline.notes}>
+                {intl.formatMessage({ id: "punchline.notes" })}: {readingPunchline.notes}
+              </span>
+            )}
           </div>
         </div>
       )}
