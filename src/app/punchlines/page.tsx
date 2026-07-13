@@ -389,9 +389,9 @@ export default function PunchlinesPage() {
   return (
     <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 pb-22 transition-colors duration-200">
       <div className="space-y-6">
-        <PageHeader 
-          title={intl.formatMessage({ id: "nav.punchlines", defaultMessage: "Battute" })}
-          description={intl.formatMessage({ id: "punchlines.subtitle", defaultMessage: "Gestisci le tue battute" })}
+        <PageHeader
+          title={intl.formatMessage({ id: "nav.punchlines", defaultMessage: "Punchline" })}
+          description={intl.formatMessage({ id: "punchlines.subtitle", defaultMessage: "Gestisci le tue punchline" })}
           icon={<MessageSquare className="w-6 h-6" />}
         />
 
@@ -426,20 +426,21 @@ export default function PunchlinesPage() {
               </Button>
 
               {/* Desktop Create Button */}
-              <Button
-                onClick={() => handleOpenPunchlineModal()}
-                className="hidden md:flex gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                {intl.formatMessage({ id: "button.add_punchline" })}
-              </Button>
+              <div className="hidden md:flex">
+                <Button
+                  onClick={() => handleOpenPunchlineModal()}
+                >
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden md:inline">{intl.formatMessage({ id: "button.add_punchline" })}</span>
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Collapsible / Advanced Filters */}
           <div className={`${isFiltersExpanded ? "flex" : "hidden md:flex"} flex-col md:flex-row gap-4 pt-3 border-t border-border-ui md:items-start justify-between transition-all animate-fade-in`}>
             {/* Status Dropdown */}
-            <div className="flex-1 max-w-xs">
+            <div className="flex-1 md:max-w-xs">
               <span className="text-[10px] font-bold text-text-muted uppercase block mb-1.5 tracking-wider">
                 {intl.formatMessage({ id: "filter.status" })}:
               </span>
@@ -472,14 +473,12 @@ export default function PunchlinesPage() {
 
             {/* Clear Button */}
             <div className="flex items-end justify-end pt-4 md:pt-0">
-              {(searchInput || selectedCategoryIds.length > 0 || selectedStatusId) && (
-                <button
-                  onClick={clearFilters}
-                  className="w-full md:w-auto px-4 py-2.5 text-xs font-semibold text-text-muted hover:text-text-primary transition-colors border border-border-ui rounded-xl hover:bg-bg-input cursor-pointer"
-                >
-                  {intl.formatMessage({ id: "filter.clear" })}
-                </button>
-              )}
+              <button
+                onClick={clearFilters}
+                className="w-full md:w-auto px-4 py-2.5 text-xs font-semibold text-text-muted hover:text-text-primary transition-colors border border-border-ui rounded-xl hover:bg-bg-input cursor-pointer"
+              >
+                {intl.formatMessage({ id: "filter.clear" })}
+              </button>
             </div>
           </div>
         </div>

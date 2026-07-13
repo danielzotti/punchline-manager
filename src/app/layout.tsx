@@ -5,6 +5,7 @@ import "./globals.css";
 import QueryProvider from "@/components/QueryProvider";
 import { LanguageProvider } from "@/components/IntlProvider";
 import { AuthProvider } from "@/components/AuthProvider";
+import { ToastProvider } from "@/components/ui/Toast";
 import Navigation from "@/components/Navigation";
 
 const roboto = Roboto({
@@ -52,10 +53,12 @@ export default function RootLayout({
         <QueryProvider>
           <LanguageProvider>
             <AuthProvider>
-              <div className="flex-1 flex flex-col pb-24 md:pb-0">
-                <Navigation />
-                {children}
-              </div>
+              <ToastProvider>
+                <div className="flex-1 flex flex-col pb-24 md:pb-0">
+                  <Navigation />
+                  {children}
+                </div>
+              </ToastProvider>
             </AuthProvider>
           </LanguageProvider>
         </QueryProvider>

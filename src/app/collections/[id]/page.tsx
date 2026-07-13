@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { use } from 'react';
 import { getCollectionById, updateCollection, updateCollectionItems, deleteCollection } from '@/app/actions/collections';
-import { GripVertical, Plus, Trash2, Edit2, Save, FileText, Eye, X } from 'lucide-react';
+import { GripVertical, Plus, Trash2, Edit2, Save, FileText, Eye, X, ZoomIn, ZoomOut, RotateCcw, Maximize2, Minimize2 } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/Toast';
 
 interface CollectionItemProps {
   index: number;
@@ -109,6 +110,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
   const intl = useIntl();
   const router = useRouter();
   const { id } = use(params);
+  const { success, error } = useToast();
   const [collection, setCollection] = useState<any>(null);
   const [items, setItems] = useState<any[]>([]);
   const [title, setTitle] = useState('');
@@ -116,9 +118,56 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [readingFontSize, setReadingFontSize] = useState(24);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err) {
+      console.error("Error toggling fullscreen:", err);
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsPreviewOpen(false);
+      }
+    };
+    if (isPreviewOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPreviewOpen]);
 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [touchTargetIndex, setTouchTargetIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (isPreviewOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+    };
+  }, [isPreviewOpen]);
 
   useEffect(() => {
     loadCollection();
@@ -197,7 +246,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
         router.push('/collections');
       } catch (err) {
         console.error(err);
-        alert(intl.formatMessage({ id: 'collections.error_delete' }));
+        error(intl.formatMessage({ id: 'collections.error_delete' }));
       }
     }
   };
@@ -213,10 +262,10 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
       }));
       await updateCollectionItems(id, itemsToSave);
 
-      alert(intl.formatMessage({ id: 'collections.success_save' }));
+      success(intl.formatMessage({ id: 'collections.success_save' }));
     } catch (err) {
       console.error(err);
-      alert(intl.formatMessage({ id: 'collections.error_save' }));
+      error(intl.formatMessage({ id: 'collections.error_save' }));
     } finally {
       setIsSaving(false);
     }
@@ -259,7 +308,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
       a.click();
     } catch (err) {
       console.error(err);
-      alert(intl.formatMessage({ id: 'collections.error_export_pdf' }));
+      error(intl.formatMessage({ id: 'collections.error_export_pdf' }));
     } finally {
       setIsExporting(false);
     }
@@ -372,39 +421,82 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
 
       {/* Preview Modal */}
       {isPreviewOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 md:p-8 animate-fade-in">
-          <div className="bg-bg-card border border-border-ui rounded-2xl w-full max-w-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-slide-up">
-            <div className="px-6 py-4 border-b border-border-ui flex items-center justify-between">
-              <h3 className="text-lg font-bold text-text-primary">{intl.formatMessage({ id: 'collections.preview_title' })}</h3>
+        <div className="fixed inset-0 z-50 flex flex-col bg-bg-primary/95 backdrop-blur-md animate-fade-in p-0 justify-between">
+          {/* Top toolbar */}
+          <div className="flex items-center gap-2 md:gap-3 absolute top-2 right-2 md:top-4 md:right-4">
+            {/* Fullscreen Toggle */}
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center"
+              title={isFullscreen ? "Disattiva schermo intero" : "Schermo intero"}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-4 h-4 md:w-5 h-5" />
+              ) : (
+                <Maximize2 className="w-4 h-4 md:w-5 h-5" />
+              )}
+            </button>
+
+            {/* Font controls */}
+            <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
               <button
-                onClick={() => setIsPreviewOpen(false)}
-                className="text-text-muted hover:text-text-primary p-1.5 hover:bg-bg-input rounded-xl transition-colors cursor-pointer"
+                type="button"
+                onClick={() => setReadingFontSize((prev) => Math.max(16, prev - 4))}
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                title={intl.formatMessage({ id: "reading.zoom_out", defaultMessage: "Rimpicciolisci testo" })}
               >
-                <X className="w-5 h-5" />
+                <ZoomOut className="w-4 h-4 md:w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setReadingFontSize(24)}
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer"
+                title={intl.formatMessage({ id: "reading.reset", defaultMessage: "Ripristina" })}
+              >
+                <RotateCcw className="w-3.5 h-3.5 md:w-4 md:h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setReadingFontSize((prev) => Math.min(80, prev + 4))}
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                title={intl.formatMessage({ id: "reading.zoom_in", defaultMessage: "Ingrandisci testo" })}
+              >
+                <ZoomIn className="w-4 h-4 md:w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 md:p-10 overflow-y-auto flex-1 bg-neutral-100 dark:bg-neutral-900 flex justify-center">
-              <div className="bg-white text-black p-8 md:p-12 shadow-lg w-full max-w-[210mm] min-h-[297mm] font-sans border border-neutral-300 rounded-sm">
-                <h1 className="text-3xl font-bold text-center mb-2 text-black">{title || intl.formatMessage({ id: 'collections.untitled' })}</h1>
-                <div className="text-center text-neutral-500 text-sm mb-10 pb-4 border-b border-neutral-200">
-                  {date ? new Date(date).toLocaleDateString() : new Date().toLocaleDateString()}
-                </div>
-                <div className="space-y-6">
-                  {items.map((item, idx) => (
-                    <div key={item.id || idx} className="text-black text-sm leading-relaxed whitespace-pre-wrap pb-4 border-b border-dashed border-neutral-100 last:border-0">
-                      {item.item_type === 'punchline' && item.punchline ? (
-                        <div dangerouslySetInnerHTML={{ __html: item.punchline.text }} className="rich-text-content" />
-                      ) : (
-                        <div dangerouslySetInnerHTML={{ __html: item.text_content || '' }} className="rich-text-content" />
-                      )}
-                    </div>
-                  ))}
-                  {items.length === 0 && (
-                    <p className="text-center text-neutral-400 py-12">{intl.formatMessage({ id: 'collections.no_elements_preview' })}</p>
-                  )}
-                </div>
-              </div>
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setIsPreviewOpen(false)}
+              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm"
+              title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 overflow-y-auto w-full px-4 pt-24 pb-12">
+            <div className="flex flex-col min-h-full max-w-3xl mx-auto justify-center items-start gap-8">
+              {items.map((item, idx) => {
+                const isPunchline = item.item_type === 'punchline';
+                const content = isPunchline ? item.punchline?.text : item.text_content;
+                return (
+                  <div
+                    key={item.id || idx}
+                    className="text-text-primary leading-relaxed rich-text-content break-words w-full selection:bg-accent-primary/20"
+                    style={{ fontSize: `${readingFontSize}px` }}
+                    dangerouslySetInnerHTML={{ __html: content || '' }}
+                  />
+                );
+              })}
+              {items.length === 0 && (
+                <p className="text-center text-text-muted py-12 w-full">
+                  {intl.formatMessage({ id: 'collections.no_elements_preview', defaultMessage: 'Nessun elemento da mostrare nell\'anteprima' })}
+                </p>
+              )}
             </div>
           </div>
         </div>

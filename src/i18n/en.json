@@ -104,6 +104,7 @@
   "collections.preview_title": "Collection Preview",
   "collections.untitled": "Untitled",
   "collections.no_elements_preview": "No elements in this collection.",
+  "collections.page_footer": "Page {current} of {total}",
   "collections.linked_text": "Linked Text",
   "collections.new_linked_text": "New linked text...",
   "collections.success_save": "Collection saved successfully!",
