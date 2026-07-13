@@ -6,6 +6,7 @@ import { Plus, Edit2, Trash2, Tag } from "lucide-react";
 import { useCategories, Category } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/PageHeader";
+import { NoData } from "@/components/ui/NoData";
 
 export default function CategoriesPage() {
   const intl = useIntl();
@@ -163,17 +164,11 @@ export default function CategoriesPage() {
             ))}
 
             {categories.length === 0 && (
-              <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-bg-card">
-                <div className="bg-bg-input p-3 rounded-full text-text-muted">
-                  <Tag className="w-8 h-8" />
-                </div>
-                <h3 className="text-sm font-bold text-text-primary">
-                  {intl.formatMessage({ id: "category.no_categories" })}
-                </h3>
-                <p className="text-xs text-text-muted max-w-xs">
-                  {intl.formatMessage({ id: "category.no_categories_description" })}
-                </p>
-              </div>
+              <NoData
+                icon={Tag}
+                title={intl.formatMessage({ id: "category.no_categories" })}
+                description={intl.formatMessage({ id: "category.no_categories_description" })}
+              />
             )}
           </div>
         )}

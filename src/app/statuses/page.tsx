@@ -6,6 +6,7 @@ import { Plus, Edit2, Trash2, GripVertical, Activity } from "lucide-react";
 import { useStatuses, Status } from "@/hooks/useStatuses";
 import { Button } from "@/components/ui/Button";
 import { PageHeader } from "@/components/PageHeader";
+import { NoData } from "@/components/ui/NoData";
 
 export default function StatusesPage() {
   const intl = useIntl();
@@ -287,17 +288,11 @@ export default function StatusesPage() {
             ))}
 
             {statuses.length === 0 && (
-              <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-bg-card">
-                <div className="bg-bg-input p-3 rounded-full text-text-muted">
-                  <Activity className="w-8 h-8" />
-                </div>
-                <h3 className="text-sm font-bold text-text-primary">
-                  {intl.formatMessage({ id: "status.no_statuses" })}
-                </h3>
-                <p className="text-xs text-text-muted max-w-xs">
-                  {intl.formatMessage({ id: "status.no_statuses_description" })}
-                </p>
-              </div>
+              <NoData
+                icon={Activity}
+                title={intl.formatMessage({ id: "status.no_statuses" })}
+                description={intl.formatMessage({ id: "status.no_statuses_description" })}
+              />
             )}
           </div>
         )}

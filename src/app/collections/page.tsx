@@ -7,6 +7,7 @@ import { Library, Calendar, Layers, Plus, Trash2 } from 'lucide-react';
 import { useIntl } from 'react-intl';
 import { Button } from '@/components/ui/Button';
 import { PageHeader } from '@/components/PageHeader';
+import { NoData } from '@/components/ui/NoData';
 
 export default function CollectionsPage() {
   const intl = useIntl();
@@ -143,17 +144,11 @@ export default function CollectionsPage() {
             })}
 
             {collections.length === 0 && (
-              <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-bg-card">
-                <div className="bg-bg-input p-3 rounded-full text-text-muted">
-                  <Library className="w-8 h-8" />
-                </div>
-                <h3 className="text-sm font-bold text-text-primary">
-                  {intl.formatMessage({ id: "collections.no_collections" })}
-                </h3>
-                <p className="text-xs text-text-muted max-w-xs">
-                  {intl.formatMessage({ id: "collections.no_collections_description" })}
-                </p>
-              </div>
+              <NoData
+                icon={Library}
+                title={intl.formatMessage({ id: "collections.no_collections" })}
+                description={intl.formatMessage({ id: "collections.no_collections_description" })}
+              />
             )}
           </div>
         )}

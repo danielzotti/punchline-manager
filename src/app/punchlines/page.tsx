@@ -11,6 +11,7 @@ import AddToCollectionModal from "@/components/AddToCollectionModal";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { NoData } from "@/components/ui/NoData";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -322,11 +323,10 @@ export default function PunchlinesPage() {
 
     if (punchlines.length === 0) {
       return (
-        <div className="bg-bg-card/20 border border-dashed border-border-ui rounded-2xl py-16 px-4 text-center">
-          <p className="text-text-muted text-sm">
-            {intl.formatMessage({ id: "punchline.no_results" })}
-          </p>
-        </div>
+        <NoData
+          icon={MessageSquare}
+          title={intl.formatMessage({ id: "punchline.no_results" })}
+        />
       );
     }
 
