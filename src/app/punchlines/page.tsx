@@ -7,6 +7,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { useStatuses } from "@/hooks/useStatuses";
 import RichTextEditor from "@/components/RichTextEditor";
 import CategoryAutocomplete from "@/components/CategoryAutocomplete";
+import AddToCollectionModal from "@/components/AddToCollectionModal";
 import {
   Search,
   Plus,
@@ -110,6 +111,10 @@ export default function PunchlinesPage() {
   // Modal States
   const [isPunchlineModalOpen, setIsPunchlineModalOpen] = useState(false);
   const [editingPunchline, setEditingPunchline] = useState<Punchline | null>(null);
+
+  // Selection States
+  const [selectedPunchlineIds, setSelectedPunchlineIds] = useState<string[]>([]);
+  const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
 
   // Reading Mode States
   const [readingPunchline, setReadingPunchline] = useState<Punchline | null>(null);
@@ -281,25 +286,43 @@ export default function PunchlinesPage() {
               setReadingPunchline(item);
               setReadingFontSize(24);
             }}
-            className="bg-bg-card border border-border-ui rounded-2xl p-6 flex flex-col justify-between hover:border-accent-primary/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md shadow-sm group cursor-pointer"
+            className={`bg-bg-card border ${selectedPunchlineIds.includes(item.id) ? 'border-accent-primary ring-1 ring-accent-primary' : 'border-border-ui hover:border-accent-primary/50'} rounded-2xl p-6 flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md shadow-sm group cursor-pointer relative`}
           >
-            <div>
+            <div className="">
               {/* Card Header Status & Actions */}
               <div className="flex items-center justify-between mb-4">
-                {item.status ? (
-                  <span
-                    className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm"
-                    style={{
-                      backgroundColor: `${item.status.color}15`,
-                      color: item.status.color,
-                      borderColor: `${item.status.color}30`,
+                <div className="flex items-center gap-2">
+                  {/* Checkbox for selection */}
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPunchlineIds(prev =>
+                        prev.includes(item.id) ? prev.filter(id => id !== item.id) : [...prev, item.id]
+                      );
                     }}
+                    className="flex items-center"
                   >
-                    {item.status.name}
-                  </span>
-                ) : (
-                  <span />
-                )}
+                    <input
+                      type="checkbox"
+                      checked={selectedPunchlineIds.includes(item.id)}
+                      readOnly
+                      className="w-5 h-5 rounded border-border-ui text-accent-primary focus:ring-accent-primary cursor-pointer"
+                    />
+                  </div>
+
+                  {item.status ? (
+                    <span
+                      className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm"
+                      style={{
+                        backgroundColor: `${item.status.color}15`,
+                        color: item.status.color,
+                        borderColor: `${item.status.color}30`,
+                      }}
+                    >
+                      {item.status.name}
+                    </span>
+                  ) : null}
+                </div>
                 <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                   <button
                     onClick={(e) => {
@@ -453,6 +476,24 @@ export default function PunchlinesPage() {
         {/* List of punchlines */}
         {renderPunchlinesContent()}
       </div>
+
+      {/* Action Bar for Collections */}
+      {selectedPunchlineIds.length > 0 && (
+        <div className="fixed bottom-24 xl:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-bg-card border border-border-ui shadow-2xl rounded-2xl px-4 py-3 md:px-6 md:py-4 flex items-center gap-3 md:gap-4 animate-slide-up max-w-[calc(100vw-2rem)] w-max">
+          <button
+            onClick={() => setIsAddToCollectionModalOpen(true)}
+            className="bg-gradient-to-r from-violet-600 to-indigo-400 text-white font-semibold text-sm px-4 py-2 rounded-xl"
+          >
+            {intl.formatMessage({ id: "collections.add_selected_to_collection" }, { count: selectedPunchlineIds.length })}
+          </button>
+          <button
+            onClick={() => setSelectedPunchlineIds([])}
+            className="text-text-muted hover:text-text-primary p-2"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       {/* Floating Action Button (Mobile Only) */}
       <button
@@ -694,6 +735,14 @@ export default function PunchlinesPage() {
           </div> */}
         </div>
       )}
+
+      {/* Add To Collection Modal */}
+      <AddToCollectionModal
+        isOpen={isAddToCollectionModalOpen}
+        onClose={() => setIsAddToCollectionModalOpen(false)}
+        selectedPunchlineIds={selectedPunchlineIds}
+        onSuccess={() => setSelectedPunchlineIds([])}
+      />
     </main>
   );
 }

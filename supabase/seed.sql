@@ -3,7 +3,7 @@ INSERT INTO statuses (name) VALUES
 ('draft'),
 ('da espandere'),
 ('pronta')
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (user_id, name) DO NOTHING;
 
 -- Seed categories
 INSERT INTO categories (name) VALUES 
@@ -12,7 +12,8 @@ INSERT INTO categories (name) VALUES
 ('Freddure'),
 ('Humor Nero'),
 ('Giochi di parole')
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (user_id, name) DO NOTHING;
+
 
 -- Seed punchlines & punchline_categories
 -- We can do this with inline selects or just let the user create them. Let's add a few!

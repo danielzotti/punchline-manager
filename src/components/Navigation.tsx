@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useIntl } from "react-intl";
 import { useLanguage } from "@/components/IntlProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe } from "lucide-react";
+import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe, Library } from "lucide-react";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -83,15 +83,12 @@ export default function Navigation() {
       label: intl.formatMessage({ id: "tab.statuses" }),
       icon: Activity,
     },
+    {
+      href: "/collections",
+      label: intl.formatMessage({ id: "tab.collections" }),
+      icon: Library,
+    },
   ];
-
-  if (isAdmin) {
-    navItems.push({
-      href: "/admin",
-      label: intl.formatMessage({ id: "tab.admin" }),
-      icon: Users,
-    });
-  }
 
   return (
     <>
@@ -166,6 +163,18 @@ export default function Navigation() {
  
                     {/* Options list */}
                     <div className="flex flex-col gap-1 px-2">
+                      {/* Admin Panel Link */}
+                      {isAdmin && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all"
+                        >
+                          <Users className="w-4.5 h-4.5" />
+                          <span>{intl.formatMessage({ id: "tab.admin" })}</span>
+                        </Link>
+                      )}
+
                       {/* Fullscreen Toggle */}
                       <button
                         onClick={toggleFullscreen}

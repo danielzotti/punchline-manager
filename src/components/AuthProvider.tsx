@@ -71,6 +71,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(initialSession);
         setUser(initialSession?.user ?? null);
 
+        if (initialSession) {
+          document.cookie = `sb-access-token=${initialSession.access_token}; path=/; max-age=${initialSession.expires_in}; SameSite=Lax; Secure`;
+          document.cookie = `sb-refresh-token=${initialSession.refresh_token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
+        } else {
+          document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+
         if (initialSession?.user?.email) {
           await checkUserAuthorization(initialSession.user.email);
         }
@@ -88,6 +96,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, newSession) => {
         setSession(newSession);
         setUser(newSession?.user ?? null);
+
+        if (newSession) {
+          document.cookie = `sb-access-token=${newSession.access_token}; path=/; max-age=${newSession.expires_in}; SameSite=Lax; Secure`;
+          document.cookie = `sb-refresh-token=${newSession.refresh_token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax; Secure`;
+        } else {
+          document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+          document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
 
         if (newSession?.user?.email) {
           setLoading(true);

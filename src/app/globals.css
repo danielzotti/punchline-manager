@@ -140,3 +140,8 @@ strong {
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #475569;
 }
+
+button,
+[role="button"] {
+  cursor: pointer;
+}
