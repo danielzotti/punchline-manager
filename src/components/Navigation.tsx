@@ -74,6 +74,11 @@ export default function Navigation() {
       icon: FolderKanban,
     },
     {
+      href: "/collections",
+      label: intl.formatMessage({ id: "tab.collections" }),
+      icon: Library,
+    },
+    {
       href: "/categories",
       label: intl.formatMessage({ id: "tab.categories" }),
       icon: Tag,
@@ -82,11 +87,6 @@ export default function Navigation() {
       href: "/statuses",
       label: intl.formatMessage({ id: "tab.statuses" }),
       icon: Activity,
-    },
-    {
-      href: "/collections",
-      label: intl.formatMessage({ id: "tab.collections" }),
-      icon: Library,
     },
   ];
 
@@ -148,7 +148,7 @@ export default function Navigation() {
                   </span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`} />
                 </button>
- 
+
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-bg-card border border-border-ui rounded-2xl shadow-xl z-50 py-3 flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-150">
                     {/* User Info Header */}
@@ -160,7 +160,7 @@ export default function Navigation() {
                         {user.email}
                       </span>
                     </div>
- 
+
                     {/* Options list */}
                     <div className="flex flex-col gap-1 px-2">
                       {/* Admin Panel Link */}
@@ -187,7 +187,7 @@ export default function Navigation() {
                             : intl.formatMessage({ id: "fullscreen.enter", defaultMessage: "Fullscreen" })}
                         </span>
                       </button>
- 
+
                       {/* Theme Selector */}
                       <button
                         onClick={toggleTheme}
@@ -200,7 +200,7 @@ export default function Navigation() {
                             : intl.formatMessage({ id: "theme.light", defaultMessage: "Light Theme" })}
                         </span>
                       </button>
- 
+
                       {/* Language Selection */}
                       <div className="flex items-center justify-between w-full px-3 py-1.5 text-xs font-medium text-text-muted">
                         <span className="flex items-center gap-2">

@@ -22,6 +22,8 @@
   "punchline.no_results": "No punchlines found matching the filters.",
   "punchline.create_title": "Create Punchline",
   "punchline.edit_title": "Edit Punchline",
+  "nav.punchlines": "Punchlines",
+  "punchlines.subtitle": "Manage your punchlines",
   "tab.punchlines": "Punchlines",
   "tab.categories": "Categories",
   "tab.statuses": "Statuses",

@@ -22,6 +22,8 @@
   "punchline.no_results": "Nessuna punchline trovata con i filtri selezionati.",
   "punchline.create_title": "Crea Punchline",
   "punchline.edit_title": "Modifica Punchline",
+  "nav.punchlines": "Battute",
+  "punchlines.subtitle": "Gestisci le tue battute",
   "tab.punchlines": "Punchline",
   "tab.categories": "Categorie",
   "tab.statuses": "Stati",

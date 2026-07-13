@@ -8,6 +8,11 @@ import { useStatuses } from "@/hooks/useStatuses";
 import RichTextEditor from "@/components/RichTextEditor";
 import CategoryAutocomplete from "@/components/CategoryAutocomplete";
 import AddToCollectionModal from "@/components/AddToCollectionModal";
+import { PageHeader } from "@/components/PageHeader";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
 import {
   Search,
   Plus,
@@ -21,7 +26,8 @@ import {
   RotateCcw,
   Maximize2,
   Minimize2,
-  ChevronDown
+  ChevronDown,
+  MessageSquare
 } from "lucide-react";
 
 interface ClampedPunchlineTextProps {
@@ -383,45 +389,50 @@ export default function PunchlinesPage() {
   return (
     <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 pb-22 transition-colors duration-200">
       <div className="space-y-6">
+        <PageHeader 
+          title={intl.formatMessage({ id: "nav.punchlines", defaultMessage: "Battute" })}
+          description={intl.formatMessage({ id: "punchlines.subtitle", defaultMessage: "Gestisci le tue battute" })}
+          icon={<MessageSquare className="w-6 h-6" />}
+        />
+
         {/* Filters panel */}
         <div className="relative z-30 bg-bg-card/50 backdrop-blur-md border border-border-ui rounded-2xl p-4 md:p-6 space-y-4 shadow-sm md:sticky md:top-20 transition-all duration-200">
           <div className="flex flex-row gap-2.5 items-center justify-between">
             {/* Search Bar */}
             <div className="relative flex-1 md:max-w-md">
-              <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-text-muted" />
-              <input
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+              <Input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder={intl.formatMessage({ id: "filter.search" })}
-                className="w-full bg-bg-input border border-border-ui rounded-xl py-2.5 pl-10 pr-4 text-sm text-text-primary placeholder-text-muted-light focus:outline-none focus:border-accent-primary transition-all duration-200"
+                className="pl-10"
               />
             </div>
 
             {/* Mobile Filter Toggle & Add Button */}
             <div className="flex items-center gap-2">
-              <button
+              <Button
+                variant={selectedStatusId || selectedCategoryIds.length > 0 ? "default" : "outline"}
+                size="icon"
                 onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
-                className={`md:hidden p-2.5 border rounded-xl flex items-center justify-center transition-all cursor-pointer ${selectedStatusId || selectedCategoryIds.length > 0
-                  ? "bg-accent-primary/10 border-accent-primary text-accent-primary"
-                  : "bg-bg-input border-border-ui text-text-muted active:bg-bg-card"
-                  }`}
+                className="md:hidden"
                 title={intl.formatMessage({ id: "filter.title", defaultMessage: "Filters" })}
               >
                 <SlidersHorizontal className="w-5 h-5" />
                 {(selectedStatusId || selectedCategoryIds.length > 0) && (
-                  <span className="ml-1 w-2 h-2 rounded-full bg-accent-primary animate-pulse" />
+                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-accent-primary animate-pulse" />
                 )}
-              </button>
+              </Button>
 
               {/* Desktop Create Button */}
-              <button
+              <Button
                 onClick={() => handleOpenPunchlineModal()}
-                className="hidden md:flex bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-sm px-4 py-2.5 rounded-xl items-center gap-2 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                className="hidden md:flex gap-2"
               >
                 <Plus className="w-4 h-4" />
                 {intl.formatMessage({ id: "button.add_punchline" })}
-              </button>
+              </Button>
             </div>
           </div>
 

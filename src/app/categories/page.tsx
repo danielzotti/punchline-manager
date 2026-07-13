@@ -71,17 +71,19 @@ export default function CategoriesPage() {
         </div>
 
         {/* Quick Add Form */}
-        <form onSubmit={handleAddCategory} className="flex gap-2.5 items-center bg-bg-card p-4 border border-border-ui rounded-2xl shadow-sm transition-all duration-200">
-          <input
-            type="text"
-            value={newCategoryName}
-            onChange={(e) => setNewCategoryName(e.target.value)}
-            placeholder={intl.formatMessage({ id: "category.name" })}
-            className="flex-1 bg-bg-input border border-border-ui rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder-text-muted-light focus:outline-none focus:border-accent-primary transition-all duration-200"
-          />
+        <form onSubmit={handleAddCategory} className="flex flex-row gap-3 bg-bg-card p-4 border border-border-ui rounded-2xl items-center shadow-sm transition-all duration-200">
+          <div className="w-full">
+            <input
+              type="text"
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              placeholder={intl.formatMessage({ id: "category.name" })}
+              className="w-full bg-bg-input border border-border-ui rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder-text-muted-light focus:outline-none focus:border-accent-primary transition-all duration-200"
+            />
+          </div>
           <button
             type="submit"
-            className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 cursor-pointer"
+            className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[150px] shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden md:inline">{intl.formatMessage({ id: "category.add" })}</span>
@@ -93,17 +95,20 @@ export default function CategoriesPage() {
           <div className="text-center text-text-muted py-12">{intl.formatMessage({ id: "common.loading", defaultMessage: "Loading..." })}</div>
         ) : (
           <div className="bg-bg-card border border-border-ui rounded-2xl divide-y divide-border-ui overflow-hidden shadow-sm transition-all duration-200">
-            {categories.map((cat) => (
-              <div key={cat.id} className="p-4 flex items-center justify-between hover:bg-bg-input/30 transition-colors duration-200 group">
+            {categories.map((cat, index) => (
+              <div
+                key={cat.id}
+                className="p-4 flex items-center justify-between transition-colors duration-200 group hover:bg-bg-input/30"
+              >
                 {editingCategory?.id === cat.id ? (
-                  <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                  <div className="flex-1 flex flex-col sm:flex-row gap-3 items-center">
                     <input
                       type="text"
                       value={editCategoryName}
                       onChange={(e) => setEditCategoryName(e.target.value)}
-                      className="flex-1 bg-bg-input border border-border-ui rounded-xl px-4 py-2 text-sm text-text-primary focus:outline-none focus:border-accent-primary transition-all duration-200"
+                      className="w-full sm:flex-1 bg-bg-input border border-border-ui rounded-xl px-4 py-2 text-sm text-text-primary focus:outline-none focus:border-accent-primary transition-all duration-200"
                     />
-                    <div className="flex items-center gap-2 justify-end">
+                    <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                       <button
                         onClick={() => handleUpdateCategory(cat.id)}
                         className="bg-accent-primary hover:bg-accent-hover text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
@@ -120,9 +125,14 @@ export default function CategoriesPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3.5 select-none">
+                      <span className="text-[10px] text-text-muted-light font-mono w-5">
+                        {index + 1}.
+                      </span>
                       <div className="w-1.5 h-1.5 rounded-full bg-accent-primary" />
-                      <span className="text-text-primary font-medium text-sm">{cat.name}</span>
+                      <span className="text-text-primary font-medium text-sm">
+                        {cat.name}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                       <button
