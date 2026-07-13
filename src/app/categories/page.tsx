@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useIntl } from "react-intl";
 import { Plus, Edit2, Trash2, Tag } from "lucide-react";
 import { useCategories, Category } from "@/hooks/useCategories";
+import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function CategoriesPage() {
   const intl = useIntl();
@@ -29,7 +31,7 @@ export default function CategoriesPage() {
       await createCategory(newCategoryName.trim());
       setNewCategoryName("");
     } catch (err) {
-      console.error(err);
+      console.error("Error creating category:", err);
     }
   };
 
@@ -41,37 +43,34 @@ export default function CategoriesPage() {
       setEditingCategory(null);
       setEditCategoryName("");
     } catch (err) {
-      console.error(err);
+      console.error("Error updating category:", err);
     }
   };
 
   // Delete Category Handler
   const handleDeleteCategory = async (id: string) => {
-    if (confirm(intl.formatMessage({ id: "confirm.delete" }))) {
+    if (!confirm(intl.formatMessage({ id: "confirm.delete" }))) return;
+    try {
       await deleteCategory(id);
+    } catch (err) {
+      console.error("Error deleting category:", err);
     }
   };
 
   return (
     <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 transition-colors duration-200">
       <div className="max-w-2xl mx-auto space-y-6">
-        {/* Title Section */}
-        <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-tr from-violet-600 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-violet-500/20">
-            <Tag className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-text-primary leading-tight">
-              {intl.formatMessage({ id: "category.manage" })}
-            </h2>
-            <p className="text-xs text-text-muted">
-              {intl.formatMessage({ id: "category.subtitle", defaultMessage: "Create and organize labels to catalog your jokes." })}
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          title={intl.formatMessage({ id: "category.manage" })}
+          description={intl.formatMessage({ id: "category.subtitle", defaultMessage: "Create and organize labels to catalog your jokes." })}
+          icon={<Tag />}
+        />
 
         {/* Quick Add Form */}
-        <form onSubmit={handleAddCategory} className="flex flex-row gap-3 bg-bg-card p-4 border border-border-ui rounded-2xl items-center shadow-sm transition-all duration-200">
+        <form
+          onSubmit={handleAddCategory}
+          className="flex flex-row gap-3 bg-bg-card p-4 border border-border-ui rounded-2xl items-center shadow-sm transition-all duration-200"
+        >
           <div className="w-full">
             <input
               type="text"
@@ -81,13 +80,13 @@ export default function CategoriesPage() {
               className="w-full bg-bg-input border border-border-ui rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder-text-muted-light focus:outline-none focus:border-accent-primary transition-all duration-200"
             />
           </div>
-          <button
+          <Button
             type="submit"
-            className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[150px] shrink-0"
+            className="ml-auto sm:ml-0 md:min-w-[150px] shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden md:inline">{intl.formatMessage({ id: "category.add" })}</span>
-          </button>
+          </Button>
         </form>
 
         {/* List */}
@@ -109,18 +108,20 @@ export default function CategoriesPage() {
                       className="w-full sm:flex-1 bg-bg-input border border-border-ui rounded-xl px-4 py-2 text-sm text-text-primary focus:outline-none focus:border-accent-primary transition-all duration-200"
                     />
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-                      <button
+                      <Button
                         onClick={() => handleUpdateCategory(cat.id)}
-                        className="bg-accent-primary hover:bg-accent-hover text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+                        variant="default"
+                        size="sm"
                       >
                         {intl.formatMessage({ id: "button.save" })}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => setEditingCategory(null)}
-                        className="bg-bg-input hover:bg-bg-card border border-border-ui text-text-muted hover:text-text-primary px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                        variant="outline"
+                        size="sm"
                       >
                         {intl.formatMessage({ id: "button.cancel" })}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ) : (
@@ -129,29 +130,32 @@ export default function CategoriesPage() {
                       <span className="text-[10px] text-text-muted-light font-mono w-5">
                         {index + 1}.
                       </span>
-                      <div className="w-1.5 h-1.5 rounded-full bg-accent-primary" />
-                      <span className="text-text-primary font-medium text-sm">
+                      <span className="text-text-primary font-medium text-sm break-all">
                         {cat.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
-                      <button
+                      <Button
                         onClick={() => {
                           setEditingCategory(cat);
                           setEditCategoryName(cat.name);
                         }}
-                        className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
                         title={intl.formatMessage({ id: "button.edit" })}
                       >
                         <Edit2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => handleDeleteCategory(cat.id)}
-                        className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
                         title={intl.formatMessage({ id: "button.delete" })}
                       >
                         <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                      </button>
+                      </Button>
                     </div>
                   </>
                 )}

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { CheckCircle2, XCircle, Info, X } from 'lucide-react';
+import { Button } from './Button';
 
 export type ToastType = 'success' | 'error' | 'info';
 
@@ -69,12 +70,14 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               {t.type === 'info' && <Info className="w-5 h-5 flex-shrink-0 text-blue-500 dark:text-blue-400" />}
               <span className="text-sm font-semibold leading-5">{t.message}</span>
             </div>
-            <button
+            <Button
               onClick={() => removeToast(t.id)}
-              className="text-current opacity-60 hover:opacity-100 p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer flex-shrink-0"
+              variant="ghost"
+              size="icon"
+              className="text-current opacity-60 hover:opacity-100 p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-all cursor-pointer flex-shrink-0 h-8 w-8"
             >
               <X className="w-4 h-4" />
-            </button>
+            </Button>
           </div>
         ))}
       </div>

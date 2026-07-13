@@ -5,6 +5,7 @@ import { useIntl } from "react-intl";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import { FolderKanban, LogOut, ShieldAlert } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface AuthContextType {
   user: User | null;
@@ -212,9 +213,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           </p>
 
           {/* Google Login Button */}
-          <button
+          <Button
             onClick={signInWithGoogle}
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-900 font-semibold px-5 py-3 rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer mb-6"
+            variant="outline"
+            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-900 font-semibold px-5 py-3 rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer mb-6 border-0 h-auto"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -235,7 +237,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               />
             </svg>
             {intl.formatMessage({ id: "auth.sign_in_google" })}
-          </button>
+          </Button>
 
           {/* Divider */}
           <div className="w-full flex items-center gap-3 mb-6">
@@ -265,13 +267,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 />
               </div>
               {emailError && <p className="text-red-400 text-xs">{emailError}</p>}
-              <button
+              <Button
                 type="submit"
                 disabled={emailLoading}
-                className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-all cursor-pointer text-sm border border-slate-750 disabled:opacity-50"
+                variant="secondary"
+                className="w-full bg-slate-800 hover:bg-slate-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-all cursor-pointer text-sm border border-slate-750 disabled:opacity-50 h-auto"
               >
                 {emailLoading ? "Invio in corso..." : "Accedi con Email (Magic Link)"}
-              </button>
+              </Button>
             </form>
           )}
         </div>
@@ -306,13 +309,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             )}
           </p>
 
-          <button
+          <Button
             onClick={signOut}
-            className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold px-5 py-3 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer border border-slate-700"
+            variant="secondary"
+            className="w-full flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold px-5 py-3 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer border border-slate-700 h-auto"
           >
             <LogOut className="w-4 h-4" />
             {intl.formatMessage({ id: "auth.sign_out" })}
-          </button>
+          </Button>
         </div>
       </div>
     );

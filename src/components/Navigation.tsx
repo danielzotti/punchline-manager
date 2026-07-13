@@ -7,6 +7,7 @@ import { useIntl } from "react-intl";
 import { useLanguage } from "@/components/IntlProvider";
 import { useAuth } from "@/components/AuthProvider";
 import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe, Library } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -135,9 +136,10 @@ export default function Navigation() {
             {/* User Profile Dropdown Menu */}
             {user && (
               <div className="relative" ref={dropdownRef}>
-                <button
+                <Button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center gap-2 bg-bg-input/60 hover:bg-bg-input/80 text-text-muted hover:text-text-primary px-3 py-1.5 rounded-xl border border-border-ui transition-all cursor-pointer select-none"
+                  variant="ghost"
+                  className="flex items-center gap-2 bg-bg-input/60 hover:bg-bg-input/80 text-text-muted hover:text-text-primary px-3 py-1.5 rounded-xl border border-border-ui transition-all cursor-pointer select-none h-auto font-normal"
                   title={intl.formatMessage({ id: "profile.menu", defaultMessage: "Profile Menu" })}
                 >
                   <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white font-bold text-xs uppercase shadow-sm">
@@ -147,7 +149,7 @@ export default function Navigation() {
                     {user.email ? user.email : "User"}
                   </span>
                   <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`} />
-                </button>
+                </Button>
 
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-bg-card border border-border-ui rounded-2xl shadow-xl z-50 py-3 flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-150">
@@ -176,9 +178,10 @@ export default function Navigation() {
                       )}
 
                       {/* Fullscreen Toggle */}
-                      <button
+                      <Button
                         onClick={toggleFullscreen}
-                        className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer"
+                        variant="ghost"
+                        className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer h-auto text-left justify-start"
                       >
                         <span className="flex items-center gap-2">
                           {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
@@ -186,12 +189,13 @@ export default function Navigation() {
                             ? intl.formatMessage({ id: "fullscreen.exit", defaultMessage: "Exit Fullscreen" })
                             : intl.formatMessage({ id: "fullscreen.enter", defaultMessage: "Fullscreen" })}
                         </span>
-                      </button>
+                      </Button>
 
                       {/* Theme Selector */}
-                      <button
+                      <Button
                         onClick={toggleTheme}
-                        className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer"
+                        variant="ghost"
+                        className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer h-auto text-left justify-start"
                       >
                         <span className="flex items-center gap-2">
                           {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
@@ -199,7 +203,7 @@ export default function Navigation() {
                             ? intl.formatMessage({ id: "theme.dark", defaultMessage: "Dark Theme" })
                             : intl.formatMessage({ id: "theme.light", defaultMessage: "Light Theme" })}
                         </span>
-                      </button>
+                      </Button>
 
                       {/* Language Selection */}
                       <div className="flex items-center justify-between w-full px-3 py-1.5 text-xs font-medium text-text-muted">
@@ -208,37 +212,40 @@ export default function Navigation() {
                           {intl.formatMessage({ id: "language.title", defaultMessage: "Language" })}
                         </span>
                         <div className="flex items-center gap-0.5 bg-bg-input/60 p-0.5 rounded-lg border border-border-ui">
-                          <button
+                          <Button
                             onClick={() => setLocale("it")}
-                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${locale === "it"
+                            variant="ghost"
+                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer h-auto min-h-0 w-auto ${locale === "it"
                               ? "bg-accent-primary text-white shadow"
                               : "text-text-muted hover:text-text-primary"
                               }`}
                           >
                             IT
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => setLocale("en")}
-                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${locale === "en"
+                            variant="ghost"
+                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer h-auto min-h-0 w-auto ${locale === "en"
                               ? "bg-accent-primary text-white shadow"
                               : "text-text-muted hover:text-text-primary"
                               }`}
                           >
                             EN
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
 
                     {/* Sign Out Button */}
                     <div className="px-2 pt-2 border-t border-border-ui/60">
-                      <button
+                      <Button
                         onClick={signOut}
-                        className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 rounded-xl transition-all cursor-pointer"
+                        variant="ghost"
+                        className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 rounded-xl transition-all cursor-pointer h-auto justify-start"
                       >
                         <LogOut className="w-4 h-4" />
                         {intl.formatMessage({ id: "auth.sign_out" })}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 )}

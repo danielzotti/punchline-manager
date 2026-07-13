@@ -5,21 +5,24 @@ import { getCollections, createCollection, deleteCollection } from '@/app/action
 import Link from 'next/link';
 import { Library, Calendar, Layers, Plus, Trash2 } from 'lucide-react';
 import { useIntl } from 'react-intl';
+import { Button } from '@/components/ui/Button';
+import { PageHeader } from '@/components/PageHeader';
 
 export default function CollectionsPage() {
   const intl = useIntl();
+
+  // Collections State
   const [collections, setCollections] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newCollectionTitle, setNewCollectionTitle] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    load();
+    fetchCollections();
   }, []);
 
-  async function load() {
+  const fetchCollections = async () => {
     try {
-      setIsLoading(true);
       const data = await getCollections();
       setCollections(data || []);
     } catch (err) {
@@ -27,17 +30,19 @@ export default function CollectionsPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   const handleAddCollection = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCollectionTitle.trim() || isSaving) return;
+    if (!newCollectionTitle.trim()) return;
+
+    setIsSaving(true);
     try {
-      setIsSaving(true);
-      await createCollection(newCollectionTitle.trim(), new Date().toISOString());
-      setNewCollectionTitle('');
-      const data = await getCollections();
-      setCollections(data || []);
+      const newCol = await createCollection(newCollectionTitle.trim(), new Date().toISOString());
+      if (newCol) {
+        setNewCollectionTitle('');
+        fetchCollections();
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -46,11 +51,10 @@ export default function CollectionsPage() {
   };
 
   const handleDeleteCollection = async (id: string) => {
-    if (confirm(intl.formatMessage({ id: "confirm.delete" }))) {
+    if (confirm(intl.formatMessage({ id: 'confirm.delete' }))) {
       try {
         await deleteCollection(id);
-        const data = await getCollections();
-        setCollections(data || []);
+        fetchCollections();
       } catch (err) {
         console.error(err);
       }
@@ -60,20 +64,11 @@ export default function CollectionsPage() {
   return (
     <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 transition-colors duration-200">
       <div className="max-w-2xl mx-auto space-y-6">
-        {/* Title Section */}
-        <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-tr from-violet-600 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-violet-500/20">
-            <Library className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-text-primary leading-tight">
-              {intl.formatMessage({ id: "collections.title" })}
-            </h2>
-            <p className="text-xs text-text-muted">
-              {intl.formatMessage({ id: "collections.subtitle" })}
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          title={intl.formatMessage({ id: "collections.title" })}
+          description={intl.formatMessage({ id: "collections.subtitle" })}
+          icon={<Library />}
+        />
 
         {/* Quick Add Form */}
         <form onSubmit={handleAddCollection} className="flex flex-row gap-3 bg-bg-card p-4 border border-border-ui rounded-2xl items-center shadow-sm transition-all duration-200">
@@ -86,14 +81,14 @@ export default function CollectionsPage() {
               className="w-full bg-bg-input border border-border-ui rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder-text-muted-light focus:outline-none focus:border-accent-primary transition-all duration-200"
             />
           </div>
-          <button
+          <Button
             type="submit"
             disabled={isSaving}
-            className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[150px] shrink-0"
+            className="ml-auto sm:ml-0 md:min-w-[150px] shrink-0"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden md:inline">{intl.formatMessage({ id: "collections.new_collection" })}</span>
-          </button>
+          </Button>
         </form>
 
         {/* List */}
@@ -112,9 +107,8 @@ export default function CollectionsPage() {
                     <span className="text-[10px] text-text-muted-light font-mono w-5">
                       {index + 1}.
                     </span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse" />
                     <div className="flex flex-col min-w-0">
-                      <span className="text-text-primary font-medium text-sm group-hover:text-accent-primary transition-colors truncate">
+                      <span className="text-text-primary font-medium text-sm group-hover:text-accent-primary transition-colors">
                         {collection.title}
                       </span>
                       <div className="flex flex-wrap items-center gap-x-3 text-[10px] text-text-muted mt-0.5">
@@ -134,13 +128,15 @@ export default function CollectionsPage() {
                     </div>
                   </Link>
                   <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
-                    <button
+                    <Button
                       onClick={() => handleDeleteCollection(collection.id)}
-                      className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                      variant="ghost"
+                      size="icon"
+                      className="hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer h-8 w-8"
                       title={intl.formatMessage({ id: "button.delete" })}
                     >
                       <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               );

@@ -14,6 +14,7 @@ import {
   Mail,
   AlertCircle
 } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface AuthorizedUser {
   email: string;
@@ -234,10 +235,10 @@ export default function AdminPage() {
               </label>
             </div>
 
-            <button
+            <Button
               type="submit"
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 bg-accent-primary hover:bg-accent-hover text-white font-semibold px-4 py-3 rounded-xl transition-all cursor-pointer shadow-md disabled:opacity-50"
+              className="w-full h-auto py-3"
             >
               {submitting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -245,7 +246,7 @@ export default function AdminPage() {
                 <UserPlus className="w-4 h-4" />
               )}
               {intl.formatMessage({ id: "admin.add_user" })}
-            </button>
+            </Button>
           </form>
         </div>
 
@@ -303,10 +304,12 @@ export default function AdminPage() {
                           </td>
                           <td className="px-6 py-4.5 text-right">
                             <div className="inline-flex items-center gap-2">
-                              <button
+                              <Button
                                 onClick={() => handleToggleAdmin(u)}
                                 disabled={isSelf}
-                                className={`p-2 rounded-lg border transition-all cursor-pointer ${
+                                variant="ghost"
+                                size="icon"
+                                className={`p-2 rounded-lg border transition-all cursor-pointer h-9 w-9 ${
                                   isSelf
                                     ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                     : u.is_admin
@@ -320,11 +323,13 @@ export default function AdminPage() {
                                 }
                               >
                                 <Shield className="w-3.5 h-3.5" />
-                              </button>
-                              <button
+                              </Button>
+                              <Button
                                 onClick={() => handleDeleteUser(u)}
                                 disabled={isSelf}
-                                className={`p-2 rounded-lg border transition-all cursor-pointer ${
+                                variant="ghost"
+                                size="icon"
+                                className={`p-2 rounded-lg border transition-all cursor-pointer h-9 w-9 ${
                                   isSelf
                                     ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                     : "bg-bg-input border-border-input hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-650 text-text-muted"
@@ -332,7 +337,7 @@ export default function AdminPage() {
                                 title={intl.formatMessage({ id: "admin.delete" })}
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
-                              </button>
+                              </Button>
                             </div>
                           </td>
                         </tr>
@@ -382,10 +387,12 @@ export default function AdminPage() {
                         </div>
 
                         <div className="flex items-center gap-2.5">
-                          <button
+                          <Button
                             onClick={() => handleToggleAdmin(u)}
                             disabled={isSelf}
-                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                            variant="ghost"
+                            size="icon"
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer h-10 w-10 ${
                               isSelf
                                 ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                 : u.is_admin
@@ -399,11 +406,13 @@ export default function AdminPage() {
                             }
                           >
                             <Shield className="w-4 h-4" />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => handleDeleteUser(u)}
                             disabled={isSelf}
-                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                            variant="ghost"
+                            size="icon"
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer h-10 w-10 ${
                               isSelf
                                 ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                 : "bg-bg-input border-border-input hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-650 text-text-muted"
@@ -411,7 +420,7 @@ export default function AdminPage() {
                             title={intl.formatMessage({ id: "admin.delete" })}
                           >
                             <Trash2 className="w-4 h-4" />
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>

@@ -8,6 +8,7 @@ import RichTextEditor from '@/components/RichTextEditor';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/Toast';
+import { Button } from '@/components/ui/Button';
 
 interface CollectionItemProps {
   index: number;
@@ -79,15 +80,15 @@ function CollectionItem({
             {isEditing ? (
               <div className="space-y-2">
                 <RichTextEditor value={text} onChange={setText} />
-                <button
+                <Button
                   onClick={() => {
                     onUpdateText(item.id, text);
                     setIsEditing(false);
                   }}
-                  className="bg-accent-primary text-white text-xs px-3 py-1.5 rounded-lg font-semibold cursor-pointer"
+                  className="bg-accent-primary text-white text-xs px-3 py-1.5 rounded-lg font-semibold cursor-pointer h-auto"
                 >
                   {intl.formatMessage({ id: "button.save" })}
-                </button>
+                </Button>
               </div>
             ) : (
               <div
@@ -99,9 +100,14 @@ function CollectionItem({
           </div>
         )}
       </div>
-      <button onClick={() => onRemove(item.id)} className="text-text-muted hover:text-red-500 p-1 rounded-lg transition-colors cursor-pointer">
+      <Button
+        onClick={() => onRemove(item.id)}
+        variant="ghost"
+        size="icon"
+        className="text-text-muted hover:text-red-500 p-1 rounded-lg transition-colors cursor-pointer h-8 w-8"
+      >
         <Trash2 className="w-4 h-4" />
-      </button>
+      </Button>
     </div>
   );
 }
@@ -279,6 +285,12 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
       position: items.length
     };
     setItems([...items, newItem]);
+    setTimeout(() => {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+      });
+    }, 100);
   };
 
   const removeItem = (itemId: string) => {
@@ -341,16 +353,18 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
           </div>
           <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-2 items-stretch sm:items-center lg:items-stretch xl:items-center justify-end w-full lg:w-auto self-end">
             <div className="flex gap-2 flex-1 sm:flex-none">
-              <button
+              <Button
                 onClick={() => setIsPreviewOpen(true)}
-                className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer"
+                variant="ghost"
+                className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer h-auto"
               >
                 <Eye className="w-4 h-4" /> {intl.formatMessage({ id: 'collections.preview' })}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer"
+                variant="ghost"
+                className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer h-auto"
               >
                 {isExporting ? (
                   <>
@@ -365,22 +379,23 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
                     <FileText className="w-4 h-4" /> {intl.formatMessage({ id: 'collections.export_pdf' })}
                   </>
                 )}
-              </button>
+              </Button>
             </div>
             <div className="flex gap-2 w-full sm:w-auto">
-              <button
+              <Button
                 onClick={handleDelete}
-                className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer"
+                variant="destructive"
+                className="flex-1 sm:flex-none justify-center px-4 py-2.5 text-red-500 hover:text-white border border-red-500/20 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer h-auto"
               >
                 <Trash2 className="w-4 h-4" /> {intl.formatMessage({ id: 'button.delete' })}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex-1 sm:flex-none justify-center px-5 py-2.5 bg-accent-primary hover:bg-accent-primary/90 text-white rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex-1 sm:flex-none justify-center px-5 py-2.5 bg-accent-primary hover:bg-accent-primary/90 text-white rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer h-auto"
               >
                 <Save className="w-4 h-4" /> {isSaving ? intl.formatMessage({ id: 'collections.saving' }) : intl.formatMessage({ id: 'button.save' })}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -388,12 +403,13 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
 
       <div className="flex justify-between items-center px-2">
         <h3 className="font-bold text-text-primary text-lg">{intl.formatMessage({ id: 'collections.elements' })}</h3>
-        <button
+        <Button
           onClick={addLinkedText}
-          className="text-accent-primary hover:text-accent-primary/80 font-semibold text-sm flex items-center gap-1 cursor-pointer"
+          variant="link"
+          className="text-accent-primary hover:text-accent-primary/80 font-semibold text-sm flex items-center gap-1 cursor-pointer h-auto"
         >
           <Plus className="w-4 h-4" /> {intl.formatMessage({ id: 'collections.add_linked_text' })}
-        </button>
+        </Button>
       </div>
 
       <div className="space-y-3">
@@ -425,10 +441,11 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
           {/* Top toolbar */}
           <div className="flex items-center gap-2 md:gap-3 absolute top-2 right-2 md:top-4 md:right-4">
             {/* Fullscreen Toggle */}
-            <button
+            <Button
               type="button"
               onClick={toggleFullscreen}
-              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center"
+              variant="outline"
+              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto"
               title={isFullscreen ? "Disattiva schermo intero" : "Schermo intero"}
             >
               {isFullscreen ? (
@@ -436,45 +453,49 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
               ) : (
                 <Maximize2 className="w-4 h-4 md:w-5 h-5" />
               )}
-            </button>
+            </Button>
 
             {/* Font controls */}
             <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
-              <button
+              <Button
                 type="button"
                 onClick={() => setReadingFontSize((prev) => Math.max(16, prev - 4))}
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                variant="ghost"
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer h-auto w-auto"
                 title={intl.formatMessage({ id: "reading.zoom_out", defaultMessage: "Rimpicciolisci testo" })}
               >
                 <ZoomOut className="w-4 h-4 md:w-5 h-5" />
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => setReadingFontSize(24)}
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer"
+                variant="ghost"
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer h-auto w-auto"
                 title={intl.formatMessage({ id: "reading.reset", defaultMessage: "Ripristina" })}
               >
                 <RotateCcw className="w-3.5 h-3.5 md:w-4 md:h-4" />
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => setReadingFontSize((prev) => Math.min(80, prev + 4))}
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                variant="ghost"
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer h-auto w-auto"
                 title={intl.formatMessage({ id: "reading.zoom_in", defaultMessage: "Ingrandisci testo" })}
               >
                 <ZoomIn className="w-4 h-4 md:w-5 h-5" />
-              </button>
+              </Button>
             </div>
 
             {/* Close Button */}
-            <button
+            <Button
               type="button"
               onClick={() => setIsPreviewOpen(false)}
-              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm"
+              variant="outline"
+              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm h-auto w-auto"
               title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
             >
               <X className="w-5 h-5" />
-            </button>
+            </Button>
           </div>
 
           {/* Content Area */}

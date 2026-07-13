@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 import { Bold, Italic, Underline, List, ListOrdered } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 interface RichTextEditorProps {
   value: string;
@@ -148,47 +149,52 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
     <div className="border border-border-ui rounded-xl overflow-hidden bg-bg-input focus-within:border-accent-primary transition-all flex flex-col">
       {/* Editor Toolbar */}
       <div className="flex gap-1.5 p-2 bg-bg-card border-b border-border-ui flex-wrap transition-colors duration-200">
-        <button
+        <Button
           type="button"
           onClick={() => executeCommand("bold")}
-          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
+          variant="ghost"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer h-auto w-auto"
           title="Bold"
         >
           <Bold className="w-4 h-4" />
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => executeCommand("italic")}
-          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
+          variant="ghost"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer h-auto w-auto"
           title="Italic"
         >
           <Italic className="w-4 h-4" />
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => executeCommand("underline")}
-          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
+          variant="ghost"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer h-auto w-auto"
           title="Underline"
         >
           <Underline className="w-4 h-4" />
-        </button>
+        </Button>
         <div className="w-px h-6 bg-border-ui self-center mx-1 transition-colors duration-200" />
-        <button
+        <Button
           type="button"
           onClick={() => executeCommand("insertUnorderedList")}
-          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
+          variant="ghost"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer h-auto w-auto"
           title="Unordered List"
         >
           <List className="w-4 h-4" />
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => executeCommand("insertOrderedList")}
-          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer"
+          variant="ghost"
+          className="p-1.5 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-colors cursor-pointer h-auto w-auto"
           title="Ordered List"
         >
           <ListOrdered className="w-4 h-4" />
-        </button>
+        </Button>
       </div>
 
       {/* Editable Content Area */}

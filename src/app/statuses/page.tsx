@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useIntl } from "react-intl";
 import { Plus, Edit2, Trash2, GripVertical, Activity } from "lucide-react";
 import { useStatuses, Status } from "@/hooks/useStatuses";
+import { Button } from "@/components/ui/Button";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function StatusesPage() {
   const intl = useIntl();
@@ -64,7 +66,11 @@ export default function StatusesPage() {
   // Delete Status Handler
   const handleDeleteStatus = async (id: string) => {
     if (confirm(intl.formatMessage({ id: "confirm.delete" }))) {
-      await deleteStatus(id);
+      try {
+        await deleteStatus(id);
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -136,20 +142,11 @@ export default function StatusesPage() {
   return (
     <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 transition-colors duration-200">
       <div className="max-w-2xl mx-auto space-y-6">
-        {/* Title Section */}
-        <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-tr from-violet-600 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-violet-500/20">
-            <Activity className="w-5 h-5" />
-          </div>
-          <div>
-            <h2 className="text-lg font-bold text-text-primary leading-tight">
-              {intl.formatMessage({ id: "status.manage" })}
-            </h2>
-            <p className="text-xs text-text-muted">
-              {intl.formatMessage({ id: "status.subtitle", defaultMessage: "Manage workflow statuses and drag to reorder them." })}
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          title={intl.formatMessage({ id: "status.manage" })}
+          description={intl.formatMessage({ id: "status.subtitle", defaultMessage: "Manage workflow statuses and drag to reorder them." })}
+          icon={<Activity />}
+        />
 
         {/* Quick Add Form */}
         <form onSubmit={handleAddStatus} className="flex flex-row gap-3 bg-bg-card p-4 border border-border-ui rounded-2xl items-center shadow-sm transition-all duration-200">
@@ -173,13 +170,13 @@ export default function StatusesPage() {
                 />
               </div>
             </div>
-            <button
+            <Button
               type="submit"
-              className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-sm transition-all active:scale-95 ml-auto sm:ml-0 cursor-pointer md:min-w-[150px]"
+              className="ml-auto sm:ml-0 md:min-w-[150px]"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden md:inline">{intl.formatMessage({ id: "status.add" })}</span>
-            </button>
+            </Button>
           </div>
         </form>
 
@@ -225,18 +222,20 @@ export default function StatusesPage() {
                           />
                         </div>
                       </div>
-                      <button
+                      <Button
                         onClick={() => handleUpdateStatus(stat.id)}
-                        className="bg-accent-primary hover:bg-accent-hover text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-sm transition-colors cursor-pointer"
+                        variant="default"
+                        size="sm"
                       >
                         {intl.formatMessage({ id: "button.save" })}
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => setEditingStatus(null)}
-                        className="bg-bg-input hover:bg-bg-card border border-border-ui text-text-muted hover:text-text-primary px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                        variant="outline"
+                        size="sm"
                       >
                         {intl.formatMessage({ id: "button.cancel" })}
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ) : (
@@ -255,32 +254,36 @@ export default function StatusesPage() {
                         {index + 1}.
                       </span>
                       <span
-                        className="w-3 h-3 rounded-full border border-border-ui/50 shadow-inner"
+                        className="w-3 h-3 rounded-full border border-border-ui/50 shadow-inner min-w-3"
                         style={{ backgroundColor: stat.color, boxShadow: `0 0 8px ${stat.color}30` }}
                       />
-                      <span className="text-text-primary font-medium text-sm">
+                      <span className="text-text-primary font-medium text-sm break-all">
                         {stat.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
-                      <button
+                      <Button
                         onClick={() => {
                           setEditingStatus(stat);
                           setEditStatusName(stat.name);
                           setEditStatusColor(stat.color);
                         }}
-                        className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer h-8 w-8"
                         title={intl.formatMessage({ id: "button.edit" })}
                       >
                         <Edit2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => handleDeleteStatus(stat.id)}
-                        className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                        variant="ghost"
+                        size="icon"
+                        className="hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer h-8 w-8"
                         title={intl.formatMessage({ id: "button.delete" })}
                       >
                         <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                      </button>
+                      </Button>
                     </div>
                   </>
                 )}

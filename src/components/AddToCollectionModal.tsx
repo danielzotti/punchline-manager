@@ -6,6 +6,7 @@ import { getCollections, createCollection, updateCollectionItems, getCollectionB
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/Toast';
+import { Button } from '@/components/ui/Button';
 
 interface AddToCollectionModalProps {
   isOpen: boolean;
@@ -125,20 +126,21 @@ export default function AddToCollectionModal({ isOpen, onClose, selectedPunchlin
       <div className="bg-bg-card border border-border-ui rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col max-h-[80vh] animate-slide-up">
         <div className="px-6 py-4 border-b border-border-ui flex items-center justify-between">
           <h3 className="text-lg font-bold text-text-primary">{intl.formatMessage({ id: 'collections.add_to_collection' })}</h3>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary p-1.5 hover:bg-bg-input rounded-xl transition-colors">
+          <Button onClick={onClose} variant="ghost" size="icon" className="text-text-muted hover:text-text-primary p-1.5 hover:bg-bg-input rounded-xl transition-colors h-auto w-auto">
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
         <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-4">
           {!isCreating ? (
             <>
-              <button
+              <Button
                 onClick={() => setIsCreating(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 border border-dashed border-accent-primary text-accent-primary rounded-xl font-semibold hover:bg-accent-primary/10 transition-colors"
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2 py-3 border border-dashed border-accent-primary text-accent-primary rounded-xl font-semibold hover:bg-accent-primary/10 transition-colors h-auto justify-center"
               >
                 <Plus className="w-5 h-5" /> {intl.formatMessage({ id: 'collections.new_collection' })}
-              </button>
+              </Button>
 
               <div className="flex flex-col gap-2 mt-4">
                 <span className="text-xs font-bold text-text-muted uppercase tracking-wider">{intl.formatMessage({ id: 'collections.existing_collections' })}</span>
@@ -150,13 +152,14 @@ export default function AddToCollectionModal({ isOpen, onClose, selectedPunchlin
                   collections.map(c => {
                     const itemCount = c.collection_items[0]?.count || 0;
                     return (
-                      <button
+                      <Button
                         key={c.id}
                         disabled={isSaving}
                         onClick={() => handleAddToCollection(c.id)}
-                        className="flex items-center justify-between p-4 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-left transition-colors"
+                        variant="ghost"
+                        className="flex items-center justify-between p-4 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-left transition-colors h-auto w-full font-normal"
                       >
-                        <div>
+                        <div className="text-left">
                           <p className="font-semibold text-text-primary">{c.title}</p>
                           <p className="text-xs text-text-muted">
                             {new Date(c.date).toLocaleDateString()} • {intl.formatMessage(
@@ -166,7 +169,7 @@ export default function AddToCollectionModal({ isOpen, onClose, selectedPunchlin
                           </p>
                         </div>
                         <Plus className="w-4 h-4 text-accent-primary" />
-                      </button>
+                      </Button>
                     );
                   })
                 )}
@@ -188,20 +191,21 @@ export default function AddToCollectionModal({ isOpen, onClose, selectedPunchlin
                 />
               </div>
               <div className="flex gap-2 justify-end mt-2">
-                <button
+                <Button
                   type="button"
                   onClick={() => setIsCreating(false)}
-                  className="px-4 py-2 text-sm font-medium text-text-muted hover:text-text-primary transition-colors"
+                  variant="ghost"
+                  className="px-4 py-2 text-sm font-medium text-text-muted hover:text-text-primary transition-colors h-auto w-auto"
                 >
                   {intl.formatMessage({ id: 'button.cancel' })}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={!newTitle.trim() || isSaving}
-                  className="bg-accent-primary text-white font-semibold text-sm px-4 py-2 rounded-xl flex items-center gap-2 disabled:opacity-50"
+                  className="bg-accent-primary text-white font-semibold text-sm px-4 py-2 rounded-xl flex items-center gap-2 disabled:opacity-50 h-auto w-auto"
                 >
                   {intl.formatMessage({ id: 'collections.create_and_add' })}
-                </button>
+                </Button>
               </div>
             </form>
           )}

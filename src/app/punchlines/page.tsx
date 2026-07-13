@@ -318,7 +318,7 @@ export default function PunchlinesPage() {
 
                   {item.status ? (
                     <span
-                      className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm"
+                      className="px-2.5 py-0.5 rounded-full text-xs font-semibold border shadow-sm break-all"
                       style={{
                         backgroundColor: `${item.status.color}15`,
                         color: item.status.color,
@@ -330,26 +330,30 @@ export default function PunchlinesPage() {
                   ) : null}
                 </div>
                 <div className="flex items-center gap-1.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleOpenPunchlineModal(item);
                     }}
-                    className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer"
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-bg-input text-text-muted hover:text-text-primary rounded-lg transition-colors cursor-pointer h-8 w-8"
                     title={intl.formatMessage({ id: "button.edit" })}
                   >
                     <Edit2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeletePunchline(item.id);
                     }}
-                    className="p-2 md:p-1.5 bg-bg-input/60 md:bg-transparent hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                    variant="ghost"
+                    size="icon"
+                    className="hover:bg-red-500/10 text-text-muted hover:text-red-500 rounded-lg transition-colors cursor-pointer h-8 w-8"
                     title={intl.formatMessage({ id: "button.delete" })}
                   >
                     <Trash2 className="w-4 h-4 md:w-3.5 md:h-3.5" />
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -473,12 +477,13 @@ export default function PunchlinesPage() {
 
             {/* Clear Button */}
             <div className="flex items-end justify-end pt-4 md:pt-0">
-              <button
+              <Button
                 onClick={clearFilters}
-                className="w-full md:w-auto px-4 py-2.5 text-xs font-semibold text-text-muted hover:text-text-primary transition-colors border border-border-ui rounded-xl hover:bg-bg-input cursor-pointer"
+                variant="outline"
+                className="w-full md:w-auto h-auto py-2.5"
               >
                 {intl.formatMessage({ id: "filter.clear" })}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -490,29 +495,30 @@ export default function PunchlinesPage() {
       {/* Action Bar for Collections */}
       {selectedPunchlineIds.length > 0 && (
         <div className="fixed bottom-24 xl:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-bg-card border border-border-ui shadow-2xl rounded-2xl px-4 py-3 md:px-6 md:py-4 flex items-center gap-3 md:gap-4 animate-slide-up max-w-[calc(100vw-2rem)] w-max">
-          <button
+          <Button
             onClick={() => setIsAddToCollectionModalOpen(true)}
-            className="bg-gradient-to-r from-violet-600 to-indigo-400 text-white font-semibold text-sm px-4 py-2 rounded-xl"
+            className="bg-gradient-to-r from-violet-600 to-indigo-400 text-white font-semibold text-sm px-4 py-2 rounded-xl h-auto"
           >
             {intl.formatMessage({ id: "collections.add_selected_to_collection" }, { count: selectedPunchlineIds.length })}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setSelectedPunchlineIds([])}
-            className="text-text-muted hover:text-text-primary p-2"
+            variant="ghost"
+            className="text-text-muted hover:text-text-primary p-2 h-auto w-auto"
           >
             <X className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       )}
 
       {/* Floating Action Button (Mobile Only) */}
-      <button
+      <Button
         onClick={() => handleOpenPunchlineModal()}
-        className="md:hidden fixed bottom-24 right-6 z-45 bg-gradient-to-tr from-violet-600 to-indigo-400 text-white p-4 rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border border-accent-primary/20 cursor-pointer"
+        className="md:hidden fixed bottom-24 right-6 z-45 bg-gradient-to-tr from-violet-600 to-indigo-400 text-white p-4 rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all border border-accent-primary/20 cursor-pointer h-14 w-14"
         title={intl.formatMessage({ id: "button.add_punchline" })}
       >
         <Plus className="w-6 h-6" />
-      </button>
+      </Button>
 
       {/* Punchline Creation/Editing Modal & Mobile Bottom Sheet */}
       {isPunchlineModalOpen && (
@@ -525,12 +531,14 @@ export default function PunchlinesPage() {
                   ? intl.formatMessage({ id: "punchline.edit_title" })
                   : intl.formatMessage({ id: "punchline.create_title" })}
               </h3>
-              <button
+              <Button
                 onClick={() => setIsPunchlineModalOpen(false)}
-                className="text-text-muted hover:text-text-primary p-1.5 hover:bg-bg-input rounded-xl transition-colors cursor-pointer"
+                variant="ghost"
+                size="icon"
+                className="text-text-muted hover:text-text-primary p-1.5 hover:bg-bg-input rounded-xl transition-colors cursor-pointer h-auto w-auto"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
 
             {/* Modal Form */}
@@ -587,18 +595,19 @@ export default function PunchlinesPage() {
                     {categories.map((cat) => {
                       const isSelected = punchlineCategoryIds.includes(cat.id);
                       return (
-                        <button
+                        <Button
                           type="button"
                           key={cat.id}
                           onClick={() => toggleFormCategory(cat.id)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${isSelected
+                          variant="ghost"
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer h-auto w-auto font-normal ${isSelected
                             ? "bg-accent-primary/10 border-accent-primary text-accent-primary shadow-sm"
                             : "bg-bg-card border-border-ui text-text-muted hover:border-accent-primary/40 hover:text-text-primary"
                             }`}
                         >
                           {isSelected && <Check className="w-3 h-3" />}
                           {cat.name}
-                        </button>
+                        </Button>
                       );
                     })}
                   </div>
@@ -619,34 +628,36 @@ export default function PunchlinesPage() {
                     placeholder={intl.formatMessage({ id: "category.name" })}
                     className="flex-1 bg-bg-input border border-border-ui rounded-xl px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:border-accent-primary placeholder-text-muted-light transition-all duration-200"
                   />
-                  <button
+                  <Button
                     type="button"
                     onClick={() => handleCreateCategory()}
                     disabled={isCreatingCategory || !newCategoryName.trim()}
-                    className="bg-accent-primary/10 border border-accent-primary/20 hover:border-accent-primary text-accent-primary disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all"
+                    variant="outline"
+                    className="border-accent-primary/20 hover:border-accent-primary text-accent-primary disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all h-auto"
                   >
                     <Plus className="w-4 h-4" />
                     <span className="hidden md:inline">{intl.formatMessage({ id: "category.add" })}</span>
-                  </button>
+                  </Button>
                 </div>
               </div>
 
               {/* Buttons */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-border-ui transition-colors duration-200">
-                <button
+                <Button
                   type="button"
                   onClick={() => setIsPunchlineModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-text-muted hover:text-text-primary transition-colors cursor-pointer"
+                  variant="ghost"
+                  className="px-4 py-2 text-sm font-medium text-text-muted hover:text-text-primary transition-colors cursor-pointer h-auto w-auto"
                 >
                   {intl.formatMessage({ id: "button.cancel" })}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
                   disabled={isFormTextEmpty}
-                  className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all cursor-pointer"
+                  className="bg-gradient-to-r from-violet-600 to-indigo-400 hover:from-violet-750 hover:to-indigo-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all cursor-pointer h-auto"
                 >
                   {intl.formatMessage({ id: "button.save" })}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
@@ -658,10 +669,11 @@ export default function PunchlinesPage() {
           {/* Top toolbar */}
           <div className="flex items-center gap-2 md:gap-3 absolute top-2 right-2 md:top-4 md:right-4">
             {/* Fullscreen Toggle */}
-            <button
+            <Button
               type="button"
               onClick={toggleFullscreen}
-              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center"
+              variant="outline"
+              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto"
               title={isFullscreen ? "Disattiva schermo intero" : "Schermo intero"}
             >
               {isFullscreen ? (
@@ -669,45 +681,49 @@ export default function PunchlinesPage() {
               ) : (
                 <Maximize2 className="w-4 h-4 md:w-5 h-5" />
               )}
-            </button>
+            </Button>
 
             {/* Font controls */}
             <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
-              <button
+              <Button
                 type="button"
                 onClick={() => setReadingFontSize((prev) => Math.max(16, prev - 4))}
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                variant="ghost"
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer h-auto w-auto"
                 title={intl.formatMessage({ id: "reading.zoom_out", defaultMessage: "Rimpicciolisci testo" })}
               >
                 <ZoomOut className="w-4 h-4 md:w-5 h-5" />
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => setReadingFontSize(24)}
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer"
+                variant="ghost"
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer h-auto w-auto"
                 title={intl.formatMessage({ id: "reading.reset", defaultMessage: "Ripristina" })}
               >
                 <RotateCcw className="w-3.5 h-3.5 md:w-4 md:h-4" />
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={() => setReadingFontSize((prev) => Math.min(80, prev + 4))}
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer"
+                variant="ghost"
+                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer h-auto w-auto"
                 title={intl.formatMessage({ id: "reading.zoom_in", defaultMessage: "Ingrandisci testo" })}
               >
                 <ZoomIn className="w-4 h-4 md:w-5 h-5" />
-              </button>
+              </Button>
             </div>
 
             {/* Close Button */}
-            <button
+            <Button
               type="button"
               onClick={() => setReadingPunchline(null)}
-              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm"
+              variant="outline"
+              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm h-auto w-auto"
               title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
             >
               <X className="w-5 h-5" />
-            </button>
+            </Button>
           </div>
 
           {/* Content Area */}
