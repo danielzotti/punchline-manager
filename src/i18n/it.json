@@ -120,5 +120,7 @@
   "collections.no_collections_modal": "Nessuna raccolta.",
   "collections.new_collection_title": "Titolo Nuova Raccolta",
   "collections.new_collection_placeholder": "Es. Spettacolo Milano...",
-  "collections.create_and_add": "Crea e Aggiungi"
+  "collections.create_and_add": "Crea e Aggiungi",
+  "collections.error_all_duplicates": "Tutte le punchline selezionate sono già presenti nella raccolta.",
+  "collections.info_duplicates_skipped": "Alcune punchline erano già presenti e sono state saltate."
 }

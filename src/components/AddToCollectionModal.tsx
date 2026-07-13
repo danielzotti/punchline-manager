@@ -5,6 +5,7 @@ import { X, Plus, Check } from 'lucide-react';
 import { getCollections, createCollection, updateCollectionItems, getCollectionById } from '@/app/actions/collections';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/Toast';
 
 interface AddToCollectionModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface AddToCollectionModalProps {
 export default function AddToCollectionModal({ isOpen, onClose, selectedPunchlineIds, onSuccess }: AddToCollectionModalProps) {
   const intl = useIntl();
   const router = useRouter();
+  const { error, info } = useToast();
   const [collections, setCollections] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
@@ -77,7 +79,27 @@ export default function AddToCollectionModal({ isOpen, onClose, selectedPunchlin
       // Fetch existing items to append to them
       const collection = await getCollectionById(collectionId);
       const existingItems = collection.collection_items || [];
-      const newItems = selectedPunchlineIds.map((id, index) => ({
+      const existingPunchlineIds = new Set(
+        existingItems
+          .filter((item: any) => item.item_type === 'punchline')
+          .map((item: any) => item.punchline_id)
+      );
+
+      const uniqueSelectedIds = Array.from(new Set(selectedPunchlineIds)).filter(
+        (id) => !existingPunchlineIds.has(id)
+      );
+
+      if (uniqueSelectedIds.length === 0) {
+        error(intl.formatMessage({ id: 'collections.error_all_duplicates' }));
+        setIsSaving(false);
+        return;
+      }
+
+      if (uniqueSelectedIds.length < Array.from(new Set(selectedPunchlineIds)).length) {
+        info(intl.formatMessage({ id: 'collections.info_duplicates_skipped' }));
+      }
+
+      const newItems = uniqueSelectedIds.map((id, index) => ({
         collection_id: collectionId,
         position: existingItems.length + index,
         item_type: 'punchline',

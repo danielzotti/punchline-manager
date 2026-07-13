@@ -120,6 +120,8 @@
   "collections.no_collections_modal": "No collections.",
   "collections.new_collection_title": "New Collection Title",
   "collections.new_collection_placeholder": "e.g., Milan Show...",
-  "collections.create_and_add": "Create and Add"
+  "collections.create_and_add": "Create and Add",
+  "collections.error_all_duplicates": "All selected punchlines are already in the collection.",
+  "collections.info_duplicates_skipped": "Some punchlines were already in the collection and were skipped."
 }
 
