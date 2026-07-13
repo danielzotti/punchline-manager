@@ -161,6 +161,20 @@ export default function CategoriesPage() {
                 )}
               </div>
             ))}
+
+            {categories.length === 0 && (
+              <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-bg-card">
+                <div className="bg-bg-input p-3 rounded-full text-text-muted">
+                  <Tag className="w-8 h-8" />
+                </div>
+                <h3 className="text-sm font-bold text-text-primary">
+                  {intl.formatMessage({ id: "category.no_categories" })}
+                </h3>
+                <p className="text-xs text-text-muted max-w-xs">
+                  {intl.formatMessage({ id: "category.no_categories_description" })}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

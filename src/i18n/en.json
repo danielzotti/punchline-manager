@@ -122,6 +122,11 @@
   "collections.new_collection_placeholder": "e.g., Milan Show...",
   "collections.create_and_add": "Create and Add",
   "collections.error_all_duplicates": "All selected punchlines are already in the collection.",
-  "collections.info_duplicates_skipped": "Some punchlines were already in the collection and were skipped."
+  "collections.info_duplicates_skipped": "Some punchlines were already in the collection and were skipped.",
+  "collections.unsaved_changes": "You have unsaved changes. Do you really want to leave the page?",
+  "category.no_categories": "No categories created",
+  "category.no_categories_description": "Create a category by entering a name in the form above.",
+  "status.no_statuses": "No statuses created",
+  "status.no_statuses_description": "Create a status by entering a name in the form above."
 }
 

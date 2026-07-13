@@ -193,11 +193,11 @@ export default function StatusesPage() {
                 onDragStart={() => handleDragStart(index)}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDrop(index)}
-                className={`p-4 flex items-center justify-between transition-colors duration-200 group ${draggedIndex === index
+                className={`p-4 flex items-center justify-between transition-colors duration-200 group hover:bg-bg-input/30 ${draggedIndex === index
                   ? "opacity-35 bg-bg-input/80 border-t border-b border-accent-primary/20 scale-[0.99] shadow-inner"
                   : touchTargetIndex === index
-                    ? "bg-accent-primary/10 border-t border-b border-dashed border-accent-primary/40"
-                    : "hover:bg-bg-input/30"
+                    ? "bg-accent-primary/10 border border-dashed border-accent-primary/40 scale-[1.01]"
+                    : ""
                   }`}
               >
                 {editingStatus?.id === stat.id ? (
@@ -208,20 +208,16 @@ export default function StatusesPage() {
                       onChange={(e) => setEditStatusName(e.target.value)}
                       className="w-full sm:flex-1 bg-bg-input border border-border-ui rounded-xl px-4 py-2 text-sm text-text-primary focus:outline-none focus:border-accent-primary transition-all duration-200"
                     />
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={editStatusColor}
+                        onChange={(e) => setEditStatusColor(e.target.value)}
+                        className="w-8 h-8 rounded border border-border-ui bg-transparent cursor-pointer"
+                      />
+                      <span className="text-xs text-text-muted">{intl.formatMessage({ id: "status.color_label", defaultMessage: "Colore:" })}</span>
+                    </div>
                     <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-text-muted-light font-bold uppercase">
-                          {intl.formatMessage({ id: "status.color_label", defaultMessage: "Color:" })}
-                        </span>
-                        <div className="relative w-7 h-7 rounded-full overflow-hidden border border-border-ui bg-bg-input flex items-center justify-center cursor-pointer shadow-inner">
-                          <input
-                            type="color"
-                            value={editStatusColor}
-                            onChange={(e) => setEditStatusColor(e.target.value)}
-                            className="absolute inset-0 w-full h-full p-0 border-0 cursor-pointer scale-150"
-                          />
-                        </div>
-                      </div>
                       <Button
                         onClick={() => handleUpdateStatus(stat.id)}
                         variant="default"
@@ -289,6 +285,20 @@ export default function StatusesPage() {
                 )}
               </div>
             ))}
+
+            {statuses.length === 0 && (
+              <div className="p-12 text-center flex flex-col items-center justify-center gap-3 bg-bg-card">
+                <div className="bg-bg-input p-3 rounded-full text-text-muted">
+                  <Activity className="w-8 h-8" />
+                </div>
+                <h3 className="text-sm font-bold text-text-primary">
+                  {intl.formatMessage({ id: "status.no_statuses" })}
+                </h3>
+                <p className="text-xs text-text-muted max-w-xs">
+                  {intl.formatMessage({ id: "status.no_statuses_description" })}
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

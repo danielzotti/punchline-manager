@@ -122,5 +122,10 @@
   "collections.new_collection_placeholder": "Es. Spettacolo Milano...",
   "collections.create_and_add": "Crea e Aggiungi",
   "collections.error_all_duplicates": "Tutte le punchline selezionate sono già presenti nella raccolta.",
-  "collections.info_duplicates_skipped": "Alcune punchline erano già presenti e sono state saltate."
+  "collections.info_duplicates_skipped": "Alcune punchline erano già presenti e sono state saltate.",
+  "collections.unsaved_changes": "Hai delle modifiche non salvate. Vuoi davvero lasciare la pagina?",
+  "category.no_categories": "Nessuna categoria creata",
+  "category.no_categories_description": "Crea una categoria inserendo il nome nel modulo sopra.",
+  "status.no_statuses": "Nessuno stato creato",
+  "status.no_statuses_description": "Crea uno stato inserendo il nome nel modulo sopra."
 }

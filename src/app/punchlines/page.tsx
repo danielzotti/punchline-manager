@@ -127,15 +127,75 @@ export default function PunchlinesPage() {
   const [readingFontSize, setReadingFontSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Sync modal states with URL hash
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      setIsPunchlineModalOpen(hash === '#add-edit');
+      setIsAddToCollectionModalOpen(hash === '#add-to-collection');
+      if (hash !== '#read') {
+        setReadingPunchline(null);
+      }
     };
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange();
+
     return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      window.removeEventListener('hashchange', handleHashChange);
     };
   }, []);
+
+  const openAddEditModal = (punchline?: Punchline) => {
+    if (punchline) {
+      setEditingPunchline(punchline);
+      setPunchlineText(punchline.text);
+      setPunchlineNotes(punchline.notes || "");
+      setPunchlineStatusId(punchline.status_id || "");
+      setPunchlineCategoryIds(punchline.punchline_categories.map((pc) => pc.category_id));
+    } else {
+      setEditingPunchline(null);
+      setPunchlineText("");
+      setPunchlineNotes("");
+      setPunchlineStatusId(statuses[0]?.id || "");
+      setPunchlineCategoryIds([]);
+    }
+    window.location.hash = 'add-edit';
+  };
+
+  const closeAddEditModal = () => {
+    if (window.location.hash === '#add-edit') {
+      window.history.back();
+    } else {
+      setIsPunchlineModalOpen(false);
+      setEditingPunchline(null);
+    }
+  };
+
+  const openAddToCollection = () => {
+    window.location.hash = 'add-to-collection';
+  };
+
+  const closeAddToCollection = () => {
+    if (window.location.hash === '#add-to-collection') {
+      window.history.back();
+    } else {
+      setIsAddToCollectionModalOpen(false);
+    }
+  };
+
+  const openReading = (punchline: Punchline) => {
+    setReadingPunchline(punchline);
+    window.location.hash = 'read';
+  };
+
+  const closeReading = () => {
+    if (window.location.hash === '#read') {
+      window.history.back();
+    } else {
+      setReadingPunchline(null);
+    }
+  };
 
   const toggleFullscreen = async () => {
     try {
@@ -153,7 +213,7 @@ export default function PunchlinesPage() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setReadingPunchline(null);
+        closeReading();
       }
     };
     if (readingPunchline) {
@@ -190,20 +250,7 @@ export default function PunchlinesPage() {
   };
 
   const handleOpenPunchlineModal = (punchline?: Punchline) => {
-    if (punchline) {
-      setEditingPunchline(punchline);
-      setPunchlineText(punchline.text);
-      setPunchlineNotes(punchline.notes || "");
-      setPunchlineStatusId(punchline.status_id || "");
-      setPunchlineCategoryIds(punchline.punchline_categories.map((pc) => pc.category_id));
-    } else {
-      setEditingPunchline(null);
-      setPunchlineText("");
-      setPunchlineNotes("");
-      setPunchlineStatusId(statuses[0]?.id || "");
-      setPunchlineCategoryIds([]);
-    }
-    setIsPunchlineModalOpen(true);
+    openAddEditModal(punchline);
   };
 
   const handleSavePunchline = async (e: React.FormEvent) => {
@@ -228,7 +275,7 @@ export default function PunchlinesPage() {
           categoryIds: punchlineCategoryIds,
         });
       }
-      setIsPunchlineModalOpen(false);
+      closeAddEditModal();
     } catch (err) {
       console.error("Error saving punchline:", err);
     }
@@ -289,7 +336,7 @@ export default function PunchlinesPage() {
           <div
             key={item.id}
             onClick={() => {
-              setReadingPunchline(item);
+              openReading(item);
               setReadingFontSize(24);
             }}
             className={`bg-bg-card border ${selectedPunchlineIds.includes(item.id) ? 'border-accent-primary ring-1 ring-accent-primary' : 'border-border-ui hover:border-accent-primary/50'} rounded-2xl p-6 flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md shadow-sm group cursor-pointer relative`}
@@ -496,7 +543,7 @@ export default function PunchlinesPage() {
       {selectedPunchlineIds.length > 0 && (
         <div className="fixed bottom-24 xl:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-bg-card border border-border-ui shadow-2xl rounded-2xl px-4 py-3 md:px-6 md:py-4 flex items-center gap-3 md:gap-4 animate-slide-up max-w-[calc(100vw-2rem)] w-max">
           <Button
-            onClick={() => setIsAddToCollectionModalOpen(true)}
+            onClick={openAddToCollection}
             className="bg-gradient-to-r from-violet-600 to-indigo-400 text-white font-semibold text-sm px-4 py-2 rounded-xl h-auto"
           >
             {intl.formatMessage({ id: "collections.add_selected_to_collection" }, { count: selectedPunchlineIds.length })}
@@ -532,7 +579,7 @@ export default function PunchlinesPage() {
                   : intl.formatMessage({ id: "punchline.create_title" })}
               </h3>
               <Button
-                onClick={() => setIsPunchlineModalOpen(false)}
+                onClick={closeAddEditModal}
                 variant="ghost"
                 size="icon"
                 className="text-text-muted hover:text-text-primary p-1.5 hover:bg-bg-input rounded-xl transition-colors cursor-pointer h-auto w-auto"
@@ -645,7 +692,7 @@ export default function PunchlinesPage() {
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-border-ui transition-colors duration-200">
                 <Button
                   type="button"
-                  onClick={() => setIsPunchlineModalOpen(false)}
+                  onClick={closeAddEditModal}
                   variant="ghost"
                   className="px-4 py-2 text-sm font-medium text-text-muted hover:text-text-primary transition-colors cursor-pointer h-auto w-auto"
                 >
@@ -717,7 +764,7 @@ export default function PunchlinesPage() {
             {/* Close Button */}
             <Button
               type="button"
-              onClick={() => setReadingPunchline(null)}
+              onClick={closeReading}
               variant="outline"
               className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm h-auto w-auto"
               title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
@@ -765,7 +812,7 @@ export default function PunchlinesPage() {
       {/* Add To Collection Modal */}
       <AddToCollectionModal
         isOpen={isAddToCollectionModalOpen}
-        onClose={() => setIsAddToCollectionModalOpen(false)}
+        onClose={closeAddToCollection}
         selectedPunchlineIds={selectedPunchlineIds}
         onSuccess={() => setSelectedPunchlineIds([])}
       />

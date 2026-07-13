@@ -126,6 +126,124 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [readingFontSize, setReadingFontSize] = useState(24);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [initialData, setInitialData] = useState<{ title: string; date: string; items: any[] } | null>(null);
+
+  const hasChanges = (() => {
+    if (!initialData) return false;
+    if (title !== initialData.title) return true;
+    if (date !== initialData.date) return true;
+    if (items.length !== initialData.items.length) return true;
+    for (let i = 0; i < items.length; i++) {
+      const current = items[i];
+      const initial = initialData.items[i];
+      if (current.id !== initial.id) return true;
+      if (current.item_type !== initial.item_type) return true;
+      if (current.text_content !== initial.text_content) return true;
+      if (current.punchline?.id !== initial.punchline?.id) return true;
+    }
+    return false;
+  })();
+
+  // Warn before browser tab close/reload
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasChanges]);
+
+  // Intercept click on internal links
+  useEffect(() => {
+    if (!hasChanges) return;
+
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a');
+      if (anchor) {
+        const href = anchor.getAttribute('href');
+        if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+          const leave = window.confirm(
+            intl.formatMessage({
+              id: 'collections.unsaved_changes',
+              defaultMessage: 'Hai delle modifiche non salvate. Vuoi davvero lasciare la pagina?'
+            })
+          );
+          if (!leave) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick, true);
+    return () => {
+      document.removeEventListener('click', handleAnchorClick, true);
+    };
+  }, [hasChanges, intl]);
+
+  // Intercept back/forward browser navigation
+  useEffect(() => {
+    if (!hasChanges) return;
+
+    if (window.history.state?.noLeave !== true) {
+      window.history.pushState({ noLeave: true }, '', window.location.href);
+    }
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state?.noLeave === true) {
+        return;
+      }
+
+      const leave = window.confirm(
+        intl.formatMessage({
+          id: 'collections.unsaved_changes',
+          defaultMessage: 'Hai delle modifiche non salvate. Vuoi davvero lasciare la pagina?'
+        })
+      );
+
+      if (leave) {
+        setInitialData(null);
+        window.history.back();
+      } else {
+        window.history.forward();
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [hasChanges, intl]);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setIsPreviewOpen(window.location.hash === '#preview');
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange();
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+
+  const openPreview = () => {
+    window.location.hash = 'preview';
+  };
+
+  const closePreview = () => {
+    if (window.location.hash === '#preview') {
+      window.history.back();
+    } else {
+      setIsPreviewOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -152,7 +270,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setIsPreviewOpen(false);
+        closePreview();
       }
     };
     if (isPreviewOpen) {
@@ -184,9 +302,15 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
       const data = await getCollectionById(id);
       setCollection(data);
       setTitle(data.title);
-      setDate(data.date.split('T')[0]); // YYYY-MM-DD
+      const parsedDate = data.date.split('T')[0];
+      setDate(parsedDate); // YYYY-MM-DD
       const sortedItems = [...(data.collection_items || [])].sort((a, b) => a.position - b.position);
       setItems(sortedItems);
+      setInitialData({
+        title: data.title,
+        date: parsedDate,
+        items: sortedItems
+      });
     } catch (err) {
       console.error(err);
     }
@@ -249,6 +373,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
     if (confirm(intl.formatMessage({ id: 'confirm.delete' }))) {
       try {
         await deleteCollection(id);
+        setInitialData(null); // Clear initialData to bypass warning before navigation
         router.push('/collections');
       } catch (err) {
         console.error(err);
@@ -267,6 +392,12 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
         position: idx
       }));
       await updateCollectionItems(id, itemsToSave);
+
+      setInitialData({
+        title,
+        date,
+        items
+      });
 
       success(intl.formatMessage({ id: 'collections.success_save' }));
     } catch (err) {
@@ -354,7 +485,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
           <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-2 items-stretch sm:items-center lg:items-stretch xl:items-center justify-end w-full lg:w-auto self-end">
             <div className="flex gap-2 flex-1 sm:flex-none">
               <Button
-                onClick={() => setIsPreviewOpen(true)}
+                onClick={openPreview}
                 variant="ghost"
                 className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer h-auto"
               >
@@ -489,7 +620,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
             {/* Close Button */}
             <Button
               type="button"
-              onClick={() => setIsPreviewOpen(false)}
+              onClick={closePreview}
               variant="outline"
               className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm h-auto w-auto"
               title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
