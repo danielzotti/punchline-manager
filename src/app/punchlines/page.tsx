@@ -1,35 +1,33 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useIntl } from "react-intl";
-import { usePunchlines, Punchline } from "@/hooks/usePunchlines";
-import { useCategories } from "@/hooks/useCategories";
-import { useStatuses } from "@/hooks/useStatuses";
-import RichTextEditor from "@/components/RichTextEditor";
-import CategoryAutocomplete from "@/components/CategoryAutocomplete";
 import AddToCollectionModal from "@/components/AddToCollectionModal";
+import CategoryAutocomplete from "@/components/CategoryAutocomplete";
 import { PageHeader } from "@/components/PageHeader";
+import RichTextEditor from "@/components/RichTextEditor";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { NoData } from "@/components/ui/NoData";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import { useCategories } from "@/hooks/useCategories";
+import { Punchline, usePunchlines } from "@/hooks/usePunchlines";
+import { useStatuses } from "@/hooks/useStatuses";
 import {
-  Search,
-  Plus,
-  Edit2,
-  Trash2,
   Check,
-  X,
-  SlidersHorizontal,
-  ZoomIn,
-  ZoomOut,
-  RotateCcw,
-  Maximize2,
-  Minimize2,
   ChevronDown,
-  MessageSquare
+  Edit2,
+  Maximize2,
+  MessageSquare,
+  Minimize2,
+  Plus,
+  RotateCcw,
+  Search,
+  SlidersHorizontal,
+  Trash2,
+  X,
+  ZoomIn,
+  ZoomOut
 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useIntl } from "react-intl";
 
 interface ClampedPunchlineTextProps {
   text: string;
@@ -323,10 +321,13 @@ export default function PunchlinesPage() {
 
     if (punchlines.length === 0) {
       return (
-        <NoData
-          icon={MessageSquare}
-          title={intl.formatMessage({ id: "punchline.no_results" })}
-        />
+        <div className="border border-border-ui rounded-2xl">
+          <NoData
+            icon={MessageSquare}
+            title={intl.formatMessage({ id: "punchline.no_results" })}
+            description={intl.formatMessage({ id: "punchline.no_results_description" })}
+          />
+        </div>
       );
     }
 
@@ -783,29 +784,6 @@ export default function PunchlinesPage() {
               />
             </div>
           </div>
-
-          {/* Optional Footer/Metadata (minimal) */}
-          {/* <div className="flex items-center justify-between w-full max-w-5xl mx-auto border-t border-border-ui/60 pt-4 text-xs text-text-muted">
-            <div>
-              {readingPunchline.punchline_categories && readingPunchline.punchline_categories.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {readingPunchline.punchline_categories.map((pc) => (
-                    <span
-                      key={pc.id}
-                      className="bg-bg-input text-text-muted px-2 py-0.5 rounded text-[10px] font-semibold border border-border-ui"
-                    >
-                      {pc.category?.name || "..."}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-            {readingPunchline.notes && (
-              <span className="italic max-w-md truncate" title={readingPunchline.notes}>
-                {intl.formatMessage({ id: "punchline.notes" })}: {readingPunchline.notes}
-              </span>
-            )}
-          </div> */}
         </div>
       )}
 

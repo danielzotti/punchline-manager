@@ -19,7 +19,8 @@
   "punchline.notes": "Notes",
   "punchline.status": "Status",
   "punchline.categories": "Categories",
-  "punchline.no_results": "No punchlines found matching the filters.",
+  "punchline.no_results": "No punchlines found",
+  "punchline.no_results_description": "Try adjusting your filters or adding a new punchline.",
   "punchline.create_title": "Create Punchline",
   "punchline.edit_title": "Edit Punchline",
   "nav.punchlines": "Punchlines",
@@ -129,4 +130,3 @@
   "status.no_statuses": "No statuses created",
   "status.no_statuses_description": "Create a status by entering a name in the form above."
 }
-
