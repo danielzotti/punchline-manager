@@ -61,25 +61,21 @@ export default function CategoryAutocomplete({
   );
 
   return (
-    <div ref={containerRef} className="space-y-3 relative">
+    <div ref={containerRef} className="space-y-2 relative">
       {/* Selected Tags list */}
       {selectedCategories.length > 0 && (
         <div className="flex flex-wrap gap-2 animate-fade-in">
           {selectedCategories.map((cat) => (
-            <span
+            <button
               key={cat.id}
+              type="button"
+              onClick={() => handleRemove(cat.id)}
+              // className="hover:bg-accent-primary/20 rounded-full transition-colors cursor-pointer h-auto w-auto flex justify-between"
               className="bg-accent-primary/10 text-accent-primary px-3 py-1.5 rounded-xl text-xs font-semibold border border-accent-primary/20 flex items-center gap-2 shadow-sm"
             >
               {cat.name}
-              <Button
-                type="button"
-                onClick={() => handleRemove(cat.id)}
-                variant="ghost"
-                className="hover:bg-accent-primary/20 p-0.5 rounded-full transition-colors cursor-pointer h-auto w-auto"
-              >
-                <X className="w-3.5 h-3.5" />
-              </Button>
-            </span>
+              <X className="w-3.5 h-3.5" />
+            </button>
           ))}
         </div>
       )}
@@ -108,18 +104,17 @@ export default function CategoryAutocomplete({
               </div>
             ) : (
               filtered.map((cat) => (
-                <Button
+                <button
                   key={cat.id}
                   type="button"
                   onClick={() => handleSelect(cat.id)}
-                  variant="ghost"
                   className="w-full text-left px-4 py-2.5 text-sm text-text-primary hover:bg-accent-primary/10 hover:text-accent-primary transition-colors flex items-center justify-between cursor-pointer rounded-none font-normal"
                 >
                   <span>{cat.name}</span>
                   <span className="text-[10px] bg-bg-input px-2 py-0.5 rounded text-text-muted">
                     {intl.formatMessage({ id: "common.add", defaultMessage: "Add" })}
                   </span>
-                </Button>
+                </button>
               ))
             )}
           </div>
