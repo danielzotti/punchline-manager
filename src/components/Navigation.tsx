@@ -97,7 +97,7 @@ export default function Navigation() {
       <header className="border-b border-border-ui bg-bg-card/80 backdrop-blur-md sticky top-0 z-40 shadow-sm transition-colors duration-200">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           {/* Logo and Title */}
-          <div className="flex items-center gap-2.5">
+          <Link href="/punchlines" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity cursor-pointer">
             <div className="bg-gradient-to-tr from-violet-600 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-violet-500/20">
               <MicVocal className="w-5 h-5 md:w-6 md:h-6" />
             </div>
@@ -109,7 +109,7 @@ export default function Navigation() {
                 {intl.formatMessage({ id: "app.subtitle" })}
               </p>
             </div>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-3">
             {/* Desktop Navigation Links */}
