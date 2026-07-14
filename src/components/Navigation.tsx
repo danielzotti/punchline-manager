@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useIntl } from "react-intl";
 import { useLanguage } from "@/components/IntlProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe, Library } from "lucide-react";
+import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe, Library, MicVocal } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export default function Navigation() {
@@ -99,7 +99,7 @@ export default function Navigation() {
           {/* Logo and Title */}
           <div className="flex items-center gap-2.5">
             <div className="bg-gradient-to-tr from-violet-600 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-violet-500/20">
-              <FolderKanban className="w-5 h-5 md:w-6 md:h-6" />
+              <MicVocal className="w-5 h-5 md:w-6 md:h-6" />
             </div>
             <div>
               <h1 className="text-base md:text-xl font-bold tracking-tight text-text-primary">
