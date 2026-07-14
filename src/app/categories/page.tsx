@@ -128,7 +128,7 @@ export default function CategoriesPage() {
                 ) : (
                   <>
                     <div className="flex items-center gap-3.5 select-none">
-                      <span className="text-[10px] text-text-muted-light font-mono w-5">
+                      <span className="text-xs text-text-muted-light font-mono w-5">
                         {index + 1}.
                       </span>
                       <span className="text-text-primary font-medium text-sm break-all">

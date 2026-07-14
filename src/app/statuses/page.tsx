@@ -247,7 +247,7 @@ export default function StatusesPage() {
                       >
                         <GripVertical className="w-4 h-4" />
                       </div>
-                      <span className="text-[10px] text-text-muted-light font-mono w-5">
+                      <span className="text-xs text-text-muted-light font-mono w-5">
                         {index + 1}.
                       </span>
                       <span

@@ -105,7 +105,7 @@ export default function Navigation() {
               <h1 className="text-base md:text-xl font-bold tracking-tight text-text-primary">
                 {intl.formatMessage({ id: "app.title" })}
               </h1>
-              <p className="text-[10px] md:text-xs text-text-muted hidden md:block xl:hidden">
+              <p className="text-xs md:text-xs text-text-muted hidden md:block xl:hidden">
                 {intl.formatMessage({ id: "app.subtitle" })}
               </p>
             </div>
@@ -155,7 +155,7 @@ export default function Navigation() {
                   <div className="absolute right-0 mt-2 w-64 bg-bg-card border border-border-ui rounded-2xl shadow-xl z-50 py-3 flex flex-col gap-3 animate-in fade-in slide-in-from-top-2 duration-150">
                     {/* User Info Header */}
                     <div className="px-4 pb-2 border-b border-border-ui/60 flex flex-col">
-                      <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold">
+                      <span className="text-xs text-text-muted uppercase tracking-wider font-semibold">
                         {intl.formatMessage({ id: "profile.logged_in_as", defaultMessage: "Logged in as" })}
                       </span>
                       <span className="text-sm font-semibold text-text-primary truncate" title={user.email}>
@@ -225,7 +225,7 @@ export default function Navigation() {
                           <Button
                             onClick={() => setLocale("it")}
                             variant="ghost"
-                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer h-auto min-h-0 w-auto ${locale === "it"
+                            className={`px-2 py-0.5 rounded text-xs font-semibold transition-all cursor-pointer h-auto min-h-0 w-auto ${locale === "it"
                               ? "bg-accent-primary text-white shadow"
                               : "text-text-muted hover:text-text-primary"
                               }`}
@@ -235,7 +235,7 @@ export default function Navigation() {
                           <Button
                             onClick={() => setLocale("en")}
                             variant="ghost"
-                            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer h-auto min-h-0 w-auto ${locale === "en"
+                            className={`px-2 py-0.5 rounded text-xs font-semibold transition-all cursor-pointer h-auto min-h-0 w-auto ${locale === "en"
                               ? "bg-accent-primary text-white shadow"
                               : "text-text-muted hover:text-text-primary"
                               }`}
@@ -282,7 +282,7 @@ export default function Navigation() {
               <div className={`p-1.5 rounded-lg transition-all ${isActive ? "bg-accent-primary/10" : ""}`}>
                 <Icon className="w-5 h-5" />
               </div>
-              <span className={`text-[10px] tracking-wide font-medium ${isActive ? "font-semibold text-accent-primary" : ""}`}>
+              <span className={`text-xs tracking-wide font-medium ${isActive ? "font-semibold text-accent-primary" : ""}`}>
                 {item.label}
               </span>
             </Link>

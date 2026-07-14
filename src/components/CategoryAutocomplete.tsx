@@ -111,7 +111,7 @@ export default function CategoryAutocomplete({
                   className="w-full text-left px-4 py-2.5 text-sm text-text-primary hover:bg-accent-primary/10 hover:text-accent-primary transition-colors flex items-center justify-between cursor-pointer rounded-none font-normal"
                 >
                   <span>{cat.name}</span>
-                  <span className="text-[10px] bg-bg-input px-2 py-0.5 rounded text-text-muted">
+                  <span className="text-xs bg-bg-input px-2 py-0.5 rounded text-text-muted">
                     {intl.formatMessage({ id: "common.add", defaultMessage: "Add" })}
                   </span>
                 </button>

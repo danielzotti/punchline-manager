@@ -466,7 +466,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
         <div className="flex flex-col justify-between gap-6">
           <div className="flex-1 space-y-4">
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] uppercase font-bold text-text-muted-light tracking-wider">{intl.formatMessage({ id: 'collections.label_title' })}</label>
+              <label className="text-xs uppercase font-bold text-text-muted-light tracking-wider">{intl.formatMessage({ id: 'collections.label_title' })}</label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -474,7 +474,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] uppercase font-bold text-text-muted-light tracking-wider">{intl.formatMessage({ id: 'collections.label_date' })}</label>
+              <label className="text-xs uppercase font-bold text-text-muted-light tracking-wider">{intl.formatMessage({ id: 'collections.label_date' })}</label>
               <input
                 type="date"
                 value={date}

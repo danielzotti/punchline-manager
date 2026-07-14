@@ -427,7 +427,7 @@ export default function PunchlinesPage() {
                 {item.punchline_categories.map((pc) => (
                   <span
                     key={pc.id}
-                    className="bg-bg-input text-text-muted px-2.5 py-0.5 rounded-lg text-[10px] font-semibold border border-border-ui"
+                    className="bg-bg-input text-text-muted px-2.5 py-0.5 rounded-lg text-xs font-semibold border border-border-ui"
                   >
                     {pc.category?.name || "..."}
                   </span>
@@ -495,7 +495,7 @@ export default function PunchlinesPage() {
           <div className={`${isFiltersExpanded ? "flex" : "hidden md:flex"} flex-col md:flex-row gap-4 pt-3 border-t border-border-ui md:items-start justify-between transition-all animate-fade-in`}>
             {/* Status Dropdown */}
             <div className="flex-1 md:max-w-xs">
-              <span className="text-[10px] font-bold text-text-muted uppercase block mb-1.5 tracking-wider">
+              <span className="text-xs font-bold text-text-muted uppercase block mb-1.5 tracking-wider">
                 {intl.formatMessage({ id: "filter.status" })}:
               </span>
               <select
@@ -514,7 +514,7 @@ export default function PunchlinesPage() {
 
             {/* Category Filter */}
             <div className="flex-1 md:mx-4">
-              <span className="text-[10px] font-bold text-text-muted uppercase block mb-1.5 tracking-wider">
+              <span className="text-xs font-bold text-text-muted uppercase block mb-1.5 tracking-wider">
                 {intl.formatMessage({ id: "filter.category" })}:
               </span>
               <CategoryAutocomplete
@@ -738,11 +738,10 @@ export default function PunchlinesPage() {
               type="button"
               onClick={() => setIsReadingFullWidth((prev) => !prev)}
               variant="outline"
-              className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${
-                isReadingFullWidth 
-                  ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20" 
+              className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${isReadingFullWidth
+                  ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20"
                   : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
-              }`}
+                }`}
               title={intl.formatMessage({ id: "reading.full_width", defaultMessage: "Larghezza massima" })}
             >
               <ArrowLeftRight className="w-4 h-4 md:w-5 h-5" />
@@ -793,9 +792,8 @@ export default function PunchlinesPage() {
 
           {/* Content Area */}
           <div className="flex-1 overflow-y-auto w-full px-4">
-            <div className={`flex flex-col min-h-full mx-auto justify-center items-center w-full transition-all duration-300 ${
-              isReadingFullWidth ? "max-w-none px-4 md:px-8" : "max-w-5xl"
-            }`}>
+            <div className={`flex flex-col min-h-full mx-auto justify-center items-center w-full transition-all duration-300 ${isReadingFullWidth ? "max-w-none px-4 md:px-8" : "max-w-5xl"
+              }`}>
               <div
                 className="text-text-primary leading-relaxed rich-text-content break-words w-full selection:bg-accent-primary/20 my-auto pt-12"
                 style={{ fontSize: `${readingFontSize}px` }}

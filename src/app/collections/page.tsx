@@ -105,14 +105,14 @@ export default function CollectionsPage() {
                   className="p-4 flex items-center justify-between transition-colors duration-200 group hover:bg-bg-input/30"
                 >
                   <Link href={`/collections/${collection.id}`} className="flex-1 flex items-center gap-3.5 select-none">
-                    <span className="text-[10px] text-text-muted-light font-mono w-5">
+                    <span className="text-xs text-text-muted-light font-mono w-5">
                       {index + 1}.
                     </span>
                     <div className="flex flex-col min-w-0">
                       <span className="text-text-primary font-medium text-base leading-none group-hover:text-accent-primary transition-colors">
                         {collection.title}
                       </span>
-                      <div className="flex flex-wrap items-center gap-x-3 text-[10px] text-text-muted mt-0.5">
+                      <div className="flex flex-wrap items-center gap-x-3 text-xs text-text-muted mt-0.5">
                         <span className="flex items-center gap-1 shrink-0">
                           <Calendar className="w-3 h-3" />
                           {new Date(collection.date).toLocaleDateString()}
