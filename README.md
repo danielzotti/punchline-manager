@@ -12,16 +12,18 @@ Punchline Manager is a modern web application designed for storing, organizing, 
 ### 🌟 Key Features
 
 - **Punchline Management**: Add, edit, and view personal punchlines with rich text styling and automatic paste cleanup.
+- **Collections Management**: Organize and structure punchlines into custom collections (e.g., setlists, shows). Insert custom narrative/context blocks ("Linked Text") between punchlines, reorder elements, and preview or export the collections to PDF.
 - **Categories and Statuses**: Flexible organization through custom categories (creatable on-the-fly inside forms) and statuses (with drag-and-drop reordering).
+- **Backup & Restore**: Easily export all application data (punchlines, collections, categories, and statuses) to a JSON file and restore it without losing existing data.
 - **Authentication**: Secure integration with **Google OAuth** powered by Supabase.
 - **Admin Dashboard**: Control access by managing authorized email addresses and assigning roles (admin vs. user).
 - **Internationalization (i18n)**: Out-of-the-box multilingual support.
-- **Premium & Responsive Design**: A modern, mobile-friendly interface with instant layout adjustments and theme switching.
+- **Premium & Responsive Design**: A modern, mobile-friendly interface with instant layout adjustments, reading controls (zoom in/out), and theme switching.
 
 ### 💻 Local Development
 
 Locally, the application runs with:
-- **Frontend (Next.js)** on [http://localhost:3000](http://localhost:3000).
+- **Frontend (Next.js)** on [http://localhost:3008](http://localhost:3008).
 - **Database and Backend services** managed locally using **Docker Supabase**.
 
 #### Prerequisites
@@ -53,7 +55,7 @@ Locally, the application runs with:
    ```bash
    npm run dev
    ```
-   Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+   Open [http://localhost:3008](http://localhost:3008) in your browser to view the application.
 
 #### 🚀 Production Deployment
 
@@ -71,16 +73,18 @@ Punchline Manager è un'applicazione web moderna per la gestione, l'archiviazion
 ### 🌟 Funzionalità Principali
 
 - **Gestione delle Punchline**: Aggiungi, modifica e visualizza punchline personali con formattazione del testo curata.
+- **Gestione delle Raccolte**: Organizza e struttura le punchline in raccolte personalizzate (es. per spettacoli, scalette). Inserisci blocchi di testo di raccordo/collegamento ("Testo Collegato") tra le punchline, riordina gli elementi e visualizza un'anteprima o esporta la raccolta in PDF.
 - **Categorie e Stati**: Organizzazione flessibile tramite categorie (creabili al volo nei form) e stati (con supporto al drag-and-drop).
+- **Backup e Ripristino**: Esporta tutti i dati dell'applicazione (punchline, raccolte, categorie e stati) in un file JSON di backup e ripristinali facilmente senza perdere i dati esistenti.
 - **Autenticazione**: Integrazione sicura con **Google OAuth** tramite Supabase.
 - **Pannello di Amministrazione**: Gestione degli utenti autorizzati, dei loro ruoli (admin/user) e delle email consentite all'accesso.
 - **Internazionalizzazione (i18n)**: Supporto multilingua integrato.
-- **Design Curato & Responsive**: Layout moderno ottimizzato per dispositivi desktop e mobile con commutazione automatica del tema.
+- **Design Curato & Responsive**: Layout moderno ottimizzato per dispositivi desktop e mobile con controlli di lettura (zoom in/out) e commutazione automatica del tema.
 
 ### 💻 Ambiente di Sviluppo Locale
 
 L'applicazione in locale utilizza:
-- **Frontend (Next.js)** su [http://localhost:3000](http://localhost:3000).
+- **Frontend (Next.js)** su [http://localhost:3008](http://localhost:3008).
 - **Database e Backend** gestiti localmente tramite **Docker Supabase**.
 
 #### Prerequisiti
@@ -112,7 +116,7 @@ L'applicazione in locale utilizza:
    ```bash
    npm run dev
    ```
-   Apri [http://localhost:3000](http://localhost:3000) nel browser per interagire con l'applicazione.
+   Apri [http://localhost:3008](http://localhost:3008) nel browser per interagire con l'applicazione.
 
 #### 🚀 Hosting in Produzione
 
