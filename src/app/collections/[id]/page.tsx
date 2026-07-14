@@ -53,10 +53,10 @@ function CollectionItem({
       onDragOver={onDragOver}
       onDrop={onDrop}
       className={`flex items-start gap-3 p-4 bg-bg-card border border-border-ui rounded-xl shadow-sm mb-3 transition-all duration-150 ${isDragged
-          ? "opacity-35 bg-bg-input/80 border-t border-b border-accent-primary/20 scale-[0.99] shadow-inner"
-          : isTouchTarget
-            ? "bg-accent-primary/10 border border-dashed border-accent-primary/40 scale-[1.01]"
-            : ""
+        ? "opacity-35 bg-bg-input/80 border-t border-b border-accent-primary/20 scale-[0.99] shadow-inner"
+        : isTouchTarget
+          ? "bg-accent-primary/10 border border-dashed border-accent-primary/40 scale-[1.01]"
+          : ""
         }`}
     >
       <div
@@ -463,14 +463,14 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-6">
       <div className="bg-bg-card p-6 rounded-2xl border border-border-ui shadow-sm space-y-4">
-        <div className="flex flex-col lg:flex-row justify-between gap-6">
+        <div className="flex flex-col justify-between gap-6">
           <div className="flex-1 space-y-4">
             <div className="flex flex-col gap-1">
               <label className="text-[10px] uppercase font-bold text-text-muted-light tracking-wider">{intl.formatMessage({ id: 'collections.label_title' })}</label>
               <input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="text-xl md:text-2xl font-bold bg-transparent border-b border-transparent hover:border-border-ui focus:border-accent-primary focus:outline-none w-full pb-1 transition-colors text-text-primary"
+                className="text-lg md:text-2xl font-bold bg-transparent border-b border-transparent hover:border-border-ui focus:border-accent-primary focus:outline-none w-full pb-1 transition-colors text-text-primary"
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -483,7 +483,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
               />
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-2 items-stretch sm:items-center lg:items-stretch xl:items-center justify-end w-full lg:w-auto self-end">
+          <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center lg:items-stretch xl:items-center justify-end w-full lg:w-auto self-end">
             <div className="flex gap-2 flex-1 sm:flex-none">
               <Button
                 onClick={openPreview}
@@ -592,11 +592,10 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
               type="button"
               onClick={() => setIsReadingFullWidth((prev) => !prev)}
               variant="outline"
-              className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${
-                isReadingFullWidth 
-                  ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20" 
-                  : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
-              }`}
+              className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${isReadingFullWidth
+                ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20"
+                : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
+                }`}
               title={intl.formatMessage({ id: "reading.full_width", defaultMessage: "Larghezza massima" })}
             >
               <ArrowLeftRight className="w-4 h-4 md:w-5 h-5" />
@@ -647,9 +646,8 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
 
           {/* Content Area */}
           <div className="flex-1 overflow-y-auto w-full px-4 pt-24 pb-12">
-            <div className={`flex flex-col min-h-full mx-auto justify-center items-start gap-8 w-full transition-all duration-300 ${
-              isReadingFullWidth ? "max-w-none px-4 md:px-8" : "max-w-3xl"
-            }`}>
+            <div className={`flex flex-col min-h-full mx-auto justify-center items-start gap-8 w-full transition-all duration-300 ${isReadingFullWidth ? "max-w-none px-4 md:px-8" : "max-w-3xl"
+              }`}>
               {items.map((item, idx) => {
                 const isPunchline = item.item_type === 'punchline';
                 const content = isPunchline ? item.punchline?.text : item.text_content;

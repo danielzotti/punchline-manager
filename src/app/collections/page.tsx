@@ -109,7 +109,7 @@ export default function CollectionsPage() {
                       {index + 1}.
                     </span>
                     <div className="flex flex-col min-w-0">
-                      <span className="text-text-primary font-medium text-sm group-hover:text-accent-primary transition-colors">
+                      <span className="text-text-primary font-medium text-base leading-none group-hover:text-accent-primary transition-colors">
                         {collection.title}
                       </span>
                       <div className="flex flex-wrap items-center gap-x-3 text-[10px] text-text-muted mt-0.5">
