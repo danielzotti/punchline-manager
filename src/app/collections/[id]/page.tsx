@@ -195,7 +195,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
     }
 
     const handlePopState = (e: PopStateEvent) => {
-      if (e.state?.noLeave === true) {
+      if (e.state?.noLeave === true || window.location.hash === '#preview') {
         return;
       }
 
