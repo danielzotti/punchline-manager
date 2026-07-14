@@ -18,7 +18,7 @@ Punchline Manager is a modern web application designed for storing, organizing, 
 - **Authentication**: Secure integration with **Google OAuth** powered by Supabase.
 - **Admin Dashboard**: Control access by managing authorized email addresses and assigning roles (admin vs. user).
 - **Internationalization (i18n)**: Out-of-the-box multilingual support.
-- **Premium & Responsive Design**: A modern, mobile-friendly interface with instant layout adjustments, reading controls (zoom in/out), and theme switching.
+- **Premium & Responsive Design**: A modern, mobile-friendly interface with instant layout adjustments, reading controls (zoom in/out, container maximum width toggle), and theme switching.
 
 ### 💻 Local Development
 
@@ -38,24 +38,23 @@ Locally, the application runs with:
    npm install
    ```
 
-2. **Start Supabase (Docker)**:
-   Initialize and run local Supabase services:
+2. **Start the database and development server**:
+   You can start both Supabase and the Next.js development server with a single command:
    ```bash
-   npx supabase start
+   npm run dev:db
    ```
-   *Note: Ensure Docker Desktop or the Docker daemon is running on your machine. This command downloads and spins up Docker containers containing Postgres, Auth, Storage, Studio, etc.*
+   *Note: Ensure Docker Desktop or the Docker daemon is running on your machine.*
 
-3. **Configure environment variables**:
-   Create a `.env.local` file from `.env.example` using the credentials and URLs provided by the local Supabase start output:
-   ```bash
-   cp .env.example .env.local
-   ```
+   Alternatively, you can run the steps manually:
+   - Start Supabase: `npm run supabase:start` (runs `npx supabase start`)
+   - Configure environment variables: Copy `.env.example` to `.env.local` and populate it with local credentials.
+   - Run dev server: `npm run dev`
 
-4. **Run the Next.js development server**:
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3008](http://localhost:3008) in your browser to view the application.
+3. **Useful Scripts**:
+   - `npm run supabase:stop`: Stop the local Supabase services.
+   - `npm run supabase:restart`: Restart the local Supabase services.
+   - `npm run docker:start`: Spin up the docker-compose setup.
+   - `npm run start:demo`: Start local Supabase services and spin up the docker-compose setup.
 
 #### 🚀 Production Deployment
 
@@ -79,7 +78,7 @@ Punchline Manager è un'applicazione web moderna per la gestione, l'archiviazion
 - **Autenticazione**: Integrazione sicura con **Google OAuth** tramite Supabase.
 - **Pannello di Amministrazione**: Gestione degli utenti autorizzati, dei loro ruoli (admin/user) e delle email consentite all'accesso.
 - **Internazionalizzazione (i18n)**: Supporto multilingua integrato.
-- **Design Curato & Responsive**: Layout moderno ottimizzato per dispositivi desktop e mobile con controlli di lettura (zoom in/out) e commutazione automatica del tema.
+- **Design Curato & Responsive**: Layout moderno ottimizzato per dispositivi desktop e mobile con controlli di lettura (zoom in/out, toggle per la larghezza massima del contenitore) e commutazione automatica del tema.
 
 ### 💻 Ambiente di Sviluppo Locale
 
@@ -99,24 +98,23 @@ L'applicazione in locale utilizza:
    npm install
    ```
 
-2. **Avvio di Supabase (Docker)**:
-   Inizializza ed avvia i servizi locali di Supabase:
+2. **Avvio di database e server di sviluppo**:
+   Puoi avviare sia Supabase che il server Next.js con un unico comando:
    ```bash
-   npx supabase start
+   npm run dev:db
    ```
-   *Nota: Assicurati che Docker sia attivo sul tuo computer. Questo comando avvierà i container Docker con Postgres, Auth, Storage, Studio, ecc.*
+   *Nota: Assicurati che Docker sia attivo sul tuo computer.*
 
-3. **Configurazione dell'ambiente**:
-   Crea un file `.env.local` partendo da `.env.example` inserendo le credenziali e gli URL forniti dall'avvio locale di Supabase:
-   ```bash
-   cp .env.example .env.local
-   ```
+   In alternativa, puoi eseguire i passaggi manualmente:
+   - Avvia Supabase: `npm run supabase:start` (esegue `npx supabase start`)
+   - Configura l'ambiente: Copia `.env.example` in `.env.local` e inserisci le credenziali locali.
+   - Avvia il server: `npm run dev`
 
-4. **Avvio del server di sviluppo Next.js**:
-   ```bash
-   npm run dev
-   ```
-   Apri [http://localhost:3008](http://localhost:3008) nel browser per interagire con l'applicazione.
+3. **Script Utili**:
+   - `npm run supabase:stop`: Ferma i servizi Supabase locali.
+   - `npm run supabase:restart`: Riavvia i servizi Supabase locali.
+   - `npm run docker:start`: Avvia la build e l'esecuzione tramite docker-compose.
+   - `npm run start:demo`: Avvia Supabase e docker-compose per la demo locale.
 
 #### 🚀 Hosting in Produzione
 
@@ -124,3 +122,4 @@ L'applicazione in produzione è configurata e ospitata sui seguenti servizi clou
 
 1. **Frontend**: Hostato su **Vercel**, connesso al repository GitHub per il deployment continuo (CI/CD).
 2. **Database & Auth**: Hostati su **Supabase Cloud**, garantendo alte prestazioni, sicurezza e gestione degli utenti integrata tramite PostgreSQL e Google OAuth.
+
