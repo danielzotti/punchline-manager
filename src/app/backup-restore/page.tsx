@@ -125,21 +125,7 @@ export default function BackupRestorePage() {
 
       const userId = user.id;
 
-      // 1. Delete user's current data
-      // Cascade delete is configured on these tables, but to be sure we do it sequentially.
-      const { error: delCollError } = await supabase.from("collections").delete().eq("user_id", userId);
-      if (delCollError) throw delCollError;
-
-      const { error: delPunchError } = await supabase.from("punchlines").delete().eq("user_id", userId);
-      if (delPunchError) throw delPunchError;
-
-      const { error: delCatError } = await supabase.from("categories").delete().eq("user_id", userId);
-      if (delCatError) throw delCatError;
-
-      const { error: delStatusError } = await supabase.from("statuses").delete().eq("user_id", userId);
-      if (delStatusError) throw delStatusError;
-
-      // 2. Insert statuses
+      // 1. Upsert statuses
       if (data.statuses.length > 0) {
         const statusesToInsert = data.statuses.map((s: any) => ({
           id: s.id,
@@ -148,22 +134,22 @@ export default function BackupRestorePage() {
           color: s.color,
           user_id: userId,
         }));
-        const { error: insStatusError } = await supabase.from("statuses").insert(statusesToInsert);
+        const { error: insStatusError } = await supabase.from("statuses").upsert(statusesToInsert);
         if (insStatusError) throw insStatusError;
       }
 
-      // 3. Insert categories
+      // 2. Upsert categories
       if (data.categories.length > 0) {
         const categoriesToInsert = data.categories.map((c: any) => ({
           id: c.id,
           name: c.name,
           user_id: userId,
         }));
-        const { error: insCatError } = await supabase.from("categories").insert(categoriesToInsert);
+        const { error: insCatError } = await supabase.from("categories").upsert(categoriesToInsert);
         if (insCatError) throw insCatError;
       }
 
-      // 4. Insert punchlines
+      // 3. Upsert punchlines
       if (data.punchlines.length > 0) {
         const punchlinesToInsert = data.punchlines.map((p: any) => ({
           id: p.id,
@@ -174,22 +160,22 @@ export default function BackupRestorePage() {
           updated_at: p.updated_at,
           user_id: userId,
         }));
-        const { error: insPunchError } = await supabase.from("punchlines").insert(punchlinesToInsert);
+        const { error: insPunchError } = await supabase.from("punchlines").upsert(punchlinesToInsert);
         if (insPunchError) throw insPunchError;
       }
 
-      // 5. Insert punchline categories mappings
+      // 4. Upsert punchline categories mappings
       if (data.punchline_categories.length > 0) {
         const pcToInsert = data.punchline_categories.map((pc: any) => ({
           id: pc.id,
           punchline_id: pc.punchline_id,
           category_id: pc.category_id,
         }));
-        const { error: insPcError } = await supabase.from("punchline_categories").insert(pcToInsert);
+        const { error: insPcError } = await supabase.from("punchline_categories").upsert(pcToInsert);
         if (insPcError) throw insPcError;
       }
 
-      // 6. Insert collections
+      // 5. Upsert collections
       if (data.collections.length > 0) {
         const collectionsToInsert = data.collections.map((col: any) => ({
           id: col.id,
@@ -198,11 +184,11 @@ export default function BackupRestorePage() {
           created_at: col.created_at,
           user_id: userId,
         }));
-        const { error: insCollError } = await supabase.from("collections").insert(collectionsToInsert);
+        const { error: insCollError } = await supabase.from("collections").upsert(collectionsToInsert);
         if (insCollError) throw insCollError;
       }
 
-      // 7. Insert collection items
+      // 6. Upsert collection items
       if (data.collection_items.length > 0) {
         const itemsToInsert = data.collection_items.map((ci: any) => ({
           id: ci.id,
@@ -212,7 +198,7 @@ export default function BackupRestorePage() {
           punchline_id: ci.punchline_id,
           text_content: ci.text_content,
         }));
-        const { error: insCiError } = await supabase.from("collection_items").insert(itemsToInsert);
+        const { error: insCiError } = await supabase.from("collection_items").upsert(itemsToInsert);
         if (insCiError) throw insCiError;
       }
 
@@ -279,7 +265,7 @@ export default function BackupRestorePage() {
             </CardHeader>
             <CardContent className="px-6 pb-6 space-y-4">
               {/* Warning box */}
-              <div className="flex gap-3 bg-red-500/10 border border-red-500/25 p-4 rounded-xl text-red-700 dark:text-red-400">
+              <div className="flex gap-3 bg-amber-500/10 border border-amber-500/25 p-4 rounded-xl text-amber-700 dark:text-amber-400">
                 <AlertTriangle className="w-5 h-5 shrink-0 mt-0.5" />
                 <p className="text-xs font-semibold leading-relaxed">
                   {intl.formatMessage({ id: "backup.import_warning" })}
@@ -308,7 +294,6 @@ export default function BackupRestorePage() {
                 <Button
                   onClick={handleImport}
                   disabled={!selectedFile || isImporting || isExporting}
-                  variant="destructive"
                   className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2"
                 >
                   {isImporting ? (
