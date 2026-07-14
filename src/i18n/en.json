@@ -128,5 +128,21 @@
   "category.no_categories": "No categories created",
   "category.no_categories_description": "Create a category by entering a name in the form above.",
   "status.no_statuses": "No statuses created",
-  "status.no_statuses_description": "Create a status by entering a name in the form above."
+  "status.no_statuses_description": "Create a status by entering a name in the form above.",
+  "tab.backup_restore": "Backup & Restore",
+  "backup.title": "Backup & Restore",
+  "backup.subtitle": "Export all your data or restore from a previous backup.",
+  "backup.export_section": "Export Data",
+  "backup.export_description": "Download a backup copy of all your punchlines, collections, categories, and statuses as a JSON file.",
+  "backup.export_button": "Export Backup",
+  "backup.import_section": "Restore Data",
+  "backup.import_description": "Select a previously exported JSON backup file to restore your data.",
+  "backup.import_warning": "Warning: this action is destructive. It will permanently delete all current punchlines, collections, categories, and statuses and replace them with the data from the backup file.",
+  "backup.import_button": "Restore Backup",
+  "backup.import_confirm": "Are you absolutely sure you want to restore the backup? All current data will be overwritten.",
+  "backup.export_success": "Backup exported successfully!",
+  "backup.export_error": "Error exporting backup.",
+  "backup.import_success": "Data restored successfully!",
+  "backup.import_error": "Error restoring backup.",
+  "backup.invalid_file": "The backup file is invalid or corrupted."
 }

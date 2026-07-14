@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useIntl } from "react-intl";
 import { useLanguage } from "@/components/IntlProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe, Library, MicVocal } from "lucide-react";
+import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe, Library, MicVocal, Database } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export default function Navigation() {
@@ -176,6 +176,16 @@ export default function Navigation() {
                           <span>{intl.formatMessage({ id: "tab.admin" })}</span>
                         </Link>
                       )}
+
+                      {/* Backup & Restore Link */}
+                      <Link
+                        href="/backup-restore"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all"
+                      >
+                        <Database className="w-4 h-4 shrink-0" />
+                        <span>{intl.formatMessage({ id: "tab.backup_restore", defaultMessage: "Backup & Restore" })}</span>
+                      </Link>
 
                       {/* Fullscreen Toggle */}
                       <Button
