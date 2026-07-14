@@ -4,17 +4,16 @@ import React, { useState, useEffect } from "react";
 import { useIntl } from "react-intl";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/lib/supabase";
-import { 
-  UserPlus, 
-  Trash2, 
-  Shield, 
-  ShieldAlert, 
-  UserCheck, 
-  Loader2, 
-  Mail,
-  AlertCircle
+import {
+  UserPlus,
+  Trash2,
+  Shield,
+  ShieldAlert,
+  Loader2,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useToast } from "@/components/ui/Toast";
 
 interface AuthorizedUser {
   email: string;
@@ -25,11 +24,10 @@ interface AuthorizedUser {
 export default function AdminPage() {
   const intl = useIntl();
   const { user, isAdmin } = useAuth();
-  
+  const toast = useToast();
+
   const [users, setUsers] = useState<AuthorizedUser[]>([]);
   const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
 
   // Form State
   const [newEmail, setNewEmail] = useState("");
@@ -38,7 +36,6 @@ export default function AdminPage() {
 
   const fetchUsers = async () => {
     setLoading(true);
-    setErrorMsg("");
     try {
       const { data, error } = await supabase
         .from("authorized_users")
@@ -49,7 +46,7 @@ export default function AdminPage() {
       setUsers(data || []);
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || intl.formatMessage({ id: "admin.failed_load_users", defaultMessage: "Failed to load authorized users" }));
+      toast.error(err.message || intl.formatMessage({ id: "admin.failed_load_users", defaultMessage: "Failed to load authorized users" }));
     } finally {
       setLoading(false);
     }
@@ -66,26 +63,24 @@ export default function AdminPage() {
     if (!newEmail.trim()) return;
 
     setSubmitting(true);
-    setErrorMsg("");
-    setSuccessMsg("");
 
     try {
       const { error } = await supabase
         .from("authorized_users")
-        .insert([{ 
-          email: newEmail.trim().toLowerCase(), 
-          is_admin: newIsAdmin 
+        .insert([{
+          email: newEmail.trim().toLowerCase(),
+          is_admin: newIsAdmin
         }]);
 
       if (error) throw error;
 
-      setSuccessMsg(intl.formatMessage({ id: "admin.success_added" }));
+      toast.success(intl.formatMessage({ id: "admin.success_added" }));
       setNewEmail("");
       setNewIsAdmin(false);
       fetchUsers();
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || intl.formatMessage({ id: "admin.error_add_user", defaultMessage: "Error adding user" }));
+      toast.error(err.message || intl.formatMessage({ id: "admin.error_add_user", defaultMessage: "Error adding user" }));
     } finally {
       setSubmitting(false);
     }
@@ -94,12 +89,9 @@ export default function AdminPage() {
   const handleToggleAdmin = async (targetUser: AuthorizedUser) => {
     // Prevent self-demotion
     if (targetUser.email === user?.email) {
-      setErrorMsg(intl.formatMessage({ id: "admin.error_self_demote" }));
+      toast.error(intl.formatMessage({ id: "admin.error_self_demote" }));
       return;
     }
-
-    setErrorMsg("");
-    setSuccessMsg("");
 
     try {
       const nextIsAdmin = !targetUser.is_admin;
@@ -110,27 +102,24 @@ export default function AdminPage() {
 
       if (error) throw error;
 
-      setSuccessMsg(intl.formatMessage({ id: "admin.success_updated" }));
+      toast.success(intl.formatMessage({ id: "admin.success_updated" }));
       fetchUsers();
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || intl.formatMessage({ id: "admin.error_update_role", defaultMessage: "Error updating user role" }));
+      toast.error(err.message || intl.formatMessage({ id: "admin.error_update_role", defaultMessage: "Error updating user role" }));
     }
   };
 
   const handleDeleteUser = async (targetUser: AuthorizedUser) => {
     // Prevent self-deletion
     if (targetUser.email === user?.email) {
-      setErrorMsg(intl.formatMessage({ id: "admin.error_self_delete" }));
+      toast.error(intl.formatMessage({ id: "admin.error_self_delete" }));
       return;
     }
 
     if (!confirm(intl.formatMessage({ id: "confirm.delete" }))) {
       return;
     }
-
-    setErrorMsg("");
-    setSuccessMsg("");
 
     try {
       const { error } = await supabase
@@ -140,11 +129,11 @@ export default function AdminPage() {
 
       if (error) throw error;
 
-      setSuccessMsg(intl.formatMessage({ id: "admin.success_deleted" }));
+      toast.success(intl.formatMessage({ id: "admin.success_deleted" }));
       fetchUsers();
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || intl.formatMessage({ id: "admin.error_delete_user", defaultMessage: "Error deleting user" }));
+      toast.error(err.message || intl.formatMessage({ id: "admin.error_delete_user", defaultMessage: "Error deleting user" }));
     }
   };
 
@@ -179,21 +168,6 @@ export default function AdminPage() {
           {intl.formatMessage({ id: "admin.subtitle" })}
         </p>
       </div>
-
-      {/* Notifications */}
-      {errorMsg && (
-        <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 text-red-650 dark:text-red-300 p-4 rounded-xl text-sm shadow-sm animate-fadeIn">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
-          <p>{errorMsg}</p>
-        </div>
-      )}
-
-      {successMsg && (
-        <div className="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-650 dark:text-emerald-300 p-4 rounded-xl text-sm shadow-sm animate-fadeIn">
-          <UserCheck className="w-5 h-5 flex-shrink-0 text-emerald-500" />
-          <p>{successMsg}</p>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Add User Form */}
@@ -285,19 +259,19 @@ export default function AdminPage() {
                               {u.email}
                             </span>
                             {isSelf && (
-                              <span className="text-[10px] text-accent-primary font-medium self-start bg-accent-primary/10 px-1.5 py-0.5 rounded">
-                              {intl.formatMessage({ id: "admin.you", defaultMessage: "You" })}
+                              <span className="text-xs text-accent-primary font-medium self-start bg-accent-primary/10 px-1.5 py-0.5 rounded">
+                                {intl.formatMessage({ id: "admin.you", defaultMessage: "You" })}
                               </span>
                             )}
                           </td>
                           <td className="px-6 py-4.5">
                             {u.is_admin ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-accent-primary bg-accent-primary/10 border border-accent-primary/20 px-2.5 py-1 rounded-full shadow-sm">
+                              <span className="inline-flex items-center gap-1 text-xs md:text-xs font-bold text-accent-primary bg-accent-primary/10 border border-accent-primary/20 px-2.5 py-1 rounded-full shadow-sm">
                                 <Shield className="w-3 h-3" />
                                 {intl.formatMessage({ id: "admin.role_admin" })}
                               </span>
                             ) : (
-                              <span className="inline-flex items-center text-[10px] md:text-xs font-medium text-text-muted bg-bg-input border border-border-ui px-2.5 py-1 rounded-full">
+                              <span className="inline-flex items-center text-xs md:text-xs font-medium text-text-muted bg-bg-input border border-border-ui px-2.5 py-1 rounded-full">
                                 {intl.formatMessage({ id: "admin.role_user" })}
                               </span>
                             )}
@@ -309,13 +283,12 @@ export default function AdminPage() {
                                 disabled={isSelf}
                                 variant="ghost"
                                 size="icon"
-                                className={`p-2 rounded-lg border transition-all cursor-pointer h-9 w-9 ${
-                                  isSelf
+                                className={`p-2 rounded-lg border transition-all cursor-pointer h-9 w-9 ${isSelf
                                     ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                     : u.is_admin
-                                    ? "bg-bg-input border-border-input hover:bg-bg-card text-text-muted hover:text-text-primary"
-                                    : "bg-accent-primary/10 border-accent-primary/20 hover:bg-accent-primary/20 text-accent-primary"
-                                }`}
+                                      ? "bg-bg-input border-border-input hover:bg-bg-card text-text-muted hover:text-text-primary"
+                                      : "bg-accent-primary/10 border-accent-primary/20 hover:bg-accent-primary/20 text-accent-primary"
+                                  }`}
                                 title={
                                   u.is_admin
                                     ? intl.formatMessage({ id: "admin.remove_admin" })
@@ -329,11 +302,10 @@ export default function AdminPage() {
                                 disabled={isSelf}
                                 variant="ghost"
                                 size="icon"
-                                className={`p-2 rounded-lg border transition-all cursor-pointer h-9 w-9 ${
-                                  isSelf
+                                className={`p-2 rounded-lg border transition-all cursor-pointer h-9 w-9 ${isSelf
                                     ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                     : "bg-bg-input border-border-input hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-650 text-text-muted"
-                                }`}
+                                  }`}
                                 title={intl.formatMessage({ id: "admin.delete" })}
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
@@ -354,7 +326,7 @@ export default function AdminPage() {
                   return (
                     <div key={u.email} className="p-5 flex flex-col gap-4 hover:bg-bg-input/10 transition-colors">
                       <div className="flex flex-col gap-1">
-                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                        <span className="text-xs font-bold text-text-muted uppercase tracking-wider">
                           {intl.formatMessage({ id: "admin.col_email" })}
                         </span>
                         <div className="flex flex-wrap items-center gap-2">
@@ -362,7 +334,7 @@ export default function AdminPage() {
                             {u.email}
                           </span>
                           {isSelf && (
-                            <span className="text-[10px] text-accent-primary font-medium bg-accent-primary/10 px-1.5 py-0.5 rounded">
+                            <span className="text-xs text-accent-primary font-medium bg-accent-primary/10 px-1.5 py-0.5 rounded">
                               {intl.formatMessage({ id: "admin.you", defaultMessage: "You" })}
                             </span>
                           )}
@@ -371,16 +343,16 @@ export default function AdminPage() {
 
                       <div className="flex justify-between items-center pt-3 border-t border-border-ui/50">
                         <div className="flex flex-col gap-1">
-                          <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                          <span className="text-xs font-bold text-text-muted uppercase tracking-wider">
                             {intl.formatMessage({ id: "admin.col_role" })}
                           </span>
                           {u.is_admin ? (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-accent-primary bg-accent-primary/10 border border-accent-primary/20 px-2.5 py-1 rounded-full shadow-sm w-fit">
+                            <span className="inline-flex items-center gap-1 text-xs font-bold text-accent-primary bg-accent-primary/10 border border-accent-primary/20 px-2.5 py-1 rounded-full shadow-sm w-fit">
                               <Shield className="w-3 h-3" />
                               {intl.formatMessage({ id: "admin.role_admin" })}
                             </span>
                           ) : (
-                            <span className="inline-flex items-center text-[10px] font-medium text-text-muted bg-bg-input border border-border-ui px-2.5 py-1 rounded-full w-fit">
+                            <span className="inline-flex items-center text-xs font-medium text-text-muted bg-bg-input border border-border-ui px-2.5 py-1 rounded-full w-fit">
                               {intl.formatMessage({ id: "admin.role_user" })}
                             </span>
                           )}
@@ -392,13 +364,12 @@ export default function AdminPage() {
                             disabled={isSelf}
                             variant="ghost"
                             size="icon"
-                            className={`p-2.5 rounded-xl border transition-all cursor-pointer h-10 w-10 ${
-                              isSelf
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer h-10 w-10 ${isSelf
                                 ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                 : u.is_admin
-                                ? "bg-bg-input border-border-input hover:bg-bg-card text-text-muted hover:text-text-primary"
-                                : "bg-accent-primary/10 border-accent-primary/20 hover:bg-accent-primary/20 text-accent-primary"
-                            }`}
+                                  ? "bg-bg-input border-border-input hover:bg-bg-card text-text-muted hover:text-text-primary"
+                                  : "bg-accent-primary/10 border-accent-primary/20 hover:bg-accent-primary/20 text-accent-primary"
+                              }`}
                             title={
                               u.is_admin
                                 ? intl.formatMessage({ id: "admin.remove_admin" })
@@ -412,11 +383,10 @@ export default function AdminPage() {
                             disabled={isSelf}
                             variant="ghost"
                             size="icon"
-                            className={`p-2.5 rounded-xl border transition-all cursor-pointer h-10 w-10 ${
-                              isSelf
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer h-10 w-10 ${isSelf
                                 ? "opacity-30 cursor-not-allowed border-transparent text-text-muted-light"
                                 : "bg-bg-input border-border-input hover:bg-red-500/10 hover:border-red-500/20 hover:text-red-650 text-text-muted"
-                            }`}
+                              }`}
                             title={intl.formatMessage({ id: "admin.delete" })}
                           >
                             <Trash2 className="w-4 h-4" />
