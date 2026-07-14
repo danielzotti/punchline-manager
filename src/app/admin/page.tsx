@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useToast } from "@/components/ui/Toast";
+import { PageHeader } from "@/components/PageHeader";
 
 interface AuthorizedUser {
   email: string;
@@ -154,20 +155,11 @@ export default function AdminPage() {
 
   return (
     <main className="max-w-6xl mx-auto px-4 py-8 md:py-12 flex-1 w-full flex flex-col gap-8">
-      {/* Title & Description */}
-      <div>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="bg-gradient-to-tr from-violet-600 to-indigo-500 p-2 rounded-xl text-white shadow-lg shadow-violet-500/20">
-            <Shield className="w-5 h-5" />
-          </div>
-          <h2 className="text-2xl md:text-3xl font-extrabold text-text-primary tracking-tight">
-            {intl.formatMessage({ id: "admin.title" })}
-          </h2>
-        </div>
-        <p className="text-text-muted text-sm md:text-base max-w-2xl">
-          {intl.formatMessage({ id: "admin.subtitle" })}
-        </p>
-      </div>
+      <PageHeader
+        title={intl.formatMessage({ id: "admin.title" })}
+        description={intl.formatMessage({ id: "admin.subtitle" })}
+        icon={<Shield />}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Add User Form */}
