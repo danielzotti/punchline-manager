@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { use } from 'react';
 import { getCollectionById, updateCollection, updateCollectionItems, deleteCollection } from '@/app/actions/collections';
-import { GripVertical, Plus, Trash2, Edit2, Save, FileText, Eye, X, ZoomIn, ZoomOut, RotateCcw, Maximize2, Minimize2 } from 'lucide-react';
+import { GripVertical, Plus, Trash2, Edit2, Save, FileText, Eye, X, ZoomIn, ZoomOut, RotateCcw, Maximize2, Minimize2, ArrowLeftRight } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/navigation';
@@ -126,6 +126,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [readingFontSize, setReadingFontSize] = useState(24);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isReadingFullWidth, setIsReadingFullWidth] = useState(false);
   const [initialData, setInitialData] = useState<{ title: string; date: string; items: any[] } | null>(null);
 
   const hasChanges = (() => {
@@ -586,6 +587,21 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
               )}
             </Button>
 
+            {/* Width Toggle */}
+            <Button
+              type="button"
+              onClick={() => setIsReadingFullWidth((prev) => !prev)}
+              variant="outline"
+              className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${
+                isReadingFullWidth 
+                  ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20" 
+                  : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
+              }`}
+              title={intl.formatMessage({ id: "reading.full_width", defaultMessage: "Larghezza massima" })}
+            >
+              <ArrowLeftRight className="w-4 h-4 md:w-5 h-5" />
+            </Button>
+
             {/* Font controls */}
             <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
               <Button
@@ -631,7 +647,9 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
 
           {/* Content Area */}
           <div className="flex-1 overflow-y-auto w-full px-4 pt-24 pb-12">
-            <div className="flex flex-col min-h-full max-w-3xl mx-auto justify-center items-start gap-8">
+            <div className={`flex flex-col min-h-full mx-auto justify-center items-start gap-8 w-full transition-all duration-300 ${
+              isReadingFullWidth ? "max-w-none px-4 md:px-8" : "max-w-3xl"
+            }`}>
               {items.map((item, idx) => {
                 const isPunchline = item.item_type === 'punchline';
                 const content = isPunchline ? item.punchline?.text : item.text_content;

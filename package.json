@@ -7,11 +7,13 @@
     "dev:db": "npm run supabase:start && npm run dev",
     "build": "next build",
     "start": "next start -p 3008",
+    "start:demo": "npm run supabase:start && npm run docker:start",
     "lint": "eslint",
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",
     "supabase:restart": "npm run supabase:stop && npm run supabase:start",
-    "docker:start": "npm run supabase:start && docker-compose up"
+    "docker:start": "docker-compose up --build",
+    "docker:stop": "docker-compose down"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

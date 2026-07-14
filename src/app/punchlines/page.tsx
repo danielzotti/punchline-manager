@@ -24,7 +24,8 @@ import {
   Trash2,
   X,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  ArrowLeftRight
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
@@ -125,6 +126,7 @@ export default function PunchlinesPage() {
   const [readingPunchline, setReadingPunchline] = useState<Punchline | null>(null);
   const [readingFontSize, setReadingFontSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isReadingFullWidth, setIsReadingFullWidth] = useState(false);
 
   // Sync modal states with URL hash
   useEffect(() => {
@@ -731,6 +733,21 @@ export default function PunchlinesPage() {
               )}
             </Button>
 
+            {/* Width Toggle */}
+            <Button
+              type="button"
+              onClick={() => setIsReadingFullWidth((prev) => !prev)}
+              variant="outline"
+              className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${
+                isReadingFullWidth 
+                  ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20" 
+                  : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
+              }`}
+              title={intl.formatMessage({ id: "reading.full_width", defaultMessage: "Larghezza massima" })}
+            >
+              <ArrowLeftRight className="w-4 h-4 md:w-5 h-5" />
+            </Button>
+
             {/* Font controls */}
             <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
               <Button
@@ -776,7 +793,9 @@ export default function PunchlinesPage() {
 
           {/* Content Area */}
           <div className="flex-1 overflow-y-auto w-full px-4">
-            <div className="flex flex-col min-h-full max-w-5xl mx-auto justify-center items-center">
+            <div className={`flex flex-col min-h-full mx-auto justify-center items-center w-full transition-all duration-300 ${
+              isReadingFullWidth ? "max-w-none px-4 md:px-8" : "max-w-5xl"
+            }`}>
               <div
                 className="text-text-primary leading-relaxed rich-text-content break-words w-full selection:bg-accent-primary/20 my-auto pt-12"
                 style={{ fontSize: `${readingFontSize}px` }}
