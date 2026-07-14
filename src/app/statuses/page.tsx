@@ -185,7 +185,7 @@ export default function StatusesPage() {
         {loadingStatuses ? (
           <div className="text-center text-text-muted py-12">{intl.formatMessage({ id: "common.loading", defaultMessage: "Loading..." })}</div>
         ) : (
-          <div className="bg-bg-card border border-border-ui rounded-2xl divide-y divide-border-ui overflow-hidden shadow-sm transition-all duration-200">
+          <div className="bg-bg-card border border-border-ui rounded-2xl divide-y divide-border-ui overflow-hidden shadow-sm">
             {statuses.map((stat, index) => (
               <div
                 key={stat.id}

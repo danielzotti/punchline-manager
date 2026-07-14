@@ -479,7 +479,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="text-sm text-text-muted bg-transparent border-b border-transparent hover:border-border-ui focus:border-accent-primary focus:outline-none pb-1 transition-colors w-full sm:w-auto"
+                className="text-md text-text-muted bg-transparent border-b border-transparent hover:border-border-ui focus:border-accent-primary focus:outline-none pb-1 transition-colors w-full sm:w-auto"
               />
             </div>
           </div>
@@ -487,16 +487,16 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
             <div className="flex gap-2 flex-1 sm:flex-none">
               <Button
                 onClick={openPreview}
-                variant="ghost"
-                className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer h-auto"
+                variant="outline"
+                className="flex-1 sm:flex-none justify-center bg-bg-input hover:bg-bg-input/80 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer h-auto"
               >
                 <Eye className="w-4 h-4" /> {intl.formatMessage({ id: 'collections.preview' })}
               </Button>
               <Button
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                variant="ghost"
-                className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer h-auto"
+                variant="outline"
+                className="flex-1 sm:flex-none justify-center bg-bg-input hover:bg-bg-input/80 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer h-auto"
               >
                 {isExporting ? (
                   <>
@@ -517,14 +517,14 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
               <Button
                 onClick={handleDelete}
                 variant="destructive"
-                className="flex-1 sm:flex-none justify-center px-4 py-2.5 text-red-500 hover:text-white border border-red-500/20 rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer h-auto"
+                className="flex-1 sm:flex-none justify-center text-red-500 hover:text-white rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors cursor-pointer h-auto"
               >
                 <Trash2 className="w-4 h-4" /> {intl.formatMessage({ id: 'button.delete' })}
               </Button>
               <Button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex-1 sm:flex-none justify-center px-5 py-2.5 bg-accent-primary hover:bg-accent-primary/90 text-white rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer h-auto"
+                className="flex-1 sm:flex-none justify-center bg-accent-primary hover:bg-accent-primary/90 text-white rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer h-auto"
               >
                 <Save className="w-4 h-4" /> {isSaving ? intl.formatMessage({ id: 'collections.saving' }) : intl.formatMessage({ id: 'button.save' })}
               </Button>

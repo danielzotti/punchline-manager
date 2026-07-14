@@ -94,7 +94,7 @@ export default function CategoriesPage() {
         {loadingCategories ? (
           <div className="text-center text-text-muted py-12">{intl.formatMessage({ id: "common.loading", defaultMessage: "Loading..." })}</div>
         ) : (
-          <div className="bg-bg-card border border-border-ui rounded-2xl divide-y divide-border-ui overflow-hidden shadow-sm transition-all duration-200">
+          <div className="bg-bg-card border border-border-ui rounded-2xl divide-y divide-border-ui overflow-hidden shadow-sm">
             {categories.map((cat, index) => (
               <div
                 key={cat.id}
