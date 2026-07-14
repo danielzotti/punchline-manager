@@ -172,7 +172,7 @@ export default function Navigation() {
                           onClick={() => setIsProfileOpen(false)}
                           className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all"
                         >
-                          <Users className="w-4.5 h-4.5" />
+                          <Users className="w-4 h-4 shrink-0" />
                           <span>{intl.formatMessage({ id: "tab.admin" })}</span>
                         </Link>
                       )}
@@ -181,10 +181,10 @@ export default function Navigation() {
                       <Button
                         onClick={toggleFullscreen}
                         variant="ghost"
-                        className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer h-auto text-left justify-start"
+                        className="flex items-center gap-2 w-full !px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer h-auto justify-start"
                       >
-                        <span className="flex items-center gap-2">
-                          {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
+                        {isFullscreen ? <Minimize className="w-4 h-4 shrink-0" /> : <Maximize className="w-4 h-4 shrink-0" />}
+                        <span>
                           {isFullscreen
                             ? intl.formatMessage({ id: "fullscreen.exit", defaultMessage: "Exit Fullscreen" })
                             : intl.formatMessage({ id: "fullscreen.enter", defaultMessage: "Fullscreen" })}
@@ -195,10 +195,10 @@ export default function Navigation() {
                       <Button
                         onClick={toggleTheme}
                         variant="ghost"
-                        className="flex items-center justify-between w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer h-auto text-left justify-start"
+                        className="flex items-center gap-2 w-full !px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all cursor-pointer h-auto justify-start"
                       >
-                        <span className="flex items-center gap-2">
-                          {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                        {theme === "light" ? <Moon className="w-4 h-4 shrink-0" /> : <Sun className="w-4 h-4 shrink-0" />}
+                        <span>
                           {theme === "light"
                             ? intl.formatMessage({ id: "theme.dark", defaultMessage: "Dark Theme" })
                             : intl.formatMessage({ id: "theme.light", defaultMessage: "Light Theme" })}
@@ -208,8 +208,8 @@ export default function Navigation() {
                       {/* Language Selection */}
                       <div className="flex items-center justify-between w-full px-3 py-1.5 text-xs font-medium text-text-muted">
                         <span className="flex items-center gap-2">
-                          <Globe className="w-4 h-4" />
-                          {intl.formatMessage({ id: "language.title", defaultMessage: "Language" })}
+                          <Globe className="w-4 h-4 shrink-0" />
+                          <span>{intl.formatMessage({ id: "language.title", defaultMessage: "Language" })}</span>
                         </span>
                         <div className="flex items-center gap-0.5 bg-bg-input/60 p-0.5 rounded-lg border border-border-ui">
                           <Button
@@ -243,8 +243,8 @@ export default function Navigation() {
                         variant="ghost"
                         className="flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold text-red-500 hover:bg-red-500/10 rounded-xl transition-all cursor-pointer h-auto justify-start"
                       >
-                        <LogOut className="w-4 h-4" />
-                        {intl.formatMessage({ id: "auth.sign_out" })}
+                        <LogOut className="w-4 h-4 shrink-0" />
+                        <span>{intl.formatMessage({ id: "auth.sign_out" })}</span>
                       </Button>
                     </div>
                   </div>
