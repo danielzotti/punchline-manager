@@ -47,7 +47,7 @@ export function StatusDistributionCard({
   }, [statusesDistribution]);
 
   return (
-    <div className="bg-bg-card border border-border-ui rounded-2xl p-6 shadow-sm flex flex-col">
+    <div className="bg-bg-card border border-border-ui rounded-2xl p-2 md:p-6 shadow-sm flex flex-col">
       <h3 className="text-lg font-bold text-text-primary mb-5 flex items-center gap-2">
         <PieChart className="w-5 h-5 text-accent-primary" />
         {intl.formatMessage({ id: "stats.statuses_distribution", defaultMessage: "Distribution by Status" })}

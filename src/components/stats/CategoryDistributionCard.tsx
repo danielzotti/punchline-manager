@@ -19,7 +19,7 @@ export function CategoryDistributionCard({
   const intl = useIntl();
 
   return (
-    <div className="bg-bg-card border border-border-ui rounded-2xl p-6 shadow-sm flex flex-col">
+    <div className="bg-bg-card border border-border-ui rounded-2xl p-2 md:p-6 shadow-sm flex flex-col">
       <h3 className="text-lg font-bold text-text-primary mb-5 flex items-center gap-2">
         <BarChart3 className="w-5 h-5 text-accent-primary" />
         {intl.formatMessage({ id: "stats.categories_distribution", defaultMessage: "Distribution by Category" })}

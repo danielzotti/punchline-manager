@@ -171,5 +171,7 @@
   "stats.zoom": "Zoom",
   "stats.zoom_in": "Zoom In",
   "stats.zoom_out": "Zoom Out",
-  "stats.week_label": "Week {week}, {year}"
+  "stats.week_label": "Week {week}, {year}",
+  "filter.start_date": "From",
+  "filter.end_date": "To"
 }

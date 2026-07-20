@@ -8,6 +8,8 @@ interface Punchline {
 
 interface CreationTrendCardProps {
   punchlines: Punchline[];
+  startDate?: string;
+  endDate?: string;
 }
 
 const ZOOM_CONFIGS = {
@@ -25,10 +27,36 @@ function getWeekNumber(date: Date): number {
   return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
 }
 
-export function CreationTrendCard({ punchlines }: CreationTrendCardProps) {
+export function CreationTrendCard({ punchlines, startDate, endDate }: CreationTrendCardProps) {
   const intl = useIntl();
   const [groupBy, setGroupBy] = useState<'day' | 'week' | 'month' | 'year'>('month');
   const [visiblePointsCount, setVisiblePointsCount] = useState<number>(ZOOM_CONFIGS.month.default);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(500);
+
+  React.useEffect(() => {
+    if (!containerRef.current) return;
+
+    const handleResize = (entries: ResizeObserverEntry[]) => {
+      if (!entries || entries.length === 0) return;
+      const { width: newWidth } = entries[0].contentRect;
+      if (newWidth > 0) {
+        setWidth(newWidth);
+      }
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(containerRef.current);
+
+    const initialRect = containerRef.current.getBoundingClientRect();
+    if (initialRect.width > 0) {
+      setWidth(initialRect.width);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   const currentConfig = ZOOM_CONFIGS[groupBy];
 
@@ -58,7 +86,7 @@ export function CreationTrendCard({ punchlines }: CreationTrendCardProps) {
     return latest.getTime() > 0 ? latest : new Date();
   }, [punchlines]);
 
-  // Aggregate punchlines and slice the timeline based on zoom
+  // Aggregate punchlines and slice the timeline based on zoom or date range
   const trendDistribution = useMemo(() => {
     // 1. Group raw punchlines count by appropriate keys
     const punchlineCounts: Record<string, number> = {};
@@ -80,42 +108,102 @@ export function CreationTrendCard({ punchlines }: CreationTrendCardProps) {
       punchlineCounts[key] = (punchlineCounts[key] || 0) + 1;
     });
 
-    // 2. Generate list of consecutive intervals backwards from the anchor date
+    // 2. Generate list of consecutive intervals
     const data: Array<{ label: string; count: number; sortKey: string }> = [];
 
-    for (let i = visiblePointsCount - 1; i >= 0; i--) {
-      const date = new Date(anchorDate);
+    // Calculate start and end dates for the chart timeline
+    let timelineEnd = endDate ? new Date(endDate) : new Date(anchorDate);
+    let timelineStart: Date;
+
+    if (startDate) {
+      timelineStart = new Date(startDate);
+    } else {
+      // Calculate start date going backwards from timelineEnd based on visiblePointsCount
+      timelineStart = new Date(timelineEnd);
+      if (groupBy === "day") {
+        timelineStart.setDate(timelineStart.getDate() - (visiblePointsCount - 1));
+      } else if (groupBy === "week") {
+        timelineStart.setDate(timelineStart.getDate() - (visiblePointsCount - 1) * 7);
+      } else if (groupBy === "month") {
+        timelineStart.setMonth(timelineStart.getMonth() - (visiblePointsCount - 1));
+      } else if (groupBy === "year") {
+        timelineStart.setFullYear(timelineStart.getFullYear() - (visiblePointsCount - 1));
+      }
+    }
+
+    // Normalize start/end dates to avoid JS Date month overflow bugs
+    if (groupBy === "month") {
+      timelineStart.setDate(1);
+      timelineEnd.setDate(1);
+    } else if (groupBy === "year") {
+      timelineStart.setMonth(0, 1);
+      timelineEnd.setMonth(0, 1);
+    } else if (groupBy === "week") {
+      // Set to Monday of the week
+      const dayStart = timelineStart.getDay();
+      const diffStart = timelineStart.getDate() - dayStart + (dayStart === 0 ? -6 : 1);
+      timelineStart.setDate(diffStart);
+
+      const dayEnd = timelineEnd.getDay();
+      const diffEnd = timelineEnd.getDate() - dayEnd + (dayEnd === 0 ? -6 : 1);
+      timelineEnd.setDate(diffEnd);
+    }
+
+    // Ensure timelineStart is not after timelineEnd
+    if (timelineStart > timelineEnd) {
+      const temp = timelineStart;
+      timelineStart = timelineEnd;
+      timelineEnd = temp;
+    }
+
+    // Generate intervals from timelineStart to timelineEnd
+    const current = new Date(timelineStart);
+    let safetyCounter = 0;
+    const maxPoints = 200;
+
+    while (current <= timelineEnd && safetyCounter < maxPoints) {
+      safetyCounter++;
       let key = "";
       let label = "";
 
       if (groupBy === "day") {
-        date.setDate(date.getDate() - i);
-        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-        label = date.toLocaleDateString(intl.locale, { day: "numeric", month: "short" });
+        key = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}-${String(current.getDate()).padStart(2, "0")}`;
+        label = current.toLocaleDateString(intl.locale, { day: "numeric", month: "short" });
       } else if (groupBy === "week") {
-        date.setDate(date.getDate() - i * 7);
-        const weekNum = getWeekNumber(date);
-        key = `${date.getFullYear()}-W${weekNum}`;
+        const weekNum = getWeekNumber(current);
+        key = `${current.getFullYear()}-W${weekNum}`;
         label = intl.formatMessage(
           { id: "stats.week_label", defaultMessage: "W{week}, {year}" },
-          { week: weekNum, year: date.getFullYear() }
+          { week: weekNum, year: current.getFullYear() }
         );
       } else if (groupBy === "month") {
-        date.setMonth(date.getMonth() - i);
-        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-        label = date.toLocaleDateString(intl.locale, { month: "short", year: "numeric" });
+        key = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}`;
+        label = current.toLocaleDateString(intl.locale, { month: "short", year: "numeric" });
       } else if (groupBy === "year") {
-        date.setFullYear(date.getFullYear() - i);
-        key = `${date.getFullYear()}`;
-        label = date.getFullYear().toString();
+        key = `${current.getFullYear()}`;
+        label = current.getFullYear().toString();
       }
 
       const count = punchlineCounts[key] || 0;
-      data.push({ label, count, sortKey: key });
+
+      if (data.length === 0 || data[data.length - 1].sortKey !== key) {
+        data.push({ label, count, sortKey: key });
+      }
+
+      // Move to next interval
+      if (groupBy === "day") {
+        current.setDate(current.getDate() + 1);
+      } else if (groupBy === "week") {
+        current.setDate(current.getDate() + 7);
+      } else if (groupBy === "month") {
+        current.setMonth(current.getMonth() + 1);
+      } else if (groupBy === "year") {
+        current.setFullYear(current.getFullYear() + 1);
+      }
     }
 
     return data;
-  }, [punchlines, groupBy, visiblePointsCount, anchorDate, intl]);
+  }, [punchlines, groupBy, visiblePointsCount, anchorDate, intl, startDate, endDate]);
 
   // SVG calculations for Timeline Trend Area Chart
   const trendChartPaths = useMemo(() => {
@@ -134,7 +222,6 @@ export function CreationTrendCard({ punchlines }: CreationTrendCardProps) {
     }
 
     const maxCount = Math.max(...data.map((d) => d.count), 5);
-    const width = 500;
     const height = 150;
     const paddingX = 40;
     const paddingY = 20;
@@ -164,7 +251,7 @@ export function CreationTrendCard({ punchlines }: CreationTrendCardProps) {
     }
 
     return { linePath, areaPath, points, maxCount, height, width, paddingX, paddingY };
-  }, [trendDistribution]);
+  }, [trendDistribution, width]);
 
   // Calculate modulo to skip intermediate X-axis labels when there are too many data points
   const labelModulo = useMemo(() => {
@@ -177,7 +264,7 @@ export function CreationTrendCard({ punchlines }: CreationTrendCardProps) {
   }, [trendChartPaths.points.length]);
 
   return (
-    <div className="bg-bg-card border border-border-ui rounded-2xl p-6 shadow-sm flex flex-col">
+    <div className="bg-bg-card border border-border-ui rounded-2xl p-2 md:p-6 shadow-sm flex flex-col">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h3 className="text-lg font-bold text-text-primary flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-accent-primary" />
@@ -232,7 +319,7 @@ export function CreationTrendCard({ punchlines }: CreationTrendCardProps) {
         </div>
       ) : (
         <div className="w-full overflow-x-auto pb-2">
-          <div className="h-[180px] relative">
+          <div ref={containerRef} className="h-[180px] relative">
             <svg
               width="100%"
               height="100%"

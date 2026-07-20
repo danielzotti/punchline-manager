@@ -171,5 +171,7 @@
   "stats.zoom": "Zoom",
   "stats.zoom_in": "Ingrandisci",
   "stats.zoom_out": "Rimpicciolisci",
-  "stats.week_label": "Sett. {week}, {year}"
+  "stats.week_label": "Sett. {week}, {year}",
+  "filter.start_date": "Dal",
+  "filter.end_date": "Al"
 }
