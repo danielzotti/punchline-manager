@@ -147,5 +147,19 @@
   "backup.export_error": "Errore durante l'esportazione del backup.",
   "backup.import_success": "Dati ripristinati con successo!",
   "backup.import_error": "Errore durante il ripristino del backup.",
-  "backup.invalid_file": "Il file di backup non è valido o è corrotto."
+  "backup.invalid_file": "Il file di backup non è valido o è corrotto.",
+  "tab.stats": "Statistiche",
+  "stats.title": "Statistiche Dashboard",
+  "stats.subtitle": "Analisi dettagliate, categorie e utilizzo delle tue punchline.",
+  "stats.total_punchlines": "Punchline Totali",
+  "stats.total_collections": "Raccolte Totali",
+  "stats.avg_length": "Lunghezza Media",
+  "stats.words": "parole",
+  "stats.categories_distribution": "Distribuzione per Categoria",
+  "stats.statuses_distribution": "Distribuzione per Stato",
+  "stats.most_used_punchlines": "Punchline più usate nelle Raccolte",
+  "stats.creation_trend": "Andamento Creazioni nel Tempo",
+  "stats.no_collections_use": "Nessuna punchline inserita nelle raccolte",
+  "stats.search_placeholder": "Cerca tra le statistiche...",
+  "stats.no_data": "Nessun dato per i filtri selezionati"
 }

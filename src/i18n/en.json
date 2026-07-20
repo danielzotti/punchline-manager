@@ -147,5 +147,19 @@
   "backup.export_error": "Error exporting backup.",
   "backup.import_success": "Data restored successfully!",
   "backup.import_error": "Error restoring backup.",
-  "backup.invalid_file": "The backup file is invalid or corrupted."
+  "backup.invalid_file": "The backup file is invalid or corrupted.",
+  "tab.stats": "Statistics",
+  "stats.title": "Statistics Dashboard",
+  "stats.subtitle": "Detailed analysis, categories, and usage of your punchlines.",
+  "stats.total_punchlines": "Total Punchlines",
+  "stats.total_collections": "Total Collections",
+  "stats.avg_length": "Average Length",
+  "stats.words": "words",
+  "stats.categories_distribution": "Distribution by Category",
+  "stats.statuses_distribution": "Distribution by Status",
+  "stats.most_used_punchlines": "Most Used Punchlines in Collections",
+  "stats.creation_trend": "Creation Trend Over Time",
+  "stats.no_collections_use": "No punchlines added to collections yet",
+  "stats.search_placeholder": "Search statistics...",
+  "stats.no_data": "No data matches the selected filters"
 }

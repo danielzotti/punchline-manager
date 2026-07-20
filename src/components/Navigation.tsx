@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useIntl } from "react-intl";
 import { useLanguage } from "@/components/IntlProvider";
 import { useAuth } from "@/components/AuthProvider";
-import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe, Library, MicVocal, Database } from "lucide-react";
+import { FolderKanban, Tag, Activity, Users, LogOut, Sun, Moon, User, Maximize, Minimize, ChevronDown, Globe, Library, MicVocal, Database, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export default function Navigation() {
@@ -165,6 +165,16 @@ export default function Navigation() {
 
                     {/* Options list */}
                     <div className="flex flex-col gap-1 px-2">
+                      {/* Statistics Link */}
+                      <Link
+                        href="/stats"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-text-muted hover:text-text-primary hover:bg-bg-input/60 rounded-xl transition-all"
+                      >
+                        <TrendingUp className="w-4 h-4 shrink-0" />
+                        <span>{intl.formatMessage({ id: "tab.stats" })}</span>
+                      </Link>
+
                       {/* Admin Panel Link */}
                       {isAdmin && (
                         <Link
