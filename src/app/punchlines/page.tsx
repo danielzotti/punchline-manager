@@ -524,7 +524,7 @@ export default function PunchlinesPage() {
             </div>
 
             {/* Clear Button */}
-            <div className="flex items-end justify-end pt-4 md:pt-0">
+            <div className="flex items-end justify-end md:self-end pt-4 md:pt-0">
               <Button
                 onClick={clearFilters}
                 variant="outline"
@@ -737,8 +737,8 @@ export default function PunchlinesPage() {
               onClick={() => setIsReadingFullWidth((prev) => !prev)}
               variant="outline"
               className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${isReadingFullWidth
-                  ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20"
-                  : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
+                ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20"
+                : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
                 }`}
               title={intl.formatMessage({ id: "reading.full_width", defaultMessage: "Larghezza massima" })}
             >
