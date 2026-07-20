@@ -59,7 +59,7 @@ export function usePunchlines(filters: FetchFilters = {}) {
         `);
 
       if (searchText) {
-        req = req.ilike("text", `%${searchText}%`);
+        req = req.or(`text.ilike.%${searchText}%,notes.ilike.%${searchText}%`);
       }
 
       if (statusId) {

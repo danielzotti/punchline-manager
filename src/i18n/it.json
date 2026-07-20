@@ -80,6 +80,8 @@
   "category.search_placeholder": "Cerca categorie...",
   "category.no_results": "Nessuna categoria trovata",
   "category.subtitle": "Crea e organizza le etichette per catalogare le tue battute.",
+  "status.search_placeholder": "Cerca stati...",
+  "status.no_results": "Nessuno stato trovato",
   "status.subtitle": "Gestisci gli stati del flusso di lavoro e trascinali per ordinarli.",
   "status.color_label": "Colore:",
   "admin.you": "Tu",

@@ -1,7 +1,7 @@
 "use client";
 
 import AddToCollectionModal from "@/components/AddToCollectionModal";
-import CategoryAutocomplete from "@/components/CategoryAutocomplete";
+import SelectAutocomplete from "@/components/SelectAutocomplete";
 import { PageHeader } from "@/components/PageHeader";
 import RichTextEditor from "@/components/RichTextEditor";
 import { Button } from "@/components/ui/Button";
@@ -498,18 +498,14 @@ export default function PunchlinesPage() {
               <span className="text-xs font-bold text-text-muted uppercase block mb-1.5 tracking-wider">
                 {intl.formatMessage({ id: "filter.status" })}:
               </span>
-              <select
-                value={selectedStatusId}
-                onChange={(e) => setSelectedStatusId(e.target.value)}
-                className="w-full bg-bg-input border border-border-ui rounded-xl py-2.5 px-4 text-sm text-text-primary focus:outline-none focus:border-accent-primary transition-colors duration-200"
-              >
-                <option value="">{intl.formatMessage({ id: "filter.all_statuses" })}</option>
-                {statuses.map((status) => (
-                  <option key={status.id} value={status.id}>
-                    {status.name}
-                  </option>
-                ))}
-              </select>
+              <SelectAutocomplete
+                items={statuses}
+                multiple={false}
+                selectedId={selectedStatusId}
+                onChange={setSelectedStatusId}
+                placeholder={intl.formatMessage({ id: "status.search_placeholder", defaultMessage: "Search statuses..." })}
+                noResultsMessage={intl.formatMessage({ id: "status.no_results", defaultMessage: "No statuses found" })}
+              />
             </div>
 
             {/* Category Filter */}
@@ -517,11 +513,13 @@ export default function PunchlinesPage() {
               <span className="text-xs font-bold text-text-muted uppercase block mb-1.5 tracking-wider">
                 {intl.formatMessage({ id: "filter.category" })}:
               </span>
-              <CategoryAutocomplete
-                categories={categories}
-                selectedCategoryIds={selectedCategoryIds}
+              <SelectAutocomplete
+                items={categories}
+                multiple={true}
+                selectedIds={selectedCategoryIds}
                 onChange={setSelectedCategoryIds}
                 placeholder={intl.formatMessage({ id: "category.search_placeholder", defaultMessage: "Search categories..." })}
+                noResultsMessage={intl.formatMessage({ id: "category.no_results", defaultMessage: "No categories found" })}
               />
             </div>
 

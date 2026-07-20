@@ -80,6 +80,8 @@
   "category.search_placeholder": "Search categories...",
   "category.no_results": "No categories found",
   "category.subtitle": "Create and organize labels to catalog your jokes.",
+  "status.search_placeholder": "Search statuses...",
+  "status.no_results": "No statuses found",
   "status.subtitle": "Manage workflow statuses and drag to reorder them.",
   "status.color_label": "Color:",
   "admin.you": "You",
