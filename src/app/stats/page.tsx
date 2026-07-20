@@ -191,26 +191,6 @@ export default function StatsPage() {
       .filter((s) => s.count > 0 || statuses.some((st) => st.name === s.name))
       .sort((a, b) => b.count - a.count);
 
-    // 5. Timeline trend (Creations by Month)
-    const timelineData: Record<string, { label: string; count: number; sortKey: string }> = {};
-    filteredPunchlines.forEach((p) => {
-      if (!p.created_at) return;
-      const date = new Date(p.created_at);
-      const year = date.getFullYear();
-      const month = date.getMonth(); // 0-11
-      const key = `${year}-${String(month + 1).padStart(2, "0")}`;
-      const label = date.toLocaleDateString(intl.locale, { month: "short", year: "numeric" });
-
-      if (!timelineData[key]) {
-        timelineData[key] = { label, count: 0, sortKey: key };
-      }
-      timelineData[key].count += 1;
-    });
-
-    const trendDistribution = Object.values(timelineData)
-      .sort((a, b) => a.sortKey.localeCompare(b.sortKey))
-      .slice(-12); // Last 12 months
-
     return {
       totalPunchlines,
       avgChars,
@@ -219,9 +199,8 @@ export default function StatsPage() {
       mostUsedPunchlines,
       categoriesDistribution,
       statusesDistribution,
-      trendDistribution,
     };
-  }, [filteredPunchlines, collections, filteredPunchlineIds, statuses, intl.locale]);
+  }, [filteredPunchlines, collections, filteredPunchlineIds, statuses]);
 
   const renderContent = () => {
     if (isLoading) {
@@ -303,7 +282,7 @@ export default function StatsPage() {
 
         </div>
 
-        <CreationTrendCard trendDistribution={stats.trendDistribution} />
+        <CreationTrendCard punchlines={filteredPunchlines} />
 
         <MostUsedPunchlinesCard mostUsedPunchlines={stats.mostUsedPunchlines} />
       </div>

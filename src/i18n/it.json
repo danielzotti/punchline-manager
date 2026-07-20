@@ -162,5 +162,14 @@
   "stats.no_collections_use": "Nessuna punchline inserita nelle raccolte",
   "stats.search_placeholder": "Cerca tra le statistiche...",
   "stats.no_data": "Nessun dato per i filtri selezionati",
-  "status.unassigned": "Non assegnato"
+  "status.unassigned": "Non assegnato",
+  "stats.group_by": "Raggruppa per",
+  "stats.year": "Anno",
+  "stats.month": "Mese",
+  "stats.week": "Settimana",
+  "stats.day": "Giorno",
+  "stats.zoom": "Zoom",
+  "stats.zoom_in": "Ingrandisci",
+  "stats.zoom_out": "Rimpicciolisci",
+  "stats.week_label": "Sett. {week}, {year}"
 }

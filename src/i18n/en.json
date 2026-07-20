@@ -162,5 +162,14 @@
   "stats.no_collections_use": "No punchlines added to collections yet",
   "stats.search_placeholder": "Search statistics...",
   "stats.no_data": "No data matches the selected filters",
-  "status.unassigned": "Unassigned"
+  "status.unassigned": "Unassigned",
+  "stats.group_by": "Group by",
+  "stats.year": "Year",
+  "stats.month": "Month",
+  "stats.week": "Week",
+  "stats.day": "Day",
+  "stats.zoom": "Zoom",
+  "stats.zoom_in": "Zoom In",
+  "stats.zoom_out": "Zoom Out",
+  "stats.week_label": "Week {week}, {year}"
 }
