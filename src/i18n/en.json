@@ -12,9 +12,6 @@
   "button.save": "Save",
   "button.cancel": "Cancel",
   "button.create": "Create",
-  "status.draft": "Draft",
-  "status.da espandere": "To Expand",
-  "status.pronta": "Ready",
   "punchline.text": "Punchline Text",
   "punchline.notes": "Notes",
   "punchline.status": "Status",
@@ -68,6 +65,8 @@
   "reading.full_width": "Full width",
   "common.loading": "Loading...",
   "common.add": "Add",
+  "common.no_results": "No results",
+  "common.search_placeholder": "Search...",
   "profile.logged_in_as": "Logged in as",
   "profile.menu": "Profile Menu",
   "fullscreen.exit": "Exit Fullscreen",
@@ -162,5 +161,6 @@
   "stats.creation_trend": "Creation Trend Over Time",
   "stats.no_collections_use": "No punchlines added to collections yet",
   "stats.search_placeholder": "Search statistics...",
-  "stats.no_data": "No data matches the selected filters"
+  "stats.no_data": "No data matches the selected filters",
+  "status.unassigned": "Unassigned"
 }

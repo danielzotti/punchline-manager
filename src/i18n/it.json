@@ -12,9 +12,6 @@
   "button.save": "Salva",
   "button.cancel": "Annulla",
   "button.create": "Crea",
-  "status.draft": "Bozza",
-  "status.da espandere": "Da espandere",
-  "status.pronta": "Pronta",
   "punchline.text": "Testo della Punchline",
   "punchline.notes": "Note",
   "punchline.status": "Stato",
@@ -68,6 +65,8 @@
   "reading.full_width": "Larghezza massima",
   "common.loading": "Caricamento...",
   "common.add": "Aggiungi",
+  "common.no_results": "Nessun risultato",
+  "common.search_placeholder": "Cerca...",
   "profile.logged_in_as": "Accesso eseguito come",
   "profile.menu": "Menu Profilo",
   "fullscreen.exit": "Esci da Schermo Intero",
@@ -128,7 +127,7 @@
   "collections.error_all_duplicates": "Tutte le punchline selezionate sono già presenti nella raccolta.",
   "collections.info_duplicates_skipped": "Alcune punchline erano già presenti e sono state saltate.",
   "collections.unsaved_changes": "Hai delle modifiche non salvate. Vuoi davvero lasciare la pagina?",
-    "category.no_categories": "Nessuna categoria creata",
+  "category.no_categories": "Nessuna categoria creata",
   "category.no_categories_description": "Crea una categoria inserendo il nome nel modulo sopra.",
   "status.no_statuses": "Nessuno stato creato",
   "status.no_statuses_description": "Crea uno stato inserendo il nome nel modulo sopra.",
@@ -162,5 +161,6 @@
   "stats.creation_trend": "Andamento Creazioni nel Tempo",
   "stats.no_collections_use": "Nessuna punchline inserita nelle raccolte",
   "stats.search_placeholder": "Cerca tra le statistiche...",
-  "stats.no_data": "Nessun dato per i filtri selezionati"
+  "stats.no_data": "Nessun dato per i filtri selezionati",
+  "status.unassigned": "Non assegnato"
 }
