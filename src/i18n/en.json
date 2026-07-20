@@ -153,6 +153,7 @@
   "stats.subtitle": "Detailed analysis, categories, and usage of your punchlines.",
   "stats.total_punchlines": "Total Punchlines",
   "stats.total_collections": "Total Collections",
+  "stats.total_categories": "Total Categories",
   "stats.avg_length": "Average Length",
   "stats.words": "words",
   "stats.categories_distribution": "Distribution by Category",

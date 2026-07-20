@@ -20,7 +20,8 @@ import {
   Search,
   RotateCcw,
   BookOpen,
-  PieChart
+  PieChart,
+  Tag
 } from "lucide-react";
 
 export default function StatsPage() {
@@ -295,20 +296,20 @@ export default function StatsPage() {
 
         {/* Filters and Search Bar */}
         <div className="bg-bg-card p-5 border border-border-ui rounded-2xl shadow-sm transition-all duration-200 space-y-4">
+          {/* Search Input */}
+          <div className="flex-1 relative">
+            <Search className="w-4 h-4 text-text-muted-light absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Input
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder={intl.formatMessage({ id: "stats.search_placeholder", defaultMessage: "Search statistics..." })}
+              className="pl-10 h-11"
+            />
+          </div>
           <div className="flex flex-col md:flex-row gap-4">
-            {/* Search Input */}
-            <div className="flex-1 relative">
-              <Search className="w-4 h-4 text-text-muted-light absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <Input
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder={intl.formatMessage({ id: "stats.search_placeholder", defaultMessage: "Search statistics..." })}
-                className="pl-10 h-11"
-              />
-            </div>
 
             {/* Category multi-selector */}
-            <div className="w-full md:w-64">
+            <div className="w-full md:w-2/5">
               <SelectAutocomplete
                 items={categories.map((c) => ({ id: c.id, name: c.name }))}
                 multiple={true}
@@ -319,7 +320,7 @@ export default function StatsPage() {
             </div>
 
             {/* Status single-selector */}
-            <div className="w-full md:w-60">
+            <div className="w-full md:w-2/5">
               <SelectAutocomplete
                 items={statuses.map((s) => ({ id: s.id, name: intl.formatMessage({ id: `status.${s.name.toLowerCase()}`, defaultMessage: s.name }) }))}
                 multiple={false}
@@ -334,7 +335,7 @@ export default function StatsPage() {
               <Button
                 variant="ghost"
                 onClick={handleResetFilters}
-                className="h-11 px-4 gap-2 hover:bg-bg-input shrink-0 border border-border-ui text-text-muted hover:text-text-primary"
+                className="h-11 px-4 gap-2 hover:bg-bg-input shrink-0 border border-border-ui text-text-muted hover:text-text-primary md:self-end md:w-1/5"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>{intl.formatMessage({ id: "filter.clear", defaultMessage: "Clear Filters" })}</span>
@@ -411,18 +412,17 @@ export default function StatsPage() {
                 </div>
               </div>
 
-              {/* Card 4: Unassigned vs Total Ratio */}
+              {/* Card 4: Total Categories */}
               <div className="bg-bg-card border border-border-ui rounded-2xl p-5 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
                 <div className="bg-blue-500/10 p-3.5 rounded-xl text-blue-500">
-                  <Activity className="w-5 h-5" />
+                  <Tag className="w-5 h-5" />
                 </div>
                 <div>
                   <p className="text-xs text-text-muted-light font-semibold uppercase tracking-wider">
-                    {intl.formatMessage({ id: "punchline.status", defaultMessage: "Status" })}
+                    {intl.formatMessage({ id: "stats.total_categories", defaultMessage: "Total Categories" })}
                   </p>
                   <h4 className="text-2xl font-bold text-text-primary mt-0.5">
-                    {stats.statusesDistribution.find(s => s.name === "pronta")?.count || 0}
-                    <span className="text-xs font-normal text-text-muted"> {intl.formatMessage({ id: "status.pronta", defaultMessage: "Ready" })}</span>
+                    {categories.length}
                   </h4>
                 </div>
               </div>
@@ -449,7 +449,7 @@ export default function StatsPage() {
                           <div className="flex items-center justify-between text-xs font-semibold">
                             <span className="text-text-primary truncate max-w-[70%]">{cat.name}</span>
                             <span className="text-text-muted">
-                              {cat.count} ({percentage})%
+                              {cat.count} ({percentage}%)
                             </span>
                           </div>
                           <div className="w-full bg-bg-input rounded-full h-2.5 overflow-hidden border border-border-ui/60">
