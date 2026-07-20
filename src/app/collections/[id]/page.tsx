@@ -438,97 +438,84 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
   const handleExportPDF = () => {
     try {
       setIsExporting(true);
-      let htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>${title}</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              color: black;
-              background: white;
-              line-height: 1.6;
-              margin: 0;
-              padding: 40px;
-            }
-            h1 {
-              text-align: center;
-              margin-bottom: 5px;
-            }
-            .date {
-              text-align: center;
-              color: #555;
-              font-size: 14px;
-              margin-bottom: 40px;
-            }
-            .item-block {
-              margin-bottom: 20px;
-            }
-            /* RTE Specific basic styles */
-            .item-block p {
-              margin: 0 0 1em 0;
-            }
-            .item-block b, .item-block strong { font-weight: bold; }
-            .item-block i, .item-block em { font-style: italic; }
-            .item-block u { text-decoration: underline; }
-            @media print {
-              body {
-                padding: 20px;
-              }
-            }
-          </style>
-        </head>
-        <body>
-          <h1>${title}</h1>
-          <div class="date">${new Date(date).toLocaleDateString()}</div>
-          <div class="content">
-      `;
 
+      // Create print container
+      const printContainer = document.createElement('div');
+      printContainer.id = 'print-container';
+
+      let itemsHtml = '';
       items.forEach(item => {
-        htmlContent += `<div class="item-block">`;
+        itemsHtml += `<div class="item-block">`;
         if (item.item_type === 'punchline' && item.punchline) {
-          htmlContent += item.punchline.text;
+          itemsHtml += item.punchline.text;
         } else if (item.item_type === 'linked_text' && item.text_content) {
-          htmlContent += item.text_content;
+          itemsHtml += item.text_content;
         }
-        htmlContent += `</div>`;
+        itemsHtml += `</div>`;
       });
 
-      htmlContent += `
-          </div>
-        </body>
-        </html>
+      printContainer.innerHTML = `
+        <h1>${title}</h1>
+        <div class="date">${new Date(date).toLocaleDateString()}</div>
+        <div class="content">
+          ${itemsHtml}
+        </div>
       `;
 
-      // Create a hidden iframe
-      const iframe = document.createElement('iframe');
-      iframe.style.position = 'fixed';
-      iframe.style.right = '0';
-      iframe.style.bottom = '0';
-      iframe.style.width = '0';
-      iframe.style.height = '0';
-      iframe.style.border = '0';
-      document.body.appendChild(iframe);
+      // Create style element to hide everything else during print
+      const style = document.createElement('style');
+      style.id = 'print-style';
+      style.innerHTML = `
+        #print-container {
+          display: none;
+        }
+        @media print {
+          body > :not(#print-container) {
+            display: none !important;
+          }
+          #print-container {
+            display: block !important;
+            font-family: Arial, sans-serif;
+            color: black;
+            background: white;
+            line-height: 1.6;
+            padding: 20px;
+          }
+          #print-container h1 {
+            text-align: center;
+            margin-bottom: 5px;
+          }
+          #print-container .date {
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 40px;
+          }
+          #print-container .item-block {
+            margin-bottom: 20px;
+          }
+          #print-container .item-block p {
+            margin: 0 0 1em 0;
+          }
+          #print-container .item-block b, #print-container .item-block strong { font-weight: bold; }
+          #print-container .item-block i, #print-container .item-block em { font-style: italic; }
+          #print-container .item-block u { text-decoration: underline; }
+        }
+      `;
 
-      const doc = iframe.contentWindow?.document || iframe.contentDocument;
-      if (doc) {
-        doc.open();
-        doc.write(htmlContent);
-        doc.close();
+      document.head.appendChild(style);
+      document.body.appendChild(printContainer);
 
-        // Focus and print
-        iframe.contentWindow?.focus();
-        iframe.contentWindow?.print();
-        
-        // Cleanup
-        setTimeout(() => {
-          document.body.removeChild(iframe);
-        }, 1000);
-      } else {
-        throw new Error('Failed to create iframe for printing');
-      }
+      // Trigger print on the main window
+      window.print();
+
+      // Cleanup after print dialog opens
+      setTimeout(() => {
+        const styleEl = document.getElementById('print-style');
+        const containerEl = document.getElementById('print-container');
+        if (styleEl) document.head.removeChild(styleEl);
+        if (containerEl) document.body.removeChild(containerEl);
+      }, 1000);
     } catch (err) {
       console.error(err);
       error(intl.formatMessage({ id: 'collections.error_export_pdf' }));
