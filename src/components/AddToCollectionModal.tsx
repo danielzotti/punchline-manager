@@ -107,7 +107,7 @@ export default function AddToCollectionModal({ isOpen, onClose, selectedPunchlin
         punchline_id: id,
         text_content: null
       }));
-      
+
       await updateCollectionItems(collectionId, [...existingItems, ...newItems]);
       onSuccess();
       onClose();
@@ -157,7 +157,7 @@ export default function AddToCollectionModal({ isOpen, onClose, selectedPunchlin
                         disabled={isSaving}
                         onClick={() => handleAddToCollection(c.id)}
                         variant="ghost"
-                        className="flex items-center justify-between p-4 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-left transition-colors h-auto w-full font-normal"
+                        className="flex items-center !justify-between p-4 bg-bg-input hover:bg-bg-input/80 border border-border-ui rounded-xl text-left transition-colors h-auto w-full font-normal"
                       >
                         <div className="text-left">
                           <p className="font-semibold text-text-primary">{c.title}</p>

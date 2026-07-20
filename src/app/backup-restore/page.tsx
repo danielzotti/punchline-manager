@@ -167,11 +167,12 @@ export default function BackupRestorePage() {
       // 4. Upsert punchline categories mappings
       if (data.punchline_categories.length > 0) {
         const pcToInsert = data.punchline_categories.map((pc: any) => ({
-          id: pc.id,
           punchline_id: pc.punchline_id,
           category_id: pc.category_id,
         }));
-        const { error: insPcError } = await supabase.from("punchline_categories").upsert(pcToInsert);
+        const { error: insPcError } = await supabase
+          .from("punchline_categories")
+          .upsert(pcToInsert, { onConflict: "punchline_id,category_id" });
         if (insPcError) throw insPcError;
       }
 
