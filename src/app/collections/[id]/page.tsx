@@ -435,21 +435,100 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
     setItems(items.map(i => i.id === itemId ? { ...i, text_content: newText } : i));
   };
 
-  const handleExportPDF = async () => {
+  const handleExportPDF = () => {
     try {
       setIsExporting(true);
-      const res = await fetch('/api/export-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ collectionId: id })
+      let htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>${title}</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              color: black;
+              background: white;
+              line-height: 1.6;
+              margin: 0;
+              padding: 40px;
+            }
+            h1 {
+              text-align: center;
+              margin-bottom: 5px;
+            }
+            .date {
+              text-align: center;
+              color: #555;
+              font-size: 14px;
+              margin-bottom: 40px;
+            }
+            .item-block {
+              margin-bottom: 20px;
+            }
+            /* RTE Specific basic styles */
+            .item-block p {
+              margin: 0 0 1em 0;
+            }
+            .item-block b, .item-block strong { font-weight: bold; }
+            .item-block i, .item-block em { font-style: italic; }
+            .item-block u { text-decoration: underline; }
+            @media print {
+              body {
+                padding: 20px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${title}</h1>
+          <div class="date">${new Date(date).toLocaleDateString()}</div>
+          <div class="content">
+      `;
+
+      items.forEach(item => {
+        htmlContent += `<div class="item-block">`;
+        if (item.item_type === 'punchline' && item.punchline) {
+          htmlContent += item.punchline.text;
+        } else if (item.item_type === 'linked_text' && item.text_content) {
+          htmlContent += item.text_content;
+        }
+        htmlContent += `</div>`;
       });
-      if (!res.ok) throw new Error(intl.formatMessage({ id: 'collections.export_failed' }));
-      const blob = await res.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${title}.pdf`;
-      a.click();
+
+      htmlContent += `
+          </div>
+        </body>
+        </html>
+      `;
+
+      // Create a hidden iframe
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      document.body.appendChild(iframe);
+
+      const doc = iframe.contentWindow?.document || iframe.contentDocument;
+      if (doc) {
+        doc.open();
+        doc.write(htmlContent);
+        doc.close();
+
+        // Focus and print
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        
+        // Cleanup
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+        }, 1000);
+      } else {
+        throw new Error('Failed to create iframe for printing');
+      }
     } catch (err) {
       console.error(err);
       error(intl.formatMessage({ id: 'collections.error_export_pdf' }));
