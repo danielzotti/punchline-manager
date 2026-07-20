@@ -107,9 +107,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
 
         if (newSession?.user?.email) {
-          setLoading(true);
           await checkUserAuthorization(newSession.user.email);
-          setLoading(false);
         } else {
           setIsAuthorized(false);
           setIsAdmin(false);
