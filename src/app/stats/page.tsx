@@ -432,34 +432,22 @@ export default function StatsPage() {
         <PageHeader
           title={intl.formatMessage({ id: "stats.title", defaultMessage: "Statistics Dashboard" })}
           description={intl.formatMessage({ id: "stats.subtitle", defaultMessage: "Detailed analysis, categories, and usage of your punchlines." })}
-          icon={<TrendingUp className="w-6 h-6 text-accent-primary" />}
+          icon={<TrendingUp />}
         />
 
         {/* Filters and Search Bar */}
         <div className="bg-bg-card p-5 border border-border-ui rounded-2xl shadow-sm transition-all duration-200 space-y-4 md:sticky md:top-20 md:z-10">
           {/* Search Input */}
-          <div className="flex-1 relative">
-            <Search className="w-4 h-4 text-text-muted-light absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <Input
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder={intl.formatMessage({ id: "stats.search_placeholder", defaultMessage: "Search statistics..." })}
-              className="pl-10 h-11"
-            />
-          </div>
-          <div className="flex flex-col md:flex-row flex-wrap gap-4 items-center">
-
-            {/* Category multi-selector */}
-            <div className="w-full md:flex-1 min-w-[200px]">
-              <SelectAutocomplete
-                items={categories.map((c) => ({ id: c.id, name: c.name }))}
-                multiple={true}
-                selectedIds={selectedCategoryIds}
-                onChange={setSelectedCategoryIds}
-                placeholder={intl.formatMessage({ id: "filter.category", defaultMessage: "Filter by Category" })}
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="w-full md:flex-1 relative h-11 md:self-end">
+              <Search className="w-4 h-4 text-text-muted-light absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Input
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder={intl.formatMessage({ id: "stats.search_placeholder", defaultMessage: "Search statistics..." })}
+                className="pl-10 h-11"
               />
             </div>
-
             {/* Status single-selector */}
             <div className="w-full md:flex-1 min-w-[200px]">
               <SelectAutocomplete
@@ -470,6 +458,8 @@ export default function StatsPage() {
                 placeholder={intl.formatMessage({ id: "filter.status", defaultMessage: "Filter by Status" })}
               />
             </div>
+          </div>
+          <div className="flex flex-col md:flex-row flex-wrap gap-4">
 
             {/* Start Date */}
             <div className="w-full md:flex-1 min-w-[150px] relative">
@@ -496,13 +486,25 @@ export default function StatsPage() {
                 className="pl-10 h-11 text-xs text-text-primary"
               />
             </div>
+          </div>
+          <div className="flex flex-col md:flex-row flex-wrap gap-4">
+            {/* Category multi-selector */}
+            <div className="w-full md:flex-1 min-w-[200px]">
+              <SelectAutocomplete
+                items={categories.map((c) => ({ id: c.id, name: c.name }))}
+                multiple={true}
+                selectedIds={selectedCategoryIds}
+                onChange={setSelectedCategoryIds}
+                placeholder={intl.formatMessage({ id: "filter.category", defaultMessage: "Filter by Category" })}
+              />
+            </div>
 
             {/* Reset button */}
             {(searchInput || selectedCategoryIds.length > 0 || selectedStatusId || startDate || endDate) && (
               <Button
                 variant="ghost"
                 onClick={handleResetFilters}
-                className="h-11 px-4 gap-2 hover:bg-bg-input shrink-0 border border-border-ui text-text-muted hover:text-text-primary w-full md:w-auto self-stretch md:self-auto"
+                className="h-11 px-4 gap-2 hover:bg-bg-input shrink-0 border border-border-ui text-text-muted hover:text-text-primary w-full md:w-auto self-stretch md:self-end"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>{intl.formatMessage({ id: "filter.clear", defaultMessage: "Clear Filters" })}</span>

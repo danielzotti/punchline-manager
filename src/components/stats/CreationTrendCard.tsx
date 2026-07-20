@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
-import { TrendingUp, ZoomIn, ZoomOut } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
 interface Punchline {
   created_at?: string;
@@ -65,13 +65,7 @@ export function CreationTrendCard({ punchlines, startDate, endDate }: CreationTr
     setVisiblePointsCount(ZOOM_CONFIGS[mode].default);
   };
 
-  const handleZoomIn = () => {
-    setVisiblePointsCount((prev) => Math.max(currentConfig.min, prev - currentConfig.step));
-  };
 
-  const handleZoomOut = () => {
-    setVisiblePointsCount((prev) => Math.min(currentConfig.max, prev + currentConfig.step));
-  };
 
   // Find the latest date among creations to anchor our timeline, default to today
   const anchorDate = useMemo(() => {
@@ -288,28 +282,7 @@ export function CreationTrendCard({ punchlines, startDate, endDate }: CreationTr
             ))}
           </div>
 
-          {/* Zoom Controls */}
-          <div className="flex items-center gap-1.5 bg-bg-input border border-border-ui rounded-lg p-0.5">
-            <button
-              onClick={handleZoomOut}
-              disabled={visiblePointsCount >= currentConfig.max}
-              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-card disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-all"
-              title={intl.formatMessage({ id: "stats.zoom_out", defaultMessage: "Zoom Out" })}
-            >
-              <ZoomOut className="w-4 h-4" />
-            </button>
-            <span className="text-[11px] font-mono font-bold text-text-muted select-none px-1 min-w-[20px] text-center">
-              {visiblePointsCount}
-            </span>
-            <button
-              onClick={handleZoomIn}
-              disabled={visiblePointsCount <= currentConfig.min}
-              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-card disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-all"
-              title={intl.formatMessage({ id: "stats.zoom_in", defaultMessage: "Zoom In" })}
-            >
-              <ZoomIn className="w-4 h-4" />
-            </button>
-          </div>
+
         </div>
       </div>
 

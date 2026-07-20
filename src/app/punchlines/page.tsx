@@ -446,7 +446,7 @@ export default function PunchlinesPage() {
         <PageHeader
           title={intl.formatMessage({ id: "nav.punchlines", defaultMessage: "Punchline" })}
           description={intl.formatMessage({ id: "punchlines.subtitle", defaultMessage: "Gestisci le tue punchline" })}
-          icon={<MessageSquare className="w-6 h-6" />}
+          icon={<MessageSquare />}
         />
 
         {/* Filters panel */}
