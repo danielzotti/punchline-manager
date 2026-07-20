@@ -634,23 +634,40 @@ export default function PunchlinesPage() {
                 />
               </div>
 
-              {/* Status Select */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-text-muted uppercase tracking-wider">
+              {/* Status Selection (Checklist-like) */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-text-muted uppercase block tracking-wider">
                   {intl.formatMessage({ id: "punchline.status" })}
                 </label>
-                <select
-                  value={punchlineStatusId}
-                  onChange={(e) => setPunchlineStatusId(e.target.value)}
-                  className="w-full bg-bg-input border border-border-ui rounded-xl px-4 py-2.5 text-sm text-text-primary focus:outline-none focus:border-accent-primary transition-colors duration-200"
-                >
-                  <option value="">Nessuno</option>
-                  {statuses.map((status) => (
-                    <option key={status.id} value={status.id}>
-                      {status.name}
-                    </option>
-                  ))}
-                </select>
+
+                {statuses.length > 0 && (
+                  <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-2 border border-border-ui bg-bg-input rounded-xl transition-colors duration-200">
+                    {statuses.map((status) => {
+                      const isSelected = punchlineStatusId === status.id;
+                      return (
+                        <Button
+                          type="button"
+                          key={status.id}
+                          onClick={() => setPunchlineStatusId(prev => prev === status.id ? "" : status.id)}
+                          variant="ghost"
+                          style={{
+                            color: status.color,
+                            backgroundColor: isSelected ? `${status.color}15` : undefined,
+                            borderColor: isSelected ? status.color : undefined,
+                          }}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer h-auto w-auto font-normal ${
+                            isSelected
+                              ? "shadow-sm"
+                              : "bg-bg-card border-border-ui hover:bg-bg-input/50"
+                          }`}
+                        >
+                          {isSelected && <Check className="w-3 h-3" />}
+                          {status.name}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Categories Checklist */}
