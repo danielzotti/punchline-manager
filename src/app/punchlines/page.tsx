@@ -1,6 +1,7 @@
 "use client";
 
 import AddToCollectionModal from "@/components/AddToCollectionModal";
+import BatchEditModal from "@/components/BatchEditModal";
 import SelectAutocomplete from "@/components/SelectAutocomplete";
 import { PageHeader } from "@/components/PageHeader";
 import RichTextEditor from "@/components/RichTextEditor";
@@ -104,7 +105,13 @@ export default function PunchlinesPage() {
     isLoading: loadingPunchlines,
     createPunchline,
     updatePunchline,
-    deletePunchline
+    deletePunchline,
+    batchUpdateStatus,
+    batchUpdateNotes,
+    batchDeletePunchlines,
+    batchAddCategories,
+    batchRemoveCategories,
+    batchReplaceCategories,
   } = usePunchlines({
     searchText: debouncedSearch,
     categoryIds: selectedCategoryIds,
@@ -121,6 +128,7 @@ export default function PunchlinesPage() {
   // Selection States
   const [selectedPunchlineIds, setSelectedPunchlineIds] = useState<string[]>([]);
   const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
+  const [isBatchModalOpen, setIsBatchModalOpen] = useState(false);
 
   // Reading Mode States
   const [readingPunchline, setReadingPunchline] = useState<Punchline | null>(null);
@@ -134,6 +142,7 @@ export default function PunchlinesPage() {
       const hash = window.location.hash;
       setIsPunchlineModalOpen(hash === '#add-edit');
       setIsAddToCollectionModalOpen(hash === '#add-to-collection');
+      setIsBatchModalOpen(hash === '#batch-edit');
       if (hash !== '#read') {
         setReadingPunchline(null);
       }
@@ -185,6 +194,18 @@ export default function PunchlinesPage() {
     }
   };
 
+  const openBatchModal = () => {
+    window.location.hash = 'batch-edit';
+  };
+
+  const closeBatchModal = () => {
+    if (window.location.hash === '#batch-edit') {
+      window.history.back();
+    } else {
+      setIsBatchModalOpen(false);
+    }
+  };
+
   const openReading = (punchline: Punchline) => {
     setReadingPunchline(punchline);
     window.location.hash = 'read';
@@ -225,7 +246,7 @@ export default function PunchlinesPage() {
 
   // Lock body scroll when modals are open
   useEffect(() => {
-    const isAnyModalOpen = isPunchlineModalOpen || !!readingPunchline;
+    const isAnyModalOpen = isPunchlineModalOpen || !!readingPunchline || isBatchModalOpen;
     if (isAnyModalOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -234,7 +255,7 @@ export default function PunchlinesPage() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isPunchlineModalOpen, readingPunchline]);
+  }, [isPunchlineModalOpen, readingPunchline, isBatchModalOpen]);
 
   // Form States
   const [punchlineText, setPunchlineText] = useState("");
@@ -540,14 +561,14 @@ export default function PunchlinesPage() {
         {renderPunchlinesContent()}
       </div>
 
-      {/* Action Bar for Collections */}
+      {/* Action Bar for Batch Operations */}
       {selectedPunchlineIds.length > 0 && (
         <div className="fixed bottom-24 xl:bottom-6 left-1/2 -translate-x-1/2 z-50 bg-bg-card border border-border-ui shadow-2xl rounded-2xl px-4 py-3 md:px-6 md:py-4 flex items-center gap-3 md:gap-4 animate-slide-up max-w-[calc(100vw-2rem)] w-max">
           <Button
-            onClick={openAddToCollection}
+            onClick={openBatchModal}
             className="bg-gradient-to-r from-violet-600 to-indigo-400 text-white font-semibold text-sm px-4 py-2 rounded-xl h-auto"
           >
-            {intl.formatMessage({ id: "collections.add_selected_to_collection" }, { count: selectedPunchlineIds.length })}
+            {intl.formatMessage({ id: "punchlines.manage_selected" }, { count: selectedPunchlineIds.length })}
           </Button>
           <Button
             onClick={() => setSelectedPunchlineIds([])}
@@ -808,6 +829,23 @@ export default function PunchlinesPage() {
         onClose={closeAddToCollection}
         selectedPunchlineIds={selectedPunchlineIds}
         onSuccess={() => setSelectedPunchlineIds([])}
+      />
+
+      {/* Batch Edit Modal */}
+      <BatchEditModal
+        isOpen={isBatchModalOpen}
+        onClose={closeBatchModal}
+        selectedPunchlineIds={selectedPunchlineIds}
+        statuses={statuses}
+        categories={categories}
+        onSuccess={() => setSelectedPunchlineIds([])}
+        onAddToCollection={openAddToCollection}
+        batchUpdateStatus={batchUpdateStatus}
+        batchUpdateNotes={batchUpdateNotes}
+        batchDeletePunchlines={batchDeletePunchlines}
+        batchAddCategories={batchAddCategories}
+        batchRemoveCategories={batchRemoveCategories}
+        batchReplaceCategories={batchReplaceCategories}
       />
     </main>
   );

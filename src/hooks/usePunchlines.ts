@@ -190,6 +190,105 @@ export function usePunchlines(filters: FetchFilters = {}) {
     },
   });
 
+  const batchUpdateStatusMutation = useMutation({
+    mutationFn: async ({ ids, statusId }: { ids: string[]; statusId: string | null }) => {
+      const { error } = await supabase
+        .from("punchlines")
+        .update({ status_id: statusId })
+        .in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["punchlines"] });
+    },
+  });
+
+  const batchUpdateNotesMutation = useMutation({
+    mutationFn: async ({ ids, notes }: { ids: string[]; notes: string | null }) => {
+      const { error } = await supabase
+        .from("punchlines")
+        .update({ notes: notes || null })
+        .in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["punchlines"] });
+    },
+  });
+
+  const batchDeleteMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const { error } = await supabase
+        .from("punchlines")
+        .delete()
+        .in("id", ids);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["punchlines"] });
+    },
+  });
+
+  const batchAddCategoriesMutation = useMutation({
+    mutationFn: async ({ ids, categoryIds }: { ids: string[]; categoryIds: string[] }) => {
+      if (categoryIds.length === 0) return;
+      const mappings = ids.flatMap((punchlineId) =>
+        categoryIds.map((categoryId) => ({
+          punchline_id: punchlineId,
+          category_id: categoryId,
+        }))
+      );
+      const { error } = await supabase
+        .from("punchline_categories")
+        .upsert(mappings, { onConflict: "punchline_id,category_id" });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["punchlines"] });
+    },
+  });
+
+  const batchRemoveCategoriesMutation = useMutation({
+    mutationFn: async ({ ids, categoryIds }: { ids: string[]; categoryIds: string[] }) => {
+      if (categoryIds.length === 0) return;
+      const { error } = await supabase
+        .from("punchline_categories")
+        .delete()
+        .in("punchline_id", ids)
+        .in("category_id", categoryIds);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["punchlines"] });
+    },
+  });
+
+  const batchReplaceCategoriesMutation = useMutation({
+    mutationFn: async ({ ids, categoryIds }: { ids: string[]; categoryIds: string[] }) => {
+      const { error: deleteError } = await supabase
+        .from("punchline_categories")
+        .delete()
+        .in("punchline_id", ids);
+      if (deleteError) throw deleteError;
+
+      if (categoryIds.length > 0) {
+        const mappings = ids.flatMap((punchlineId) =>
+          categoryIds.map((categoryId) => ({
+            punchline_id: punchlineId,
+            category_id: categoryId,
+          }))
+        );
+        const { error: insertError } = await supabase
+          .from("punchline_categories")
+          .insert(mappings);
+        if (insertError) throw insertError;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["punchlines"] });
+    },
+  });
+
   return {
     punchlines: query.data || [],
     isLoading: query.isLoading,
@@ -201,5 +300,11 @@ export function usePunchlines(filters: FetchFilters = {}) {
     isUpdating: updateMutation.isPending,
     deletePunchline: deleteMutation.mutateAsync,
     isDeleting: deleteMutation.isPending,
+    batchUpdateStatus: batchUpdateStatusMutation.mutateAsync,
+    batchUpdateNotes: batchUpdateNotesMutation.mutateAsync,
+    batchDeletePunchlines: batchDeleteMutation.mutateAsync,
+    batchAddCategories: batchAddCategoriesMutation.mutateAsync,
+    batchRemoveCategories: batchRemoveCategoriesMutation.mutateAsync,
+    batchReplaceCategories: batchReplaceCategoriesMutation.mutateAsync,
   };
 }
