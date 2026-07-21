@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
+import { cleanPunchlineText } from "@/lib/utils";
 
 export interface PunchlineCategory {
   id: string;
@@ -112,9 +113,10 @@ export function usePunchlines(filters: FetchFilters = {}) {
       status_id: string | null;
       categoryIds: string[];
     }) => {
+      const cleanedText = cleanPunchlineText(text);
       const { data: punchline, error: pError } = await supabase
         .from("punchlines")
-        .insert([{ text, notes, status_id: status_id || null }])
+        .insert([{ text: cleanedText, notes, status_id: status_id || null }])
         .select()
         .single();
 
@@ -150,9 +152,10 @@ export function usePunchlines(filters: FetchFilters = {}) {
       status_id: string | null;
       categoryIds: string[];
     }) => {
+      const cleanedText = cleanPunchlineText(text);
       const { error: pError } = await supabase
         .from("punchlines")
-        .update({ text, notes, status_id: status_id || null })
+        .update({ text: cleanedText, notes, status_id: status_id || null })
         .eq("id", id);
 
       if (pError) throw pError;

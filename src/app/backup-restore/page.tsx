@@ -5,6 +5,7 @@ import { useIntl } from "react-intl";
 import { useToast } from "@/components/ui/Toast";
 import { useAuth } from "@/components/AuthProvider";
 import { supabase } from "@/lib/supabase";
+import { cleanPunchlineText } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { Database, UploadCloud, DownloadCloud, AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -14,7 +15,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 export default function BackupRestorePage() {
   const intl = useIntl();
   const { user } = useAuth();
-  const { success, error, info } = useToast();
+  const { success, error } = useToast();
   const queryClient = useQueryClient();
 
   const [isExporting, setIsExporting] = useState(false);
@@ -153,7 +154,7 @@ export default function BackupRestorePage() {
       if (data.punchlines.length > 0) {
         const punchlinesToInsert = data.punchlines.map((p: any) => ({
           id: p.id,
-          text: p.text,
+          text: cleanPunchlineText(p.text),
           notes: p.notes,
           status_id: p.status_id,
           created_at: p.created_at,

@@ -161,6 +161,34 @@ export default function BatchEditModal({
         {/* Content Panel */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] md:pb-6">
 
+
+          {/* Section: Extra Operations (Collections & Delete) */}
+          <div className="grid grid-cols-2 gap-4 pt-2">
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteSelected}
+              disabled={isSubmitting}
+              className="flex items-center justify-center gap-2 py-5"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>{intl.formatMessage({ id: 'batch.delete_selected', defaultMessage: 'Elimina Selezionate' })}</span>
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                onAddToCollection();
+                onClose();
+              }}
+              className="flex items-center justify-center gap-2 py-5"
+            >
+              <FolderPlus className="w-4 h-4 text-violet-500" />
+              <span>{intl.formatMessage({ id: 'batch.add_to_collection', defaultMessage: 'Aggiungi a Raccolta' })}</span>
+            </Button>
+          </div>
+
           {/* Section: Status */}
           <div className="space-y-3 p-4 border border-border-ui rounded-2xl bg-bg-primary/30">
             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5">
@@ -273,33 +301,6 @@ export default function BatchEditModal({
                 </Button>
               </div>
             </div>
-          </div>
-
-          {/* Section: Extra Operations (Collections & Delete) */}
-          <div className="grid grid-cols-2 gap-4 pt-2">
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleDeleteSelected}
-              disabled={isSubmitting}
-              className="flex items-center justify-center gap-2 py-5"
-            >
-              <Trash2 className="w-4 h-4" />
-              <span>{intl.formatMessage({ id: 'batch.delete_selected', defaultMessage: 'Elimina Selezionate' })}</span>
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                onAddToCollection();
-                onClose();
-              }}
-              className="flex items-center justify-center gap-2 py-5"
-            >
-              <FolderPlus className="w-4 h-4 text-violet-500" />
-              <span>{intl.formatMessage({ id: 'batch.add_to_collection', defaultMessage: 'Aggiungi a Raccolta' })}</span>
-            </Button>
           </div>
         </div>
       </div>

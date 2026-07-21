@@ -12,6 +12,13 @@ interface RichTextEditorProps {
 export default function RichTextEditor({ value, onChange }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
 
+  // Set default paragraph separator to div on mount
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.execCommand("defaultParagraphSeparator", false, "div");
+    }
+  }, []);
+
   // Sync content from prop only if it differs from current innerHTML
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value) {
@@ -116,6 +123,10 @@ export default function RichTextEditor({ value, onChange }: RichTextEditorProps)
 
             if (tagName === "u") {
               return `<u>${wrappedHtml}</u>`;
+            }
+
+            if (tagName === "p") {
+              return `<div>${wrappedHtml}</div>`;
             }
 
             return `<${tagName}>${wrappedHtml}</${tagName}>`;
