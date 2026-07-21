@@ -90,17 +90,6 @@ export function FullscreenReaderModal({
     };
   }, [isOpen]);
 
-  // Handle ESC key press
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
   // Sync fullscreen state based on document event
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -167,11 +156,10 @@ export function FullscreenReaderModal({
           type="button"
           onClick={() => updateAlignment(textAlignment === "center" ? "left" : "center")}
           variant="outline"
-          className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${
-            textAlignment === "center"
+          className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${textAlignment === "center"
               ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20"
               : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
-          }`}
+            }`}
           title={intl.formatMessage({
             id: "reading.alignment",
             defaultMessage: "Allineamento testo",

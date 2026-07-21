@@ -274,8 +274,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
 
   const closePreview = () => {
     if (window.location.hash === '#preview') {
-      window.location.hash = '';
-      setIsPreviewOpen(false);
+      window.history.back();
     } else {
       setIsPreviewOpen(false);
     }
@@ -290,18 +289,6 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closePreview();
-      }
-    };
-    if (isPreviewOpen) {
-      window.addEventListener("keydown", handleKeyDown);
-    }
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPreviewOpen]);
 
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [touchTargetIndex, setTouchTargetIndex] = useState<number | null>(null);
