@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { use } from 'react';
 import { getCollectionById, updateCollection, updateCollectionItems, deleteCollection } from '@/app/actions/collections';
-import { GripVertical, Plus, Trash2, Edit2, Save, FileText, Eye } from 'lucide-react';
+import { GripVertical, Plus, Trash2, Edit2, Save, FileText, Eye, RotateCcw } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,7 @@ interface CollectionItemProps {
   item: any;
   onRemove: (id: string) => void;
   onUpdateText: (id: string, newText: string) => void;
+  onUpdateColor: (id: string, color: string | undefined) => void;
   isDragged: boolean;
   isTouchTarget: boolean;
   onDragStart: () => void;
@@ -32,6 +33,7 @@ function CollectionItem({
   item,
   onRemove,
   onUpdateText,
+  onUpdateColor,
   isDragged,
   isTouchTarget,
   onDragStart,
@@ -61,14 +63,43 @@ function CollectionItem({
           : ""
         }`}
     >
-      <div
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-        className="mt-1 cursor-grab active:cursor-grabbing text-text-muted hover:text-text-primary touch-none select-none py-1 pr-1"
-        style={{ touchAction: "none" }}
-      >
-        <GripVertical className="w-5 h-5" />
+      <div className="flex flex-col items-center gap-1.5 mt-1 select-none">
+        <div
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+          className="cursor-grab active:cursor-grabbing text-text-muted hover:text-text-primary touch-none py-1 pr-1"
+          style={{ touchAction: "none" }}
+        >
+          <GripVertical className="w-5 h-5" />
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <label
+            className="relative cursor-pointer p-1 rounded-md text-text-muted hover:bg-bg-input transition-colors group flex items-center justify-center"
+            title={intl.formatMessage({ id: "collections.text_color" })}
+          >
+            <span
+              className="w-6 h-6 rounded border border-border-text transition-colors block"
+              style={item.color ? { backgroundColor: item.color } : { backgroundColor: "transparent" }}
+            />
+            <input
+              type="color"
+              value={item.color || "#000000"}
+              onChange={(e) => onUpdateColor(item.id, e.target.value)}
+              className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+            />
+          </label>
+          {item.color && (
+            <button
+              type="button"
+              onClick={() => onUpdateColor(item.id, undefined)}
+              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-input transition-colors"
+              title={intl.formatMessage({ id: "collections.reset_color" })}
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
       <div className="flex-1 min-w-0">
         {isPunchline ? (
@@ -142,6 +173,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
       if (current.id !== initial.id) return true;
       if (current.item_type !== initial.item_type) return true;
       if (current.text_content !== initial.text_content) return true;
+      if (current.color !== initial.color) return true;
       if (current.punchline?.id !== initial.punchline?.id) return true;
     }
     return false;
@@ -242,7 +274,8 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
 
   const closePreview = () => {
     if (window.location.hash === '#preview') {
-      window.history.back();
+      window.location.hash = '';
+      setIsPreviewOpen(false);
     } else {
       setIsPreviewOpen(false);
     }
@@ -257,18 +290,6 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
-
-  const toggleFullscreen = async () => {
-    try {
-      if (!document.fullscreenElement) {
-        await document.documentElement.requestFullscreen();
-      } else {
-        await document.exitFullscreen();
-      }
-    } catch (err) {
-      console.error("Error toggling fullscreen:", err);
-    }
-  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -437,6 +458,10 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
     setItems(items.map(i => i.id === itemId ? { ...i, text_content: newText } : i));
   };
 
+  const updateItemColor = (itemId: string, color: string | undefined) => {
+    setItems(items.map(i => i.id === itemId ? { ...i, color } : i));
+  };
+
   const handleExportPDF = () => {
     try {
       setIsExporting(true);
@@ -447,7 +472,8 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
 
       let itemsHtml = '';
       items.forEach(item => {
-        itemsHtml += `<div class="item-block">`;
+        const colorStyle = item.color ? ` style="color: ${item.color}"` : '';
+        itemsHtml += `<div class="item-block"${colorStyle}>`;
         if (item.item_type === 'punchline' && item.punchline) {
           itemsHtml += item.punchline.text;
         } else if (item.item_type === 'linked_text' && item.text_content) {
@@ -620,6 +646,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
             item={item}
             onRemove={removeItem}
             onUpdateText={updateItemText}
+            onUpdateColor={updateItemColor}
             isDragged={draggedIndex === index}
             isTouchTarget={touchTargetIndex === index}
             onDragStart={() => handleDragStart(index)}
@@ -641,6 +668,7 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
         items={items.map((item) => ({
           id: item.id,
           text: item.item_type === "punchline" ? item.punchline?.text || "" : item.text_content || "",
+          color: item.color,
         }))}
         align="left"
       />

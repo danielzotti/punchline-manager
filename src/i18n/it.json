@@ -112,6 +112,8 @@
   "collections.new_linked_text": "Nuovo testo collegato...",
   "collections.success_save": "Raccolta salvata con successo!",
   "collections.error_save": "Errore nel salvataggio.",
+  "collections.text_color": "Colore del testo",
+  "collections.reset_color": "Ripristina colore",
   "collections.confirm_remove_item": "Rimuovere questo elemento?",
   "collections.export_failed": "Esportazione fallita",
   "collections.error_export_pdf": "Errore esportazione PDF",

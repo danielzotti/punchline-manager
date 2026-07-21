@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/Button";
 interface ReaderItem {
   id?: string;
   text: string;
+  color?: string;
 }
 
 interface FullscreenReaderModalProps {
@@ -243,7 +244,7 @@ export function FullscreenReaderModal({
             <div
               key={item.id || idx}
               className="text-text-primary leading-relaxed rich-text-content break-words w-full selection:bg-accent-primary/20"
-              style={{ fontSize: `${readingFontSize}px` }}
+              style={{ fontSize: `${readingFontSize}px`, color: item.color || undefined }}
               dangerouslySetInnerHTML={{ __html: item.text }}
             />
           ))}

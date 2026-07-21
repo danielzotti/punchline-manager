@@ -199,6 +199,7 @@ export default function BackupRestorePage() {
           item_type: ci.item_type,
           punchline_id: ci.punchline_id,
           text_content: ci.text_content,
+          color: ci.color || null,
         }));
         const { error: insCiError } = await supabase.from("collection_items").upsert(itemsToInsert);
         if (insCiError) throw insCiError;

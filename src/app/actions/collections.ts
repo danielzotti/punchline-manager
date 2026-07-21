@@ -87,7 +87,8 @@ export async function updateCollectionItems(collectionId: string, items: any[]) 
         position: index,
         item_type: item.item_type,
         punchline_id: item.punchline_id,
-        text_content: item.text_content
+        text_content: item.text_content,
+        color: item.color || null
       })));
 
     if (error) throw error;

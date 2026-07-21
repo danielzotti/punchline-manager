@@ -112,6 +112,8 @@
   "collections.new_linked_text": "New linked text...",
   "collections.success_save": "Collection saved successfully!",
   "collections.error_save": "Error saving.",
+  "collections.text_color": "Text color",
+  "collections.reset_color": "Reset color",
   "collections.confirm_remove_item": "Remove this item?",
   "collections.export_failed": "Export failed",
   "collections.error_export_pdf": "Error exporting PDF",
