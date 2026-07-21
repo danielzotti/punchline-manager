@@ -3,12 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { use } from 'react';
 import { getCollectionById, updateCollection, updateCollectionItems, deleteCollection } from '@/app/actions/collections';
-import { GripVertical, Plus, Trash2, Edit2, Save, FileText, Eye, X, ZoomIn, ZoomOut, RotateCcw, Maximize2, Minimize2, ArrowLeftRight } from 'lucide-react';
+import { GripVertical, Plus, Trash2, Edit2, Save, FileText, Eye } from 'lucide-react';
 import RichTextEditor from '@/components/RichTextEditor';
 import { useIntl } from 'react-intl';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/Toast';
 import { Button } from '@/components/ui/Button';
+import { FullscreenReaderModal } from '@/components/modals/FullscreenReaderModal';
+
 
 interface CollectionItemProps {
   index: number;
@@ -633,108 +635,16 @@ export default function CollectionDetailPage({ params }: { params: Promise<{ id:
         )}
       </div>
 
-      {/* Preview Modal */}
-      {isPreviewOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-bg-primary/95 backdrop-blur-md animate-fade-in p-0 justify-between">
-          {/* Top toolbar */}
-          <div className="flex items-center gap-2 md:gap-3 absolute top-2 right-2 md:top-4 md:right-4">
-            {/* Fullscreen Toggle */}
-            <Button
-              type="button"
-              onClick={toggleFullscreen}
-              variant="outline"
-              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto"
-              title={isFullscreen ? "Disattiva schermo intero" : "Schermo intero"}
-            >
-              {isFullscreen ? (
-                <Minimize2 className="w-4 h-4 md:w-5 h-5" />
-              ) : (
-                <Maximize2 className="w-4 h-4 md:w-5 h-5" />
-              )}
-            </Button>
-
-            {/* Width Toggle */}
-            <Button
-              type="button"
-              onClick={() => setIsReadingFullWidth((prev) => !prev)}
-              variant="outline"
-              className={`p-2 border transition-all duration-150 cursor-pointer shadow-sm flex items-center justify-center h-auto w-auto rounded-xl ${isReadingFullWidth
-                ? "bg-accent-primary/10 border-accent-primary/30 text-accent-primary hover:bg-accent-primary/20"
-                : "bg-bg-card border-border-ui text-text-muted hover:text-text-primary hover:bg-bg-input"
-                }`}
-              title={intl.formatMessage({ id: "reading.full_width", defaultMessage: "Larghezza massima" })}
-            >
-              <ArrowLeftRight className="w-4 h-4 md:w-5 h-5" />
-            </Button>
-
-            {/* Font controls */}
-            <div className="flex items-center gap-1 bg-bg-card border border-border-ui rounded-xl p-1 shadow-sm">
-              <Button
-                type="button"
-                onClick={() => setReadingFontSize((prev) => Math.max(16, prev - 4))}
-                variant="ghost"
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer h-auto w-auto"
-                title={intl.formatMessage({ id: "reading.zoom_out", defaultMessage: "Rimpicciolisci testo" })}
-              >
-                <ZoomOut className="w-4 h-4 md:w-5 h-5" />
-              </Button>
-              <Button
-                type="button"
-                onClick={() => setReadingFontSize(24)}
-                variant="ghost"
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 text-xs font-semibold px-2.5 cursor-pointer h-auto w-auto"
-                title={intl.formatMessage({ id: "reading.reset", defaultMessage: "Ripristina" })}
-              >
-                <RotateCcw className="w-3.5 h-3.5 md:w-4 md:h-4" />
-              </Button>
-              <Button
-                type="button"
-                onClick={() => setReadingFontSize((prev) => Math.min(80, prev + 4))}
-                variant="ghost"
-                className="p-2 text-text-muted hover:text-text-primary hover:bg-bg-input rounded-lg transition-all duration-150 cursor-pointer h-auto w-auto"
-                title={intl.formatMessage({ id: "reading.zoom_in", defaultMessage: "Ingrandisci testo" })}
-              >
-                <ZoomIn className="w-4 h-4 md:w-5 h-5" />
-              </Button>
-            </div>
-
-            {/* Close Button */}
-            <Button
-              type="button"
-              onClick={closePreview}
-              variant="outline"
-              className="p-2 bg-bg-card border border-border-ui hover:bg-bg-input text-text-muted hover:text-text-primary rounded-xl transition-all duration-150 cursor-pointer shadow-sm h-auto w-auto"
-              title={intl.formatMessage({ id: "button.cancel", defaultMessage: "Chiudi" })}
-            >
-              <X className="w-5 h-5" />
-            </Button>
-          </div>
-
-          {/* Content Area */}
-          <div className="flex-1 overflow-y-auto w-full px-4 pt-24 pb-12">
-            <div className={`flex flex-col min-h-full mx-auto justify-center items-start gap-8 w-full transition-all duration-300 ${isReadingFullWidth ? "max-w-none px-4 md:px-8" : "max-w-3xl"
-              }`}>
-              {items.map((item, idx) => {
-                const isPunchline = item.item_type === 'punchline';
-                const content = isPunchline ? item.punchline?.text : item.text_content;
-                return (
-                  <div
-                    key={item.id || idx}
-                    className="text-text-primary leading-relaxed rich-text-content break-words w-full selection:bg-accent-primary/20"
-                    style={{ fontSize: `${readingFontSize}px` }}
-                    dangerouslySetInnerHTML={{ __html: content || '' }}
-                  />
-                );
-              })}
-              {items.length === 0 && (
-                <p className="text-center text-text-muted py-12 w-full">
-                  {intl.formatMessage({ id: 'collections.no_elements_preview', defaultMessage: 'Nessun elemento da mostrare nell\'anteprima' })}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <FullscreenReaderModal
+        isOpen={isPreviewOpen}
+        onClose={closePreview}
+        items={items.map((item) => ({
+          id: item.id,
+          text: item.item_type === "punchline" ? item.punchline?.text || "" : item.text_content || "",
+        }))}
+        align="left"
+      />
     </div>
   );
 }
+
